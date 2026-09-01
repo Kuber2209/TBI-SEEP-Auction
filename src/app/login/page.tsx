@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { loginWithUserId } from '@/lib/auth/actions';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { Lock, User, Sparkles, ArrowRight, ShieldCheck, AlertCircle, KeyRound, Building2 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -30,7 +31,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-950 flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden">
+    <ErrorBoundary fallbackTitle="Authentication Interface Error">
+      <div className="min-h-screen bg-navy-950 flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden">
       {/* Dynamic Ambient Background Glows */}
       <div className="absolute top-1/4 -left-28 w-96 h-96 bg-seep-blue/15 rounded-full blur-3xl pointer-events-none animate-float" />
       <div className="absolute bottom-1/4 -right-28 w-96 h-96 bg-gold-500/12 rounded-full blur-3xl pointer-events-none animate-float" style={{ animationDelay: '2s' }} />
@@ -150,5 +152,6 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+    </ErrorBoundary>
   );
 }

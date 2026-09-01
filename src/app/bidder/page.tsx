@@ -9,7 +9,7 @@ import { StartupHero } from '@/components/bidder/StartupHero';
 import { BiddingPad } from '@/components/bidder/BiddingPad';
 import { BidHistoryList } from '@/components/bidder/BidHistoryList';
 import { WalletSummaryBar } from '@/components/bidder/WalletSummaryBar';
-import { PortfolioModal } from '@/components/bidder/PortfolioModal';
+import { PortfolioDrawer } from '@/components/bidder/PortfolioDrawer';
 import { PortfolioAnalytics } from '@/components/bidder/PortfolioAnalytics';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { Loader2, PieChart } from 'lucide-react';
@@ -29,7 +29,6 @@ export default function BidderPage() {
 
   const { bidderCount } = usePresence(profile);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
-  const [showAnalytics, setShowAnalytics] = useState(false);
 
   if (!profile) {
     return (
@@ -94,7 +93,11 @@ export default function BidderPage() {
               </div>
 
               <div className="lg:col-span-5">
-                <PortfolioAnalytics wonStartups={wonStartups} wallet={wallet} />
+                <PortfolioAnalytics
+                  wonStartups={wonStartups}
+                  wallet={wallet}
+                  onOpenDrawer={() => setIsPortfolioOpen(true)}
+                />
               </div>
             </div>
           </main>
@@ -102,15 +105,20 @@ export default function BidderPage() {
 
         {/* Fixed Bottom Wallet Summary Bar */}
         <div className="sticky bottom-0 z-30">
-          <WalletSummaryBar wallet={wallet} />
+          <WalletSummaryBar
+            wallet={wallet}
+            onOpenDrawer={() => setIsPortfolioOpen(true)}
+          />
         </div>
 
-        {/* Portfolio Modal */}
-        <PortfolioModal
+        {/* Slide-over Capital Efficiency & Portfolio Drawer */}
+        <PortfolioDrawer
           isOpen={isPortfolioOpen}
           onClose={() => setIsPortfolioOpen(false)}
           wonStartups={wonStartups}
+          wallet={wallet}
           teamName={profile.team_name}
+          totalLots={startups.length}
         />
       </div>
     </ErrorBoundary>

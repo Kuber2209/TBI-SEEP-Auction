@@ -316,6 +316,9 @@ export default function AdminPage() {
                 startups={startups}
                 isUserOnline={isUserOnline}
                 onRefresh={handleFullRefresh}
+                session={session}
+                events={events}
+                bids={bids}
               />
             )}
 

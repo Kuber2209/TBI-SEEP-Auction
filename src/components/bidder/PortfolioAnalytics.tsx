@@ -2,44 +2,84 @@
 
 import React from 'react';
 import { Startup, BidderWallet } from '@/lib/supabase/types';
-import { PieChart, TrendingUp, ShieldCheck, Zap, Activity, Sprout, Coins, Rocket, Cpu, Layers } from 'lucide-react';
+import {
+  PieChart,
+  TrendingUp,
+  ShieldCheck,
+  Zap,
+  Activity,
+  Sprout,
+  Coins,
+  Rocket,
+  Cpu,
+  Layers,
+  ArrowRight,
+  ExternalLink,
+  Flame,
+} from 'lucide-react';
 
 interface PortfolioAnalyticsProps {
   wonStartups: Startup[];
   wallet: BidderWallet | null;
+  onOpenDrawer?: () => void;
+  onOpenPortfolio?: () => void;
 }
 
-export function PortfolioAnalytics({ wonStartups, wallet }: PortfolioAnalyticsProps) {
+export function PortfolioAnalytics({
+  wonStartups,
+  wallet,
+  onOpenDrawer,
+  onOpenPortfolio,
+}: PortfolioAnalyticsProps) {
   const initial = Number(wallet?.initial_balance || 50000);
   const spent = Number(wallet?.total_spent || 0);
   const available = Number(wallet?.available_balance || 0);
   const wonCount = wonStartups.length;
 
   const avgAcquisitionCost = wonCount > 0 ? Math.round(spent / wonCount) : 0;
-  const portfolioBurnRate = Math.round((spent / (initial || 1)) * 100);
+  const portfolioBurnRate = Math.min(100, Math.max(0, (spent / (initial || 1)) * 100));
 
-  // Calculate sector distribution
-  const sectorCounts: Record<string, number> = {};
+  const handleOpen = onOpenDrawer || onOpenPortfolio;
+
+  // Calculate sector distribution across 5 core pillars
+  const sectorCounts: Record<string, { count: number; spent: number }> = {};
   wonStartups.forEach((s) => {
-    sectorCounts[s.sector] = (sectorCounts[s.sector] || 0) + 1;
+    const sec = s.sector || 'DeepTech';
+    if (!sectorCounts[sec]) {
+      sectorCounts[sec] = { count: 0, spent: 0 };
+    }
+    sectorCounts[sec].count += 1;
+    sectorCounts[sec].spent += Number(s.winning_bid_amount || 0);
   });
 
-  const getSectorColor = (sector: string) => {
+  const getSectorStyle = (sector: string) => {
     const s = sector.toLowerCase();
-    if (s.includes('clean') || s.includes('ev')) return 'bg-emerald-500 text-emerald-300 border-emerald-500/40';
-    if (s.includes('med') || s.includes('health') || s.includes('bio')) return 'bg-rose-500 text-rose-300 border-rose-500/40';
-    if (s.includes('agri')) return 'bg-lime-500 text-lime-300 border-lime-500/40';
-    if (s.includes('fin') || s.includes('web3')) return 'bg-gold-500 text-gold-300 border-gold-500/40';
-    if (s.includes('deep') || s.includes('aero') || s.includes('space')) return 'bg-cyan-500 text-cyan-300 border-cyan-500/40';
-    if (s.includes('robot') || s.includes('ai')) return 'bg-purple-500 text-purple-300 border-purple-500/40';
-    return 'bg-blue-500 text-blue-300 border-blue-500/40';
+    if (s.includes('clean') || s.includes('ev')) {
+      return { dot: 'bg-emerald-500', bar: 'bg-emerald-500', text: 'text-emerald-300', badge: 'bg-emerald-500/15 border-emerald-500/30' };
+    }
+    if (s.includes('med') || s.includes('health') || s.includes('bio')) {
+      return { dot: 'bg-rose-500', bar: 'bg-rose-500', text: 'text-rose-300', badge: 'bg-rose-500/15 border-rose-500/30' };
+    }
+    if (s.includes('agri')) {
+      return { dot: 'bg-lime-500', bar: 'bg-lime-500', text: 'text-lime-300', badge: 'bg-lime-500/15 border-lime-500/30' };
+    }
+    if (s.includes('fin') || s.includes('web3')) {
+      return { dot: 'bg-gold-500', bar: 'bg-gold-500', text: 'text-gold-300', badge: 'bg-gold-500/15 border-gold-500/30' };
+    }
+    if (s.includes('deep') || s.includes('aero') || s.includes('space')) {
+      return { dot: 'bg-cyan-500', bar: 'bg-cyan-500', text: 'text-cyan-300', badge: 'bg-cyan-500/15 border-cyan-500/30' };
+    }
+    if (s.includes('robot') || s.includes('ai')) {
+      return { dot: 'bg-purple-500', bar: 'bg-purple-500', text: 'text-purple-300', badge: 'bg-purple-500/15 border-purple-500/30' };
+    }
+    return { dot: 'bg-blue-500', bar: 'bg-blue-500', text: 'text-blue-300', badge: 'bg-blue-500/15 border-blue-500/30' };
   };
 
   return (
     <div className="glass-card rounded-3xl p-6 border border-navy-800/80 shadow-2xl space-y-5">
       <div className="flex items-center justify-between pb-3 border-b border-navy-800">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-seep-sky/15 border border-seep-sky/30 flex items-center justify-center text-seep-sky">
+          <div className="w-8 h-8 rounded-xl bg-seep-sky/15 border border-seep-sky/30 flex items-center justify-center text-seep-sky shrink-0">
             <PieChart className="w-4 h-4" />
           </div>
           <div>
@@ -50,9 +90,15 @@ export function PortfolioAnalytics({ wonStartups, wallet }: PortfolioAnalyticsPr
           </div>
         </div>
 
-        <span className="text-xs font-mono font-bold text-slate-300 bg-navy-900 px-2.5 py-1 rounded-lg border border-navy-800">
-          {wonCount} Lots Acquired
-        </span>
+        {handleOpen && (
+          <button
+            onClick={handleOpen}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-navy-900 hover:bg-navy-850 text-xs font-bold text-gold-400 hover:text-gold-300 border border-navy-800 hover:border-gold-500/40 transition shadow-sm"
+          >
+            <span>Open Drawer</span>
+            <ExternalLink className="w-3 h-3" />
+          </button>
+        )}
       </div>
 
       {/* KPI Cards */}
@@ -71,7 +117,7 @@ export function PortfolioAnalytics({ wonStartups, wallet }: PortfolioAnalyticsPr
             Purse Deployment
           </span>
           <span className="font-display font-black text-base sm:text-lg text-seep-sky mt-0.5 block">
-            {portfolioBurnRate}% Deployed
+            {portfolioBurnRate.toFixed(1)}% Deployed
           </span>
         </div>
 
@@ -87,29 +133,52 @@ export function PortfolioAnalytics({ wonStartups, wallet }: PortfolioAnalyticsPr
 
       {/* Sector Diversification */}
       <div>
-        <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-2">
-          Portfolio Sector Diversification
-        </span>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
+            Portfolio Sector Diversification
+          </span>
+          <span className="text-[10px] font-mono text-slate-400">
+            {wonCount} Lots Acquired
+          </span>
+        </div>
 
         {wonCount === 0 ? (
           <div className="p-4 rounded-xl bg-navy-950/40 border border-navy-800 text-center text-slate-500 text-xs italic">
             Sector distribution breakdown will appear here once lots are won.
           </div>
         ) : (
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(sectorCounts).map(([sector, count]) => (
-              <div
-                key={sector}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-navy-950 border border-navy-800 text-xs"
-              >
-                <span className={`w-2 h-2 rounded-full ${getSectorColor(sector).split(' ')[0]}`} />
-                <span className="font-semibold text-slate-200">{sector}:</span>
-                <strong className="text-white font-mono">{count}</strong>
-              </div>
-            ))}
+          <div className="space-y-2">
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(sectorCounts).map(([sector, data]) => {
+                const style = getSectorStyle(sector);
+                const pct = spent > 0 ? ((data.spent / spent) * 100).toFixed(0) : '0';
+                return (
+                  <div
+                    key={sector}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-xl bg-navy-950 border text-xs ${style.badge}`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${style.dot}`} />
+                    <span className="font-semibold text-slate-200">{sector}:</span>
+                    <strong className="text-white font-mono">{data.count}</strong>
+                    <span className="text-[10px] text-slate-400">({pct}%)</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
+
+      {/* Deep-Dive Drawer Trigger Action */}
+      {handleOpen && (
+        <button
+          onClick={handleOpen}
+          className="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-navy-900 to-navy-850 hover:from-navy-850 hover:to-navy-800 border border-navy-700 hover:border-gold-500/50 text-xs font-bold text-gold-300 flex items-center justify-center gap-2 transition active:scale-98 shadow-sm group"
+        >
+          <span>View Deep-Tier Capital Efficiency & Risk Command</span>
+          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
+        </button>
+      )}
     </div>
   );
 }

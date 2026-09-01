@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { submitBidAction } from '@/lib/auction/actions';
 import { BidderWallet, Profile, Startup } from '@/lib/supabase/types';
 import { ConnectionStatus } from '@/hooks/useAuctionSync';
@@ -43,6 +43,7 @@ export function BiddingPad({
   const [lastSubmittedBid, setLastSubmittedBid] = useState<number | null>(null);
   const [passAcknowledged, setPassAcknowledged] = useState(false);
   const [showValuationModal, setShowValuationModal] = useState(false);
+  const [srAnnouncement, setSrAnnouncement] = useState<string>('');
 
   const isBiddingOpen = startup?.status === 'ACTIVE_BIDDING';
   const isConnected = connectionStatus === 'CONNECTED';
@@ -52,6 +53,27 @@ export function BiddingPad({
   const currentBid = startup?.current_highest_bid || null;
   const basePrice = startup?.base_price || 0;
   const availableBalance = wallet?.available_balance || 0;
+
+  // Track previous highest bid to announce updates via screen reader
+  const prevBidRef = useRef<number | null>(currentBid);
+  useEffect(() => {
+    if (currentBid !== prevBidRef.current) {
+      if (currentBid !== null) {
+        if (isCurrentlyWinning) {
+          setSrAnnouncement(
+            `Your team holds the highest bid at ₹${currentBid.toLocaleString('en-IN')}.`
+          );
+        } else {
+          setSrAnnouncement(
+            `New highest bid placed: ₹${currentBid.toLocaleString('en-IN')}.`
+          );
+        }
+      } else {
+        setSrAnnouncement(`Opening base floor: ₹${basePrice.toLocaleString('en-IN')}.`);
+      }
+      prevBidRef.current = currentBid;
+    }
+  }, [currentBid, isCurrentlyWinning, basePrice]);
 
   // Calculate dynamic bid options
   const calculateBidOptions = useCallback((): number[] => {
@@ -75,7 +97,9 @@ export function BiddingPad({
       if (!startup || !profile || isSubmitting || !isBiddingOpen || isCurrentlyWinning) return;
 
       if (amount > availableBalance) {
-        setErrorMessage(`Insufficient funds: Available purse is ₹${availableBalance.toLocaleString('en-IN')}`);
+        const errorText = `Insufficient funds: Available purse is ₹${availableBalance.toLocaleString('en-IN')}`;
+        setErrorMessage(errorText);
+        setSrAnnouncement(errorText);
         return;
       }
 
@@ -83,6 +107,7 @@ export function BiddingPad({
       setErrorMessage(null);
       setLastSubmittedBid(amount);
       setPassAcknowledged(false);
+      setSrAnnouncement(`Submitting bid for ₹${amount.toLocaleString('en-IN')} on ${startup.name}...`);
 
       const idempotencyKey = crypto.randomUUID();
 
@@ -90,8 +115,11 @@ export function BiddingPad({
         const res = await submitBidAction(startup.id, amount, idempotencyKey);
 
         if (!res.success) {
-          setErrorMessage(res.error || 'Bid rejected by server.');
+          const failMsg = res.error || 'Bid rejected by server.';
+          setErrorMessage(failMsg);
+          setSrAnnouncement(`Bid submission failed: ${failMsg}`);
         } else {
+          setSrAnnouncement(`Bid successfully submitted for ₹${amount.toLocaleString('en-IN')}.`);
           try {
             confetti({
               particleCount: 50,
@@ -104,7 +132,9 @@ export function BiddingPad({
           if (onBidSuccess) onBidSuccess();
         }
       } catch (err: any) {
-        setErrorMessage(err.message || 'Network error while submitting bid');
+        const netErrMsg = err.message || 'Network error while submitting bid';
+        setErrorMessage(netErrMsg);
+        setSrAnnouncement(`Network error submitting bid: ${netErrMsg}`);
       } finally {
         setIsSubmitting(false);
       }
@@ -112,27 +142,50 @@ export function BiddingPad({
     [startup, profile, isSubmitting, isBiddingOpen, isCurrentlyWinning, availableBalance, onBidSuccess]
   );
 
-  // Keyboard Hotkey Support (1, 2, 3, 4 for increments, Space for Pass)
+  // Keyboard Hotkey Support (1, 2, 3, 4 for dynamic increments, Space for Pass)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore when user is typing in an input
-      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
 
+      // Ignore hotkeys when user is focused inside input/textarea/select/contentEditable elements
+      const tagName = target.tagName;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName) || target.isContentEditable) {
+        return;
+      }
+
+      // Hotkeys for increments: 1, 2, 3, 4
       if (isBiddingOpen && !isCurrentlyWinning && !isSubmitting) {
-        if (e.key === '1' && bidOptions[0]) {
+        if ((e.key === '1' || e.code === 'Digit1' || e.code === 'Numpad1') && bidOptions[0]) {
+          e.preventDefault();
           handlePlaceBid(bidOptions[0]);
-        } else if (e.key === '2' && bidOptions[1]) {
+          return;
+        }
+        if ((e.key === '2' || e.code === 'Digit2' || e.code === 'Numpad2') && bidOptions[1]) {
+          e.preventDefault();
           handlePlaceBid(bidOptions[1]);
-        } else if (e.key === '3' && bidOptions[2]) {
+          return;
+        }
+        if ((e.key === '3' || e.code === 'Digit3' || e.code === 'Numpad3') && bidOptions[2]) {
+          e.preventDefault();
           handlePlaceBid(bidOptions[2]);
-        } else if (e.key === '4' && bidOptions[3]) {
+          return;
+        }
+        if ((e.key === '4' || e.code === 'Digit4' || e.code === 'Numpad4') && bidOptions[3]) {
+          e.preventDefault();
           handlePlaceBid(bidOptions[3]);
+          return;
         }
       }
 
-      if (e.key === ' ' && isBiddingOpen) {
+      // Hotkey for Pass: Space
+      if ((e.key === ' ' || e.code === 'Space') && isBiddingOpen) {
         e.preventDefault();
-        setPassAcknowledged((prev) => !prev);
+        setPassAcknowledged((prev) => {
+          const nextState = !prev;
+          setSrAnnouncement(nextState ? 'Pass active. Standing by for next round.' : 'Pass canceled. Bidding ready.');
+          return nextState;
+        });
       }
     };
 
@@ -150,6 +203,11 @@ export function BiddingPad({
           : 'border-navy-800/80 bg-navy-900/40'
       }`}
     >
+      {/* Screen Reader Live Announcement Region */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {srAnnouncement}
+      </div>
+
       <div>
         {/* Top Status Alert / Leader Banner */}
         {isCurrentlyWinning ? (
@@ -180,7 +238,7 @@ export function BiddingPad({
                   Live Bidding Open!
                 </span>
                 <span className="text-[11px] text-gold-300/80 font-medium">
-                  Select your bid increment below (Hotkeys: 1, 2, 3, 4)
+                  Select your bid increment below (Hotkeys: [1], [2], [3], [4])
                 </span>
               </div>
             </div>
@@ -201,8 +259,12 @@ export function BiddingPad({
           </div>
         )}
 
-        {/* Big Current Highest Bid Metric */}
-        <div className="text-center py-5 sm:py-6 bg-navy-950/80 rounded-2xl border border-navy-800/80 mb-5 shadow-inner relative overflow-hidden">
+        {/* Big Current Highest Bid Metric with Live Announcement Region */}
+        <div
+          aria-live="polite"
+          aria-atomic="true"
+          className="text-center py-5 sm:py-6 bg-navy-950/80 rounded-2xl border border-navy-800/80 mb-5 shadow-inner relative overflow-hidden"
+        >
           <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400 block mb-1">
             Current Highest Offer
           </span>
@@ -225,7 +287,10 @@ export function BiddingPad({
 
         {/* Error Feedback */}
         {errorMessage && (
-          <div className="mb-4 p-3.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-semibold flex items-center gap-2">
+          <div
+            role="alert"
+            className="mb-4 p-3.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-semibold flex items-center gap-2"
+          >
             <AlertTriangle className="w-4 h-4 shrink-0 text-rose-400" />
             <span>{errorMessage}</span>
           </div>
@@ -244,6 +309,7 @@ export function BiddingPad({
             {bidOptions.map((optAmount, idx) => {
               const diff = currentBid ? optAmount - currentBid : optAmount - basePrice;
               const hasEnoughFunds = availableBalance >= optAmount;
+              const shortcutKey = String(idx + 1);
               const isDisabled =
                 !isBiddingOpen ||
                 !isConnected ||
@@ -256,7 +322,9 @@ export function BiddingPad({
                   key={optAmount}
                   onClick={() => handlePlaceBid(optAmount)}
                   disabled={isDisabled}
-                  className={`relative p-4 sm:p-4.5 rounded-2xl border flex flex-col items-center justify-center transition-all duration-200 active:scale-95 group overflow-hidden ${
+                  aria-keyshortcuts={shortcutKey}
+                  aria-label={`Place bid increment ${idx + 1} for ₹${optAmount.toLocaleString('en-IN')}, hotkey ${shortcutKey}`}
+                  className={`relative p-4 sm:p-4.5 rounded-2xl border flex flex-col items-center justify-center transition-all duration-200 active:scale-95 group overflow-hidden focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950 outline-none ${
                     isDisabled
                       ? 'bg-navy-950/50 border-navy-800/80 text-slate-500 cursor-not-allowed opacity-50'
                       : 'bg-gradient-to-b from-navy-800 via-navy-850 to-navy-900 hover:from-gold-600 hover:via-gold-500 hover:to-amber-500 border-navy-700 hover:border-gold-400 text-white hover:text-navy-950 shadow-md hover:shadow-gold-lg glass-card-interactive'
@@ -268,9 +336,9 @@ export function BiddingPad({
                   </div>
 
                   <div className="flex items-center gap-1.5 mt-1">
-                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-navy-950/70 text-gold-400 border border-navy-700">
-                      [{idx + 1}]
-                    </span>
+                    <kbd className="px-1.5 py-0.5 rounded-md bg-navy-950/80 text-gold-400 font-mono text-[10px] font-bold border border-navy-700 shadow-sm">
+                      [{shortcutKey}]
+                    </kbd>
                     <span className="text-[11px] sm:text-xs font-bold opacity-80">
                       {currentBid === null && optAmount === basePrice
                         ? 'Opening Floor'
@@ -294,7 +362,8 @@ export function BiddingPad({
           <button
             type="button"
             onClick={() => setShowValuationModal(!showValuationModal)}
-            className="w-full flex items-center justify-between text-xs font-bold text-slate-300 hover:text-gold-400 py-1.5 transition"
+            aria-expanded={showValuationModal}
+            className="w-full flex items-center justify-between text-xs font-bold text-slate-300 hover:text-gold-400 py-1.5 transition focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950 outline-none rounded-lg"
           >
             <div className="flex items-center gap-2">
               <Calculator className="w-3.5 h-3.5 text-gold-400" />
@@ -306,8 +375,11 @@ export function BiddingPad({
           {showValuationModal && (
             <div className="mt-3 animate-fade-in">
               <ValuationCalculator
+                activeAmount={currentBid || basePrice}
                 currentBidAmount={currentBid || 0}
                 basePrice={basePrice}
+                bidOptions={bidOptions}
+                currentHighestBid={currentBid}
               />
             </div>
           )}
@@ -318,21 +390,30 @@ export function BiddingPad({
       <div className="mt-5 pt-4 border-t border-navy-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setPassAcknowledged(!passAcknowledged)}
+            onClick={() => {
+              setPassAcknowledged(!passAcknowledged);
+              setSrAnnouncement(!passAcknowledged ? 'Pass active. Standing by for next round.' : 'Pass canceled. Ready to bid.');
+            }}
             disabled={!isBiddingOpen}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition ${
+            aria-keyshortcuts="Space"
+            aria-pressed={passAcknowledged}
+            aria-label="Pass on this round. Shortcut key: Space"
+            className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950 outline-none ${
               passAcknowledged
-                ? 'bg-slate-800 text-slate-300 border-slate-700'
-                : 'bg-navy-900 hover:bg-navy-800 text-slate-400 hover:text-slate-200 border-navy-800'
+                ? 'bg-slate-800 text-slate-300 border-slate-700 shadow-inner'
+                : 'bg-navy-900 hover:bg-navy-800 text-slate-400 hover:text-slate-200 border-navy-800 shadow-sm'
             }`}
           >
             {passAcknowledged ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Ban className="w-3.5 h-3.5" />}
-            <span>{passAcknowledged ? 'Pass Active (Standing By)' : 'Pass Round (Space)'}</span>
+            <span>{passAcknowledged ? 'Pass Active (Standing By)' : 'Pass Round'}</span>
+            <kbd className="px-1.5 py-0.5 rounded-md bg-navy-950/80 text-gold-400/90 font-mono text-[10px] font-bold border border-navy-700 shadow-sm">
+              [Space]
+            </kbd>
           </button>
         </div>
 
         {isSubmitting && (
-          <span className="flex items-center gap-2 text-gold-400 font-bold">
+          <span className="flex items-center gap-2 text-gold-400 font-bold" aria-live="polite">
             <Loader2 className="w-4 h-4 animate-spin" />
             <span>Transacting on Ledger...</span>
           </span>
