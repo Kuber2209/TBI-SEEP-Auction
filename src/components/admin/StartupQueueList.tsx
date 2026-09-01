@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Startup } from '@/lib/supabase/types';
-import { ListOrdered, CheckCircle2, Play, Radio, Tag } from 'lucide-react';
+import { ListOrdered, Search, Tag, Sparkles } from 'lucide-react';
 
 interface StartupQueueListProps {
   startups: Startup[];
@@ -15,68 +15,91 @@ export function StartupQueueList({
   activeStartupId,
   onSelectStartup,
 }: StartupQueueListProps) {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filtered = startups.filter(
+    (s) =>
+      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.sector.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="glass-card rounded-2xl p-5 border border-navy-800 flex flex-col h-full max-h-[600px]">
-      <div className="flex items-center justify-between pb-3 border-b border-navy-800 mb-3">
-        <div className="flex items-center gap-2">
-          <ListOrdered className="w-4 h-4 text-gold-400" />
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-            Startup Presentation Pipeline
-          </h3>
+    <div className="glass-card rounded-3xl p-6 border border-navy-800/80 flex flex-col h-full max-h-[620px] shadow-2xl">
+      <div className="flex items-center justify-between pb-4 border-b border-navy-800 mb-4">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400">
+            <ListOrdered className="w-4 h-4" />
+          </div>
+          <div>
+            <h3 className="text-sm font-display font-bold text-white uppercase tracking-wider">
+              Startup Queue
+            </h3>
+            <p className="text-[10px] text-slate-400">12 Scheduled Venture Lots</p>
+          </div>
         </div>
-        <span className="text-[11px] font-mono text-slate-400">
+        <span className="text-xs font-mono font-bold text-slate-300 bg-navy-900/80 px-2.5 py-1 rounded-lg border border-navy-800">
           {startups.length} Lots
         </span>
       </div>
 
-      <div className="overflow-y-auto space-y-2 pr-1 flex-1">
-        {startups.map((startup) => {
+      {/* Search Input */}
+      <div className="relative mb-3">
+        <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+        <input
+          type="text"
+          placeholder="Filter by startup or sector..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-navy-950 border border-navy-800 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500"
+        />
+      </div>
+
+      <div className="overflow-y-auto space-y-2.5 pr-1 flex-1">
+        {filtered.map((startup) => {
           const isActive = startup.id === activeStartupId;
 
           return (
             <button
               key={startup.id}
               onClick={() => onSelectStartup(startup)}
-              className={`w-full text-left p-3 rounded-xl border transition-all flex items-center justify-between ${
+              className={`w-full text-left p-3.5 rounded-2xl border transition-all duration-200 flex items-center justify-between ${
                 isActive
-                  ? 'bg-gold-500/15 border-gold-500/50 shadow-md'
-                  : 'bg-navy-950/40 hover:bg-navy-900/60 border-navy-800/80 text-slate-300'
+                  ? 'bg-gold-500/15 border-gold-500/60 shadow-gold'
+                  : 'bg-navy-950/50 hover:bg-navy-900/80 border-navy-800/80 text-slate-300 glass-card-interactive'
               }`}
             >
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-3">
                 <span
-                  className={`w-6 h-6 rounded-md flex items-center justify-center font-mono text-xs font-bold ${
+                  className={`w-7 h-7 rounded-xl flex items-center justify-center font-mono text-xs font-black shrink-0 ${
                     isActive
-                      ? 'bg-gold-500 text-navy-950'
-                      : 'bg-navy-800 text-slate-400'
+                      ? 'bg-gold-500 text-navy-950 shadow-gold'
+                      : 'bg-navy-800 text-slate-400 border border-navy-700'
                   }`}
                 >
-                  {startup.display_order}
+                  #{startup.display_order}
                 </span>
 
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-xs font-bold text-white line-clamp-1">
-                      {startup.name}
-                    </h4>
-                  </div>
-                  <span className="text-[10px] text-slate-400">
-                    {startup.sector} · Base ₹{Number(startup.base_price).toLocaleString('en-IN')}
+                  <h4 className="text-xs sm:text-sm font-bold text-white line-clamp-1">
+                    {startup.name}
+                  </h4>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">
+                    {startup.sector} · Floor ₹{Number(startup.base_price).toLocaleString('en-IN')}
                   </span>
                 </div>
               </div>
 
               <div className="text-right shrink-0">
                 <span
-                  className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                  className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider block ${
                     startup.status === 'ACTIVE_BIDDING'
                       ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse'
                       : startup.status === 'PRESENTING'
-                      ? 'bg-blue-500/20 text-blue-300'
+                      ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                       : startup.status === 'SOLD'
-                      ? 'bg-gold-500/20 text-gold-400 font-mono'
+                      ? 'bg-gold-500/20 text-gold-400 font-mono border border-gold-500/30'
                       : startup.status === 'UNSOLD'
-                      ? 'bg-rose-500/20 text-rose-400'
+                      ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
                       : 'bg-slate-800 text-slate-400'
                   }`}
                 >

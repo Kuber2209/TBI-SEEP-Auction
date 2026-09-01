@@ -11,60 +11,73 @@ const config: Config = {
     extend: {
       colors: {
         navy: {
-          950: "#040817", // Main deepest background
-          900: "#0A1128", // Surface & card background
+          950: "#030712", // Deepest void background
+          900: "#080E21", // Surface & dark card background
           850: "#0D1838", // Elevated cards / modals
-          800: "#001F54", // Borders & subtle highlights
-          700: "#034078", // Interactive hover & secondary buttons
-          600: "#1282A2", // Accent cyan-blue
+          800: "#13234F", // Borders & subtle highlights
+          700: "#1E3A8A", // Interactive hover & secondary buttons
+          600: "#2563EB", // Accent blue
         },
         gold: {
-          300: "#FFE8A3",
-          400: "#FFD166", // Highlight label
-          500: "#FFB703", // Primary action gold
-          600: "#FB8500", // Accent winning gold
-          700: "#D46B08",
+          300: "#FDE68A",
+          400: "#FCD34D", // Highlight label
+          500: "#F59E0B", // Primary action gold
+          600: "#D97706", // Accent winning gold
+          700: "#B45309",
         },
         seep: {
-          sky: "#8ECAE6",
-          blue: "#219EBC",
-          darkblue: "#023047",
-          amber: "#FFB703",
-          orange: "#FB8500",
+          sky: "#38BDF8",
+          blue: "#0284C7",
+          darkblue: "#0369A1",
+          amber: "#F59E0B",
+          orange: "#EA580C",
         },
         status: {
           upcoming: "#64748B",
-          presenting: "#3A86FF",
-          bidding: "#06D6A0",
-          paused: "#FFD166",
-          sold: "#FFB703",
-          unsold: "#EF476F",
-          error: "#E63946",
+          presenting: "#38BDF8",
+          bidding: "#10B981",
+          paused: "#FBBF24",
+          sold: "#F59E0B",
+          unsold: "#F43F5E",
+          error: "#EF4444",
         },
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         display: ["var(--font-outfit)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "monospace"],
       },
       boxShadow: {
-        gold: "0 0 25px -5px rgba(255, 183, 3, 0.35)",
-        "gold-lg": "0 0 40px -10px rgba(255, 183, 3, 0.55)",
-        blue: "0 0 25px -5px rgba(58, 134, 255, 0.35)",
-        card: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
+        gold: "0 0 25px -3px rgba(245, 158, 11, 0.4)",
+        "gold-lg": "0 0 45px -5px rgba(245, 158, 11, 0.6)",
+        emerald: "0 0 25px -3px rgba(16, 185, 129, 0.4)",
+        "emerald-lg": "0 0 45px -5px rgba(16, 185, 129, 0.6)",
+        blue: "0 0 30px -5px rgba(56, 189, 248, 0.4)",
+        card: "0 8px 32px 0 rgba(0, 0, 0, 0.45)",
       },
       animation: {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "glow-gold": "glowGold 2s ease-in-out infinite alternate",
-        "glow-green": "glowGreen 2s ease-in-out infinite alternate",
+        "glow-emerald": "glowEmerald 2s ease-in-out infinite alternate",
+        "shimmer": "shimmer 2.5s infinite linear",
+        "float": "float 4s ease-in-out infinite",
       },
       keyframes: {
         glowGold: {
-          "0%": { boxShadow: "0 0 10px rgba(255, 183, 3, 0.2)" },
-          "100%": { boxShadow: "0 0 30px rgba(255, 183, 3, 0.7)" },
+          "0%": { boxShadow: "0 0 15px rgba(245, 158, 11, 0.25)" },
+          "100%": { boxShadow: "0 0 35px rgba(245, 158, 11, 0.75)" },
         },
-        glowGreen: {
-          "0%": { boxShadow: "0 0 10px rgba(6, 214, 160, 0.2)" },
-          "100%": { boxShadow: "0 0 30px rgba(6, 214, 160, 0.7)" },
+        glowEmerald: {
+          "0%": { boxShadow: "0 0 15px rgba(16, 185, 129, 0.25)" },
+          "100%": { boxShadow: "0 0 35px rgba(16, 185, 129, 0.75)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
         },
       },
     },
