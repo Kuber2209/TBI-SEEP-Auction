@@ -167,3 +167,48 @@ export async function resetRehearsalSessionAction(sessionId: string) {
   revalidatePath('/bidder');
   return { success: true, data };
 }
+
+export async function reorderStartupsAction(orderedIds: string[]) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Unauthorized' };
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (!profile || (profile as any).role !== 'admin') {
+    return { success: false, error: 'Forbidden: Admin access required' };
+  }
+
+  // To prevent unique constraint collision on (session_id, display_order):
+  // Step 1: Set temporary negative order
+  for (let i = 0; i < orderedIds.length; i++) {
+    const { error: err1 } = await (supabase.from('startups') as any)
+      .update({ display_order: -(i + 1000) })
+      .eq('id', orderedIds[i]);
+    if (err1) return { success: false, error: err1.message };
+  }
+
+  // Step 2: Set final positive sequence 1..N
+  for (let i = 0; i < orderedIds.length; i++) {
+    const { error: err2 } = await (supabase.from('startups') as any)
+      .update({ display_order: i + 1 })
+      .eq('id', orderedIds[i]);
+    if (err2) return { success: false, error: err2.message };
+  }
+
+  // Log audit event
+  try {
+    await (supabase.from('auction_events') as any).insert({
+      event_type: 'STARTUP_REORDERED',
+      payload: { ordered_ids: orderedIds },
+    });
+  } catch (e) {}
+
+  revalidatePath('/admin');
+  revalidatePath('/bidder');
+  return { success: true };
+}

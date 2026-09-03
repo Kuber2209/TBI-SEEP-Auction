@@ -286,6 +286,7 @@ export default function AdminPage() {
                     startups={startups}
                     activeStartupId={activeStartup?.id}
                     onSelectStartup={(s) => setSelectedStartup(s)}
+                    onReordered={handleFullRefresh}
                   />
                 </div>
 
