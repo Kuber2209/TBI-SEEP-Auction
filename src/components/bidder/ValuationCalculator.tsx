@@ -1,19 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  Calculator,
-  Sliders,
-  Grid,
-  TrendingUp,
-  Percent,
-  Sparkles,
-  ArrowRight,
-  Shield,
-  Layers,
-  DollarSign,
-  Info,
-} from 'lucide-react';
 
 export interface ValuationCalculatorProps {
   currentBidAmount?: number;
@@ -62,78 +49,47 @@ export function ValuationCalculator({
   const impliedPreMoney = Math.max(0, impliedPostMoney - resolvedAmount);
   const costPerOnePercent = resolvedAmount / targetEquityPct;
 
-  // Anchor valuation for comparative ownership calculation (base valuation floor)
-  const anchorValuation = Math.max(1, (basePrice || 10000) / 0.1);
-
   return (
-    <div className="p-4 sm:p-5 rounded-[16px] bg-navy-950/80 border border-white/[0.07]/90 shadow-xl space-y-4">
-      {/* Header & Mode Switcher */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-white/[0.07]">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-[12px] bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 shrink-0">
-            <Calculator className="w-4 h-4" />
-          </div>
-          <div>
-            <h4 className="text-xs sm:text-sm font-display font-bold uppercase tracking-wider text-white">
-              Valuation & Equity Modeler
-            </h4>
-            <p className="text-[10px] text-slate-400">
-              Interactive financial intelligence & cap table scenario modeler
-            </p>
-          </div>
-        </div>
-
-        {/* View Mode Toggle */}
-        <div className="flex items-center bg-navy-900/90 p-1 rounded-[12px] border border-white/[0.07] shrink-0">
+    <div className="space-y-4 text-xs">
+      {/* Tab Switcher (Quiet, un-boxed) */}
+      <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.06] pb-2">
+        <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={() => setActiveTab('slider')}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold transition-all ${
+            className={`font-medium transition-colors ${
               activeTab === 'slider'
-                ? 'bg-gold-500 text-navy-950 shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'text-amber-700 dark:text-amber-400 border-b-2 border-amber-500 pb-1 -mb-[9px]'
+                : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
             }`}
           >
-            <Sliders className="w-3 h-3" />
-            <span>Target Modeler</span>
+            Target Modeler
           </button>
-
           <button
             type="button"
             onClick={() => setActiveTab('matrix')}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold transition-all ${
+            className={`font-medium transition-colors ${
               activeTab === 'matrix'
-                ? 'bg-gold-500 text-navy-950 shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'text-amber-700 dark:text-amber-400 border-b-2 border-amber-500 pb-1 -mb-[9px]'
+                : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
             }`}
           >
-            <Grid className="w-3 h-3" />
-            <span>Increment Matrix</span>
+            Increment Matrix
           </button>
         </div>
+
+        <span className="text-slate-400 dark:text-slate-500 font-mono text-[11px]">
+          Base: ₹{resolvedAmount.toLocaleString('en-IN')}
+        </span>
       </div>
 
-      {/* Mode A: Target Equity Modeler */}
-      {activeTab === 'slider' && (
-        <div className="space-y-4 animate-fade-in">
-          {/* Active Offer Banner */}
-          <div className="flex items-center justify-between p-2.5 rounded-[12px] bg-navy-900/70 border border-white/[0.07] text-xs">
-            <span className="text-slate-400 font-medium flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-              Active Modeling Base:
-            </span>
-            <span className="font-mono font-black text-gold-400 bg-navy-950 px-2.5 py-0.5 rounded-lg border border-gold-500/20">
-              ₹{resolvedAmount.toLocaleString('en-IN')} Offer
-            </span>
-          </div>
-
-          {/* Slider & Presets */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-400 font-medium">Target Equity Allocation:</span>
-              <span className="font-mono font-black text-gold-400 text-sm bg-gold-500/10 px-2 py-0.5 rounded border border-gold-500/30">
-                {targetEquityPct}% Equity
-              </span>
+      {activeTab === 'slider' ? (
+        <div className="space-y-3">
+          {/* Equity Slider & Presets */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-slate-600 dark:text-slate-300 font-medium">
+              <span>Target Equity Stake</span>
+              <span className="text-amber-700 dark:text-amber-400 font-semibold">{targetEquityPct}%</span>
             </div>
 
             <input
@@ -144,20 +100,19 @@ export function ValuationCalculator({
               value={targetEquityPct}
               onChange={(e) => setTargetEquityPct(Number(e.target.value))}
               aria-label="Target Equity Percentage Slider"
-              className="w-full h-2 bg-navy-900 rounded-lg appearance-none cursor-pointer accent-gold-500 border border-white/[0.07]"
+              className="w-full h-1.5 bg-slate-200 dark:bg-navy-900 rounded-lg appearance-none cursor-pointer accent-amber-500"
             />
 
-            {/* Quick Presets */}
-            <div className="flex items-center justify-between gap-1.5 pt-1">
+            <div className="flex items-center gap-1.5 pt-1">
               {[5, 7.5, 10, 15, 20].map((preset) => (
                 <button
                   key={preset}
                   type="button"
                   onClick={() => setTargetEquityPct(preset)}
-                  className={`px-2 py-1 rounded-lg text-[10px] font-mono font-bold transition flex-1 ${
+                  className={`px-2 py-0.5 rounded text-[11px] font-mono transition ${
                     targetEquityPct === preset
-                      ? 'bg-gold-500 text-navy-950 shadow-sm'
-                      : 'bg-navy-900/90 text-slate-400 hover:text-white hover:bg-navy-850 border border-white/[0.07]'
+                      ? 'bg-amber-500 text-slate-950 font-semibold'
+                      : 'bg-slate-100 dark:bg-white/[0.04] text-slate-500 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   {preset}%
@@ -166,144 +121,63 @@ export function ValuationCalculator({
             </div>
           </div>
 
-          {/* Calculated Output Metrics Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <div className="p-3.5 rounded-[12px] bg-navy-900/90 border border-white/[0.07] shadow-inner">
-              <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[10px] uppercase font-bold tracking-wider">
-                  Implied Post-Money Valuation
-                </span>
-                <TrendingUp className="w-3.5 h-3.5 text-gold-400" />
-              </div>
-              <span className="font-semibold text-lg sm:text-xl text-white block">
-                ₹ {Math.round(impliedPostMoney).toLocaleString('en-IN')}
-              </span>
-              <span className="text-[10px] text-slate-500 mt-1 block">
-                Total enterprise value implied at {targetEquityPct}% equity
+          {/* Key Output Metrics (Integrated, un-boxed) */}
+          <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-white/[0.06]">
+            <div>
+              <span className="text-slate-400 dark:text-slate-500 block">Implied Post-Money</span>
+              <span className="text-sm font-semibold text-slate-900 dark:text-white tabular-nums mt-0.5 block">
+                ₹{Math.round(impliedPostMoney).toLocaleString('en-IN')}
               </span>
             </div>
 
-            <div className="p-3.5 rounded-[12px] bg-navy-900/90 border border-white/[0.07] shadow-inner">
-              <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400">
-                  Implied Pre-Money Floor
-                </span>
-                <Shield className="w-3.5 h-3.5 text-emerald-400" />
-              </div>
-              <span className="font-semibold text-lg sm:text-xl text-emerald-400 block">
-                ₹ {Math.round(impliedPreMoney).toLocaleString('en-IN')}
-              </span>
-              <span className="text-[10px] text-slate-500 mt-1 block">
-                Pre-money cap = Post-Money − ₹{resolvedAmount.toLocaleString('en-IN')}
+            <div>
+              <span className="text-slate-400 dark:text-slate-500 block">Implied Pre-Money</span>
+              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 tabular-nums mt-0.5 block">
+                ₹{Math.round(impliedPreMoney).toLocaleString('en-IN')}
               </span>
             </div>
           </div>
 
-          {/* Cost Per 1% Equity Callout */}
-          <div className="p-2.5 rounded-[12px] bg-navy-900/50 border border-white/[0.07] flex items-center justify-between text-[11px] text-slate-400">
-            <span className="flex items-center gap-1.5">
-              <Info className="w-3.5 h-3.5 text-seep-sky" />
-              Cost Per 1% Equity Stake:
-            </span>
-            <span className="font-mono font-bold text-slate-200">
-              ₹{Math.round(costPerOnePercent).toLocaleString('en-IN')} / 1%
-            </span>
+          <div className="text-[11px] text-slate-400 dark:text-slate-500 pt-1">
+            <span>Cost per 1% equity: </span>
+            <strong className="text-slate-700 dark:text-slate-300 font-mono">
+              ₹{Math.round(costPerOnePercent).toLocaleString('en-IN')}
+            </strong>
           </div>
         </div>
-      )}
-
-      {/* Mode B: Multi-Increment Valuation Matrix */}
-      {activeTab === 'matrix' && (
-        <div className="space-y-3 animate-fade-in">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span className="font-medium">
-              Comparing 4 Dynamic Increments @ <strong className="text-gold-400 font-mono">{targetEquityPct}% Target</strong>:
-            </span>
-            <div className="flex items-center gap-1">
-              {[5, 10, 15, 20].map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setTargetEquityPct(p)}
-                  className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold ${
-                    targetEquityPct === p
-                      ? 'bg-gold-500 text-navy-950'
-                      : 'bg-navy-900 text-slate-400 hover:text-white border border-white/[0.07]'
-                  }`}
-                >
-                  {p}%
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Comparative Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+      ) : (
+        /* Matrix View */
+        <div className="space-y-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {resolvedBidOptions.map((optAmount, idx) => {
               const optPostMoney = optAmount / equityDecimal;
-              const optPreMoney = Math.max(0, optPostMoney - optAmount);
-              const optImpliedStakeAtBase = Math.min(
-                100,
-                (optAmount / anchorValuation) * 100
-              );
               const isSelected = optAmount === resolvedAmount;
 
               return (
                 <div
                   key={optAmount}
-                  className={`p-3 rounded-[12px] border flex flex-col justify-between transition-all ${
+                  className={`p-2.5 rounded-lg border text-xs ${
                     isSelected
-                      ? 'bg-gold-500/10 border-gold-500/50 shadow-sm'
-                      : 'bg-navy-900/80 border-white/[0.07] hover:border-navy-700'
+                      ? 'border-amber-500/50 bg-amber-50/50 dark:bg-amber-500/10'
+                      : 'border-slate-200/80 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.02]'
                   }`}
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-navy-950 text-gold-400 border border-white/[0.07]">
-                        Option #{idx + 1}
-                      </span>
-                      {isSelected && (
-                        <span className="text-[8px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-gold-500 text-navy-950">
-                          Active
-                        </span>
-                      )}
-                    </div>
-
-                    <span className="text-xs sm:text-sm font-semibold text-white block">
-                      ₹{optAmount.toLocaleString('en-IN')}
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono block">
+                    Option {idx + 1}
+                  </span>
+                  <span className="font-semibold text-slate-900 dark:text-white tabular-nums block mt-0.5">
+                    ₹{optAmount.toLocaleString('en-IN')}
+                  </span>
+                  <div className="mt-2 pt-1.5 border-t border-slate-200/60 dark:border-white/[0.04] text-[11px] text-slate-500 dark:text-slate-400">
+                    <span className="block text-[10px] text-slate-400">Post-Money:</span>
+                    <span className="font-mono tabular-nums">
+                      ₹{Math.round(optPostMoney).toLocaleString('en-IN')}
                     </span>
-                  </div>
-
-                  <div className="mt-2.5 pt-2 border-t border-white/[0.07] space-y-1 text-[10px]">
-                    <div>
-                      <span className="text-slate-500 block text-[9px] uppercase">Post-Money</span>
-                      <span className="font-mono font-bold text-slate-200">
-                        ₹{Math.round(optPostMoney).toLocaleString('en-IN')}
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-500 block text-[9px] uppercase">Pre-Money</span>
-                      <span className="font-mono font-bold text-emerald-400">
-                        ₹{Math.round(optPreMoney).toLocaleString('en-IN')}
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-500 block text-[9px] uppercase">Base Share</span>
-                      <span className="font-mono font-bold text-seep-sky">
-                        {optImpliedStakeAtBase.toFixed(1)}%
-                      </span>
-                    </div>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          <p className="text-[10px] text-slate-500 italic text-center pt-1">
-            Calculated across live auction increment increments based on current round bidding velocity.
-          </p>
         </div>
       )}
     </div>

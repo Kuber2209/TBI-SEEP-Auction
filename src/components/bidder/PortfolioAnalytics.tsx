@@ -2,21 +2,7 @@
 
 import React from 'react';
 import { Startup, BidderWallet } from '@/lib/supabase/types';
-import {
-  PieChart,
-  TrendingUp,
-  ShieldCheck,
-  Zap,
-  Activity,
-  Sprout,
-  Coins,
-  Rocket,
-  Cpu,
-  Layers,
-  ArrowRight,
-  ExternalLink,
-  Flame,
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface PortfolioAnalyticsProps {
   wonStartups: Startup[];
@@ -41,7 +27,7 @@ export function PortfolioAnalytics({
 
   const handleOpen = onOpenDrawer || onOpenPortfolio;
 
-  // Calculate sector distribution across 5 core pillars
+  // Calculate sector distribution
   const sectorCounts: Record<string, { count: number; spent: number }> = {};
   wonStartups.forEach((s) => {
     const sec = s.sector || 'DeepTech';
@@ -52,133 +38,84 @@ export function PortfolioAnalytics({
     sectorCounts[sec].spent += Number(s.winning_bid_amount || 0);
   });
 
-  const getSectorStyle = (sector: string) => {
-    const s = sector.toLowerCase();
-    if (s.includes('clean') || s.includes('ev')) {
-      return { dot: 'bg-emerald-500', bar: 'bg-emerald-500', text: 'text-emerald-300', badge: 'bg-emerald-500/15 border-emerald-500/30' };
-    }
-    if (s.includes('med') || s.includes('health') || s.includes('bio')) {
-      return { dot: 'bg-rose-500', bar: 'bg-rose-500', text: 'text-rose-300', badge: 'bg-rose-500/15 border-rose-500/30' };
-    }
-    if (s.includes('agri')) {
-      return { dot: 'bg-lime-500', bar: 'bg-lime-500', text: 'text-lime-300', badge: 'bg-lime-500/15 border-lime-500/30' };
-    }
-    if (s.includes('fin') || s.includes('web3')) {
-      return { dot: 'bg-gold-500', bar: 'bg-gold-500', text: 'text-gold-300', badge: 'bg-gold-500/15 border-gold-500/30' };
-    }
-    if (s.includes('deep') || s.includes('aero') || s.includes('space')) {
-      return { dot: 'bg-cyan-500', bar: 'bg-cyan-500', text: 'text-cyan-300', badge: 'bg-cyan-500/15 border-cyan-500/30' };
-    }
-    if (s.includes('robot') || s.includes('ai')) {
-      return { dot: 'bg-purple-500', bar: 'bg-purple-500', text: 'text-purple-300', badge: 'bg-purple-500/15 border-purple-500/30' };
-    }
-    return { dot: 'bg-blue-500', bar: 'bg-blue-500', text: 'text-blue-300', badge: 'bg-blue-500/15 border-blue-500/30' };
-  };
-
   return (
-    <div className="glass-card rounded-[24px] p-6 border border-white/[0.07] shadow-sm space-y-5">
-      <div className="flex items-center justify-between pb-3 border-b border-white/[0.07]">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-[12px] bg-seep-sky/15 border border-seep-sky/30 flex items-center justify-center text-seep-sky shrink-0">
-            <PieChart className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-sm font-display font-bold text-white uppercase tracking-wider">
-              Investor Intelligence & Analytics
-            </h3>
-            <p className="text-[10px] text-slate-400">Capital deployment & portfolio telemetry</p>
-          </div>
+    <div className="rounded-xl p-5 sm:p-6 bg-white dark:bg-[#0F131D] border border-slate-200/80 dark:border-white/[0.06] space-y-5 transition-colors duration-150">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-white/[0.06]">
+        <div>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+            Portfolio Telemetry
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Capital deployment & diversification
+          </p>
         </div>
 
         {handleOpen && (
           <button
             onClick={handleOpen}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-[12px] bg-navy-900 hover:bg-navy-850 text-xs font-bold text-gold-400 hover:text-gold-300 border border-white/[0.07] hover:border-gold-500/40 transition shadow-sm"
+            className="text-xs font-medium text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 flex items-center gap-1 transition-colors"
           >
-            <span>Open Drawer</span>
-            <ExternalLink className="w-3 h-3" />
+            <span>Full Drawer</span>
+            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
           </button>
         )}
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div className="p-3.5 rounded-[16px] bg-navy-950/80 border border-white/[0.07] shadow-inner">
-          <span className="text-[9px] uppercase font-bold text-slate-400 block">
-            Avg Lot Cost
-          </span>
-          <span className="font-semibold text-base sm:text-lg text-white mt-0.5 block">
-            ₹ {avgAcquisitionCost.toLocaleString('en-IN')}
+      {/* Metrics Row (Integrated and un-boxed) */}
+      <div className="grid grid-cols-3 gap-3 text-xs">
+        <div>
+          <span className="text-slate-400 dark:text-slate-500 block">Avg Lot Cost</span>
+          <span className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white tabular-nums mt-0.5 block">
+            ₹{avgAcquisitionCost.toLocaleString('en-IN')}
           </span>
         </div>
 
-        <div className="p-3.5 rounded-[16px] bg-navy-950/80 border border-white/[0.07] shadow-inner">
-          <span className="text-[9px] uppercase font-bold text-slate-400 block">
-            Purse Deployment
-          </span>
-          <span className="font-semibold text-base sm:text-lg text-seep-sky mt-0.5 block">
-            {portfolioBurnRate.toFixed(1)}% Deployed
+        <div>
+          <span className="text-slate-400 dark:text-slate-500 block">Deployment</span>
+          <span className="text-sm sm:text-base font-semibold text-slate-700 dark:text-slate-300 tabular-nums mt-0.5 block">
+            {portfolioBurnRate.toFixed(0)}%
           </span>
         </div>
 
-        <div className="p-3.5 rounded-[16px] bg-navy-950/80 border border-white/[0.07] shadow-inner col-span-2 sm:col-span-1">
-          <span className="text-[9px] uppercase font-bold text-slate-400 block">
-            Remaining Runway
-          </span>
-          <span className="font-semibold text-base sm:text-lg text-emerald-400 mt-0.5 block">
-            ₹ {available.toLocaleString('en-IN')}
+        <div>
+          <span className="text-slate-400 dark:text-slate-500 block">Lots Won</span>
+          <span className="text-sm sm:text-base font-semibold text-amber-700 dark:text-amber-400 tabular-nums mt-0.5 block">
+            {wonCount}
           </span>
         </div>
       </div>
 
-      {/* Sector Diversification */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
-            Portfolio Sector Diversification
-          </span>
-          <span className="text-[10px] font-mono text-slate-400">
-            {wonCount} Lots Acquired
-          </span>
+      {/* Sector Allocation Breakdown */}
+      <div className="pt-2">
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
+          <span>Sector Allocation</span>
+          <span>{wonCount} won</span>
         </div>
 
         {wonCount === 0 ? (
-          <div className="p-4 rounded-[12px] bg-navy-950/40 border border-white/[0.07] text-center text-slate-500 text-xs italic">
-            Sector distribution breakdown will appear here once lots are won.
-          </div>
+          <p className="text-xs text-slate-400 dark:text-slate-500 italic py-2">
+            No startups won yet. Allocations will calculate as lots settle.
+          </p>
         ) : (
-          <div className="space-y-2">
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(sectorCounts).map(([sector, data]) => {
-                const style = getSectorStyle(sector);
-                const pct = spent > 0 ? ((data.spent / spent) * 100).toFixed(0) : '0';
-                return (
-                  <div
-                    key={sector}
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-[12px] bg-navy-950 border text-xs ${style.badge}`}
-                  >
-                    <span className={`w-2 h-2 rounded-full ${style.dot}`} />
-                    <span className="font-semibold text-slate-200">{sector}:</span>
-                    <strong className="text-white font-mono">{data.count}</strong>
-                    <span className="text-[10px] text-slate-400">({pct}%)</span>
-                  </div>
-                );
-              })}
-            </div>
+          <div className="flex flex-wrap gap-1.5">
+            {Object.entries(sectorCounts).map(([sector, data]) => {
+              const pct = spent > 0 ? ((data.spent / spent) * 100).toFixed(0) : '0';
+              return (
+                <span
+                  key={sector}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 text-xs font-medium"
+                >
+                  <span>{sector}</span>
+                  <span className="text-slate-400 dark:text-slate-500 font-mono">
+                    ({data.count} · {pct}%)
+                  </span>
+                </span>
+              );
+            })}
           </div>
         )}
       </div>
-
-      {/* Deep-Dive Drawer Trigger Action */}
-      {handleOpen && (
-        <button
-          onClick={handleOpen}
-          className="w-full py-2.5 px-4 rounded-[16px] bg-gradient-to-r from-navy-900 to-navy-850 hover:from-navy-850 hover:to-navy-800 border border-navy-700 hover:border-gold-500/50 text-xs font-bold text-gold-300 flex items-center justify-center gap-2 transition active:scale-98 shadow-sm group"
-        >
-          <span>View Deep-Tier Capital Efficiency & Risk Command</span>
-          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
-        </button>
-      )}
     </div>
   );
 }

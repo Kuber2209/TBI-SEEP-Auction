@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { BidderWallet } from '@/lib/supabase/types';
-import { Wallet, Lock, CheckCircle, PieChart, ChevronRight, Gauge } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface WalletSummaryBarProps {
   wallet: BidderWallet | null;
@@ -27,123 +27,77 @@ export function WalletSummaryBar({
   const handleOpen = onOpenDrawer || onOpenPortfolio;
 
   return (
-    <div className="glass-panel border-t border-white/[0.07] px-4 sm:px-6 lg:px-8 py-3.5 shadow-sm transition-all">
-      <div className="max-w-7xl mx-auto space-y-3">
-        {/* Metric Cards Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-center">
-          {/* Available Balance */}
-          <div
-            onClick={handleOpen}
-            className={`flex items-center gap-3 bg-navy-900 rounded-[16px] p-3 sm:p-3.5 border border-white/[0.07] shadow-sm ${
-              handleOpen ? 'cursor-pointer hover:border-emerald-500/40 hover:bg-navy-850 transition-colors duration-150' : ''
-            }`}
-          >
-            <div className="w-10 h-10 rounded-[10px] bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-              <Wallet className="w-5 h-5" strokeWidth={1.5} />
+    <div className="bg-white/95 dark:bg-[#0D121D]/95 backdrop-blur border-t border-slate-200/80 dark:border-white/[0.06] px-4 sm:px-6 lg:px-8 py-2.5 transition-colors duration-150">
+      <div className="max-w-7xl mx-auto flex flex-col gap-2">
+        {/* Integrated Financial Bar (Un-boxed, separated by subtle dividers) */}
+        <div className="flex flex-wrap items-center justify-between gap-4 text-xs">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            {/* 1. Primary Number: Available Purse */}
+            <div className="flex items-baseline gap-2">
+              <span className="text-slate-400 dark:text-slate-500 font-medium">Available</span>
+              <span className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white tabular-nums">
+                ₹{available.toLocaleString('en-IN')}
+              </span>
             </div>
-            <div>
-              <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-emerald-400 block">
-                Available Purse
+
+            <div className="hidden sm:block h-3.5 w-px bg-slate-200 dark:bg-white/[0.08]" />
+
+            {/* 2. Secondary: In Active Escrow */}
+            <div className="flex items-baseline gap-2">
+              <span className="text-slate-400 dark:text-slate-500 font-medium">In Escrow</span>
+              <span className="text-xs sm:text-sm font-medium text-amber-700 dark:text-amber-300 tabular-nums">
+                ₹{locked.toLocaleString('en-IN')}
               </span>
-              <span className="font-semibold text-base sm:text-xl text-white tracking-tight tabular-nums">
-                ₹ {available.toLocaleString('en-IN')}
+            </div>
+
+            <div className="hidden sm:block h-3.5 w-px bg-slate-200 dark:bg-white/[0.08]" />
+
+            {/* 3. Tertiary: Total Deployed */}
+            <div className="flex items-baseline gap-2">
+              <span className="text-slate-400 dark:text-slate-500 font-medium">Deployed</span>
+              <span className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300 tabular-nums">
+                ₹{spent.toLocaleString('en-IN')}
               </span>
+            </div>
+
+            <div className="hidden sm:block h-3.5 w-px bg-slate-200 dark:bg-white/[0.08]" />
+
+            {/* 4. Total Initial Purse */}
+            <div className="hidden md:flex items-baseline gap-2 text-slate-400 dark:text-slate-500">
+              <span>Total Purse:</span>
+              <span className="font-mono tabular-nums">₹{initial.toLocaleString('en-IN')}</span>
             </div>
           </div>
 
-          {/* Locked in Escrow */}
-          <div
-            onClick={handleOpen}
-            className={`flex items-center gap-3 bg-navy-900 rounded-[16px] p-3 sm:p-3.5 border border-white/[0.07] shadow-sm ${
-              handleOpen ? 'cursor-pointer hover:border-amber-500/40 hover:bg-navy-850 transition-colors duration-150' : ''
-            }`}
-          >
-            <div className="w-10 h-10 rounded-[10px] bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
-              <Lock className="w-5 h-5" strokeWidth={1.5} />
-            </div>
-            <div>
-              <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-amber-400 block">
-                In Active Escrow
-              </span>
-              <span className="font-semibold text-base sm:text-xl text-white tracking-tight tabular-nums">
-                ₹ {locked.toLocaleString('en-IN')}
-              </span>
-            </div>
-          </div>
-
-          {/* Total Invested */}
-          <div
-            onClick={handleOpen}
-            className={`flex items-center gap-3 bg-navy-900 rounded-[16px] p-3 sm:p-3.5 border border-white/[0.07] shadow-sm ${
-              handleOpen ? 'cursor-pointer hover:border-blue-400/40 hover:bg-navy-850 transition-colors duration-150' : ''
-            }`}
-          >
-            <div className="w-10 h-10 rounded-[10px] bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
-              <CheckCircle className="w-5 h-5" strokeWidth={1.5} />
-            </div>
-            <div>
-              <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-blue-400 block">
-                Total Deployed
-              </span>
-              <span className="font-semibold text-base sm:text-xl text-white tracking-tight tabular-nums">
-                ₹ {spent.toLocaleString('en-IN')}
-              </span>
-            </div>
-          </div>
-
-          {/* Starting Purse & Drawer Trigger */}
-          <div
-            onClick={handleOpen}
-            className={`flex items-center justify-between gap-2 bg-navy-900/50 rounded-[16px] p-3 sm:p-3.5 border border-white/[0.07] shadow-sm ${
-              handleOpen ? 'cursor-pointer hover:border-gold-500/30 hover:bg-navy-850 transition-colors duration-150 group' : ''
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-[10px] bg-navy-800 group-hover:bg-gold-500/10 border border-white/[0.04] group-hover:border-gold-500/20 group-hover:text-gold-400 flex items-center justify-center text-slate-400 shrink-0 transition-colors duration-150">
-                <PieChart className="w-5 h-5" strokeWidth={1.5} />
-              </div>
-              <div>
-                <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">
-                  Starting Allocation
-                </span>
-                <span className="font-semibold text-base sm:text-xl text-slate-300 tracking-tight tabular-nums">
-                  ₹ {initial.toLocaleString('en-IN')}
-                </span>
-              </div>
-            </div>
-
-            {handleOpen && (
-              <span className="hidden xl:flex items-center gap-1 text-[10px] font-semibold text-gold-400 group-hover:text-gold-300 bg-navy-950 px-2 py-1 rounded-[6px] border border-white/[0.07] shrink-0">
-                <span>Telemetry</span>
-                <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-150" strokeWidth={2} />
-              </span>
-            )}
-          </div>
+          {/* Trigger to view detailed portfolio analytics */}
+          {handleOpen && (
+            <button
+              onClick={handleOpen}
+              className="text-xs font-medium text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 flex items-center gap-1 transition-colors"
+            >
+              <span>Portfolio Allocation</span>
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+            </button>
+          )}
         </div>
 
-        {/* Capital Deployment Progress Bar (Clickable to open drawer) */}
-        <div
-          onClick={handleOpen}
-          className={`hidden sm:block ${handleOpen ? 'cursor-pointer group' : ''}`}
-          title="Click to view full Capital Efficiency Drawer"
-        >
-          <div className="h-2 w-full bg-navy-950 rounded-full overflow-hidden flex border border-white/[0.07] group-hover:border-gold-500/30 transition-colors duration-150">
-            <div
-              style={{ width: `${spentPct}%` }}
-              title={`Spent: ${spentPct.toFixed(1)}%`}
-              className="bg-blue-400 transition-all duration-300"
-            />
-            <div
-              style={{ width: `${lockedPct}%` }}
-              title={`In Escrow: ${lockedPct.toFixed(1)}%`}
-              className="bg-amber-400 transition-all duration-300"
-            />
-            <div
-              style={{ width: `${availablePct}%` }}
-              title={`Available: ${availablePct.toFixed(1)}%`}
-              className="bg-emerald-500 transition-all duration-300"
-            />
-          </div>
+        {/* Slim Linear Deployment Indicator (1.5px high, calm and quiet) */}
+        <div className="h-1 w-full bg-slate-100 dark:bg-white/[0.04] rounded-full overflow-hidden flex">
+          <div
+            style={{ width: `${spentPct}%` }}
+            title={`Deployed: ${spentPct.toFixed(1)}%`}
+            className="bg-slate-400 dark:bg-slate-500 transition-all duration-300"
+          />
+          <div
+            style={{ width: `${lockedPct}%` }}
+            title={`In Escrow: ${lockedPct.toFixed(1)}%`}
+            className="bg-amber-500 transition-all duration-300"
+          />
+          <div
+            style={{ width: `${availablePct}%` }}
+            title={`Available: ${availablePct.toFixed(1)}%`}
+            className="bg-emerald-500 transition-all duration-300"
+          />
         </div>
       </div>
     </div>

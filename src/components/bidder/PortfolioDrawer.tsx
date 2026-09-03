@@ -260,17 +260,17 @@ export function PortfolioDrawer({
 
       {/* Slide-over Panel Container */}
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
-        <div className="w-screen max-w-2xl bg-navy-950/95 border-l border-white/[0.07]/90 shadow-sm flex flex-col justify-between overflow-hidden text-slate-100">
+        <div className="w-screen max-w-2xl bg-white dark:bg-[#0D121D] border-l border-slate-200 dark:border-white/[0.08] shadow-2xl flex flex-col justify-between overflow-hidden text-slate-900 dark:text-slate-100">
           {/* Header */}
-          <div className="px-6 py-5 border-b border-white/[0.07]/90 bg-navy-900/60 flex items-center justify-between gap-4 shrink-0">
+          <div className="px-6 py-5 border-b border-slate-200 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#0F131D]/80 flex items-center justify-between gap-4 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-[16px] bg-gradient-to-tr from-gold-600 via-gold-500 to-amber-300 flex items-center justify-center text-navy-950 font-black shadow-sm shrink-0">
-                <Briefcase className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-[10px] bg-slate-100 dark:bg-navy-850 border border-slate-200 dark:border-white/[0.08] flex items-center justify-center text-amber-600 dark:text-gold-400 font-bold shrink-0">
+                <Briefcase className="w-5 h-5" strokeWidth={1.5} />
               </div>
               <div>
                 <h2
                   id="portfolio-drawer-title"
-                  className="text-base sm:text-lg font-semibold text-white flex items-center gap-2"
+                  className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2"
                 >
                   <span>{teamName}&rsquo;s Capital Intelligence</span>
                   <span className="px-2.5 py-0.5 rounded-full bg-gold-500/20 text-gold-300 text-xs font-mono font-bold border border-gold-500/30">

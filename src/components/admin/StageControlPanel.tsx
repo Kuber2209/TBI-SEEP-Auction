@@ -253,10 +253,10 @@ export function StageControlPanel({
           <button
             onClick={handleAdvanceNext}
             disabled={Boolean(loadingAction) || activeStartup.status !== 'SOLD'}
-            className="p-4 rounded-[16px] bg-navy-900 hover:bg-navy-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-navy-700 transition active:scale-[0.98] group"
+            className="p-3.5 sm:p-4 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-navy-900 dark:hover:bg-navy-800 disabled:opacity-40 disabled:cursor-not-allowed text-slate-800 dark:text-white font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-slate-200 dark:border-white/[0.08] transition active:scale-[0.98] group"
           >
-            <SkipForward className="w-5 h-5 text-seep-sky group-hover:translate-x-1 transition" />
-            <span>4. Next Lot ➡️</span>
+            <SkipForward className="w-5 h-5 text-blue-500 dark:text-blue-400 group-hover:translate-x-0.5 transition" strokeWidth={1.75} />
+            <span>4. Next Lot</span>
           </button>
         </div>
       </div>

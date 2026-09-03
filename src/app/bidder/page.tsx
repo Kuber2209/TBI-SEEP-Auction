@@ -12,7 +12,7 @@ import { WalletSummaryBar } from '@/components/bidder/WalletSummaryBar';
 import { PortfolioDrawer } from '@/components/bidder/PortfolioDrawer';
 import { PortfolioAnalytics } from '@/components/bidder/PortfolioAnalytics';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
-import { Loader2, PieChart } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 export default function BidderPage() {
   const {
@@ -32,10 +32,10 @@ export default function BidderPage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-navy-950 flex items-center justify-center text-white">
+      <div className="min-h-screen bg-slate-50 dark:bg-navy-950 flex items-center justify-center text-slate-900 dark:text-white transition-colors duration-150">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
-          <p className="text-sm font-semibold text-slate-300">
+          <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
             Initializing Live Auction Console...
           </p>
         </div>
@@ -47,7 +47,7 @@ export default function BidderPage() {
 
   return (
     <ErrorBoundary fallbackTitle="Investor Console Interface Error">
-      <div className="min-h-screen bg-navy-950 flex flex-col justify-between text-slate-100">
+      <div className="min-h-screen bg-slate-50 dark:bg-navy-950 flex flex-col justify-between text-slate-900 dark:text-slate-100 transition-colors duration-150">
         {/* Top Section */}
         <div>
           <ConnectionBanner status={connectionStatus} onRetry={refresh} />
@@ -63,9 +63,8 @@ export default function BidderPage() {
 
           {/* Main Content Arena */}
           <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
-            {/* Two-Column Auction Arena */}
+            {/* Primary Arena: Startup Brief + Bidding Action */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-              {/* Left 6 Cols: Startup Pitch Information */}
               <div className="lg:col-span-6 flex flex-col">
                 <StartupHero
                   startup={activeStartup}
@@ -73,7 +72,6 @@ export default function BidderPage() {
                 />
               </div>
 
-              {/* Right 6 Cols: Bidding Action Control Pad */}
               <div className="lg:col-span-6 flex flex-col">
                 <BiddingPad
                   startup={activeStartup}
@@ -86,7 +84,7 @@ export default function BidderPage() {
               </div>
             </div>
 
-            {/* Bottom 2-Col Grid: Live Bid History & Portfolio Analytics */}
+            {/* Supporting Information: Bid Ledger + Portfolio Overview */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               <div className="lg:col-span-7">
                 <BidHistoryList bids={bids} currentProfile={profile} />
@@ -103,7 +101,7 @@ export default function BidderPage() {
           </main>
         </div>
 
-        {/* Fixed Bottom Wallet Summary Bar */}
+        {/* Integrated Bottom Financial Bar */}
         <div className="sticky bottom-0 z-30">
           <WalletSummaryBar
             wallet={wallet}
@@ -111,7 +109,7 @@ export default function BidderPage() {
           />
         </div>
 
-        {/* Slide-over Capital Efficiency & Portfolio Drawer */}
+        {/* Portfolio Drawer */}
         <PortfolioDrawer
           isOpen={isPortfolioOpen}
           onClose={() => setIsPortfolioOpen(false)}
