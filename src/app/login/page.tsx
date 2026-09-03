@@ -33,7 +33,7 @@ export default function LoginPage() {
 
   return (
     <ErrorBoundary fallbackTitle="Authentication Interface Error">
-      <div className="min-h-screen bg-slate-50 dark:bg-navy-950 text-slate-900 dark:text-white flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden transition-colors duration-150">
+      <div className="min-h-screen bg-[#ECEFF4] dark:bg-[#030712] text-slate-900 dark:text-white flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden transition-colors duration-150">
         {/* Top-Right Theme Toggle */}
         <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
           <ThemeToggle />

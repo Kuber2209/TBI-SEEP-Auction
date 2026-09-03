@@ -62,8 +62,8 @@ export function Header({
         {/* Brand & Program Badges */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-[10px] bg-slate-100 dark:bg-navy-850 border border-slate-200 dark:border-white/[0.07] flex items-center justify-center text-amber-600 dark:text-gold-500 shrink-0">
-              <Building2 className="w-5 h-5" strokeWidth={1.5} />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-[10px] bg-amber-500/15 dark:bg-amber-500/10 border border-amber-500/30 dark:border-amber-500/20 flex items-center justify-center text-amber-700 dark:text-gold-400 shrink-0">
+              <Building2 className="w-5 h-5" strokeWidth={1.75} />
             </div>
             <div>
               <div className="flex items-center gap-2">

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Startup } from '@/lib/supabase/types';
-import { ListOrdered, Search, Tag, Sparkles } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 interface StartupQueueListProps {
   startups: Startup[];
@@ -24,21 +24,18 @@ export function StartupQueueList({
   );
 
   return (
-    <div className="glass-card rounded-[24px] p-6 border border-white/[0.07] flex flex-col h-full max-h-[620px] shadow-sm">
-      <div className="flex items-center justify-between pb-4 border-b border-white/[0.07] mb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400">
-            <ListOrdered className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-sm font-display font-bold text-white uppercase tracking-wider">
-              Startup Queue
-            </h3>
-            <p className="text-[10px] text-slate-400">12 Scheduled Venture Lots</p>
-          </div>
+    <div className="rounded-xl p-5 sm:p-6 bg-white dark:bg-[#070D1E] border border-slate-200/80 dark:border-white/[0.08] flex flex-col h-full max-h-[620px] shadow-sm transition-colors duration-150">
+      <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-white/[0.06] mb-3">
+        <div>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+            Startup Queue
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {startups.length} Scheduled Venture Lots
+          </p>
         </div>
-        <span className="text-xs font-mono font-bold text-slate-300 bg-navy-900/80 px-2.5 py-1 rounded-lg border border-white/[0.07]">
-          {startups.length} Lots
+        <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+          {filtered.length} visible
         </span>
       </div>
 
@@ -50,11 +47,11 @@ export function StartupQueueList({
           placeholder="Filter by startup or sector..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-8 pr-3 py-1.5 rounded-[12px] bg-navy-950 border border-white/[0.07] text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500"
+          className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#030712] border border-slate-200 dark:border-white/[0.08] text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-amber-500"
         />
       </div>
 
-      <div className="overflow-y-auto space-y-2.5 pr-1 flex-1">
+      <div className="overflow-y-auto space-y-1.5 pr-1 flex-1">
         {filtered.map((startup) => {
           const isActive = startup.id === activeStartupId;
 
@@ -62,28 +59,28 @@ export function StartupQueueList({
             <button
               key={startup.id}
               onClick={() => onSelectStartup(startup)}
-              className={`w-full text-left p-3.5 rounded-[16px] border transition-all duration-200 flex items-center justify-between ${
+              className={`w-full text-left p-2.5 sm:p-3 rounded-lg border transition-colors flex items-center justify-between ${
                 isActive
-                  ? 'bg-gold-500/15 border-gold-500/60 shadow-sm'
-                  : 'bg-navy-950/50 hover:bg-navy-900/80 border-white/[0.07] text-slate-300 glass-card-interactive'
+                  ? 'bg-amber-50/80 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/40 text-slate-900 dark:text-white'
+                  : 'bg-white dark:bg-[#0A1124] border-slate-200/80 dark:border-white/[0.06] hover:bg-slate-50 dark:hover:bg-navy-900/60 text-slate-700 dark:text-slate-300'
               }`}
             >
               <div className="flex items-center gap-3">
                 <span
-                  className={`w-7 h-7 rounded-[12px] flex items-center justify-center font-mono text-xs font-black shrink-0 ${
+                  className={`w-6 h-6 rounded-md flex items-center justify-center font-mono text-xs font-bold shrink-0 ${
                     isActive
-                      ? 'bg-gold-500 text-navy-950 shadow-sm'
-                      : 'bg-navy-800 text-slate-400 border border-navy-700'
+                      ? 'bg-amber-500 text-slate-950 shadow-sm'
+                      : 'bg-slate-100 dark:bg-navy-800 text-slate-500 dark:text-slate-400'
                   }`}
                 >
                   #{startup.display_order}
                 </span>
 
                 <div>
-                  <h4 className="text-xs sm:text-sm font-bold text-white line-clamp-1">
+                  <h4 className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white line-clamp-1">
                     {startup.name}
                   </h4>
-                  <span className="text-[10px] text-slate-400 block mt-0.5">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
                     {startup.sector} · Floor ₹{Number(startup.base_price).toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -91,16 +88,16 @@ export function StartupQueueList({
 
               <div className="text-right shrink-0">
                 <span
-                  className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider block ${
+                  className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider block ${
                     startup.status === 'ACTIVE_BIDDING'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse'
+                      ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
                       : startup.status === 'PRESENTING'
-                      ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                      ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400'
                       : startup.status === 'SOLD'
-                      ? 'bg-gold-500/20 text-gold-400 font-mono border border-gold-500/30'
+                      ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 font-mono'
                       : startup.status === 'UNSOLD'
-                      ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                      : 'bg-slate-800 text-slate-400'
+                      ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400'
+                      : 'text-slate-400 dark:text-slate-500'
                   }`}
                 >
                   {startup.status === 'SOLD' && startup.winning_bid_amount

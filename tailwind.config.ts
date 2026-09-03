@@ -10,33 +10,27 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#090A0F",
-        surface: {
-          DEFAULT: "#0F131D",
-          subtle: "#141A27",
-          elevated: "#1A2234",
-          border: "rgba(255, 255, 255, 0.08)",
-          "border-hover": "rgba(255, 255, 255, 0.16)",
-        },
         navy: {
-          950: "#090A0F", // Base deep surface
-          900: "#0F131D", // Card background
-          850: "#141A27", // Elevated component
-          800: "#1D2538", // Border and separators
-          700: "#2B3752", // Interactive hover
-          600: "#3B82F6", // Clean accent
-        },
-        amber: {
-          400: "#FBBF24",
-          500: "#F59E0B", // Primary gold/amber brand
-          600: "#D97706",
+          950: "#030712", // Deepest void midnight navy from original image
+          900: "#070D1E", // Rich midnight card surface
+          850: "#0D1838", // Elevated surface
+          800: "#13234F", // Midnight border & dividers
+          700: "#1E3A8A", // Subtle highlight blue
+          600: "#2563EB", // Accent blue
         },
         gold: {
           300: "#FDE68A",
           400: "#FCD34D",
-          500: "#F59E0B",
+          500: "#F59E0B", // Primary warm saffron gold from original image
           600: "#D97706",
           700: "#B45309",
+        },
+        paper: {
+          50: "#F8FAFC",
+          100: "#F1F5F9",
+          200: "#E2E8F0",
+          300: "#CBD5E1",
+          canvas: "#ECEFF4", // Soft, low-glare light canvas (not blinding white)
         },
       },
       fontFamily: {
@@ -59,9 +53,8 @@ const config: Config = {
         ],
       },
       boxShadow: {
-        card: "0 0 0 1px rgba(255, 255, 255, 0.07), 0 12px 32px -8px rgba(0, 0, 0, 0.5)",
-        panel: "0 0 0 1px rgba(255, 255, 255, 0.08), 0 4px 16px -2px rgba(0, 0, 0, 0.4)",
-        dropdown: "0 0 0 1px rgba(255, 255, 255, 0.1), 0 16px 36px -4px rgba(0, 0, 0, 0.6)",
+        card: "0 0 0 1px rgba(19, 35, 79, 0.6), 0 8px 24px -4px rgba(0, 0, 0, 0.5)",
+        panel: "0 0 0 1px rgba(19, 35, 79, 0.5), 0 4px 16px -2px rgba(0, 0, 0, 0.4)",
       },
       borderRadius: {
         "2xl": "16px",

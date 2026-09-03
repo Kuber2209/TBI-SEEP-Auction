@@ -231,33 +231,33 @@ export function BidderRosterTable({
   };
 
   return (
-    <div className="glass-card rounded-[24px] p-6 sm:p-7 border border-white/[0.07] shadow-sm space-y-6">
+    <div className="rounded-xl p-5 sm:p-6 bg-white dark:bg-[#070D1E] border border-slate-200/80 dark:border-white/[0.08] shadow-sm space-y-6 transition-colors duration-150">
       {/* Top Header & Aggregate Financial Metrics */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/[0.07]">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/[0.06]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-[16px] bg-seep-sky/15 border border-seep-sky/30 flex items-center justify-center text-seep-sky shadow-inner">
-            <Users className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-lg bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <Users className="w-4 h-4" strokeWidth={1.75} />
           </div>
           <div>
-            <h3 className="text-base font-display font-bold text-white uppercase tracking-wider flex items-center gap-2">
-              <span>Bidder Teams Financial Roster</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-navy-900 border border-navy-700 text-slate-400">
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>Investor Teams Financial Roster</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-navy-900 text-slate-500 dark:text-slate-400">
                 15 Teams
               </span>
             </h3>
-            <p className="text-xs text-slate-400">Live purse monitoring, escrow exposure & session security</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Purse telemetry, escrow exposure & session control</p>
           </div>
         </div>
 
         {/* Aggregate Stats Bar */}
-        <div className="flex flex-wrap items-center gap-2.5 text-xs">
-          <div className="px-3.5 py-1.5 rounded-[12px] bg-navy-900/90 border border-white/[0.07] flex items-center gap-2">
-            <span className="text-slate-400 font-medium">Allocated:</span>
-            <strong className="text-white font-mono font-black">₹{totalPurse.toLocaleString('en-IN')}</strong>
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <div className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-[#0D1838] border border-slate-200/80 dark:border-white/[0.06] flex items-center gap-1.5">
+            <span className="text-slate-500 dark:text-slate-400">Total Purse:</span>
+            <strong className="text-slate-900 dark:text-white font-mono">₹{totalPurse.toLocaleString('en-IN')}</strong>
           </div>
-          <div className="px-3.5 py-1.5 rounded-[12px] bg-navy-900/90 border border-emerald-500/30 flex items-center gap-2">
-            <span className="text-slate-400 font-medium">Liquid:</span>
-            <strong className="text-emerald-400 font-mono font-black">₹{totalAvailable.toLocaleString('en-IN')}</strong>
+          <div className="px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-500/20 flex items-center gap-1.5">
+            <span className="text-emerald-700 dark:text-emerald-400">Liquid Cash:</span>
+            <strong className="text-emerald-700 dark:text-emerald-400 font-mono">₹{totalAvailable.toLocaleString('en-IN')}</strong>
           </div>
           <div className="px-3.5 py-1.5 rounded-[12px] bg-navy-900/90 border border-amber-500/30 flex items-center gap-2">
             <span className="text-slate-400 font-medium">In Escrow:</span>

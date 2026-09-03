@@ -154,7 +154,7 @@ export default function AdminPage() {
 
   return (
     <ErrorBoundary fallbackTitle="Operator Command Center Interface Error">
-      <div className="min-h-screen bg-navy-950 flex flex-col justify-between text-slate-100">
+      <div className="min-h-screen bg-[#ECEFF4] dark:bg-[#030712] flex flex-col justify-between text-slate-900 dark:text-slate-100 transition-colors duration-150">
         <div>
           <ConnectionBanner status={connectionStatus} onRetry={handleFullRefresh} />
 
