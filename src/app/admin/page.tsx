@@ -44,14 +44,19 @@ export default function AdminPage() {
   } = useAuctionSync();
 
   const { onlineUsers, bidderCount, isUserOnline } = usePresence(profile);
-  const [selectedStartup, setSelectedStartup] = useState<Startup | null>(null);
+  const [selectedStartupId, setSelectedStartupId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'stage' | 'bidders' | 'telemetry' | 'logs'>('stage');
   const [bidders, setBidders] = useState<(Profile & { wallet?: BidderWallet })[]>([]);
   const [events, setEvents] = useState<AuctionEvent[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [opMessage, setOpMessage] = useState<string | null>(null);
 
-  const activeStartup = selectedStartup || syncedActiveStartup || startups[0] || null;
+  // Dynamically resolve active startup from live startups array to ensure status transitions update immediately
+  const activeStartup =
+    (selectedStartupId ? startups.find((s) => s.id === selectedStartupId) : null) ||
+    syncedActiveStartup ||
+    startups[0] ||
+    null;
 
   // Fetch admin detailed rosters & events
   const fetchAdminData = useCallback(async () => {
@@ -74,15 +79,15 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchAdminData();
-    const interval = setInterval(fetchAdminData, 8000);
+    const interval = setInterval(fetchAdminData, 3000);
     return () => clearInterval(interval);
   }, [fetchAdminData]);
 
   useEffect(() => {
-    if (syncedActiveStartup && !selectedStartup) {
-      setSelectedStartup(syncedActiveStartup);
+    if (syncedActiveStartup && !selectedStartupId) {
+      setSelectedStartupId(syncedActiveStartup.id);
     }
-  }, [syncedActiveStartup, selectedStartup]);
+  }, [syncedActiveStartup, selectedStartupId]);
 
   const handleEmergencyToggle = async () => {
     if (!session) return;
@@ -285,7 +290,7 @@ export default function AdminPage() {
                   <StartupQueueList
                     startups={startups}
                     activeStartupId={activeStartup?.id}
-                    onSelectStartup={(s) => setSelectedStartup(s)}
+                    onSelectStartup={(s) => setSelectedStartupId(s.id)}
                     onReordered={handleFullRefresh}
                   />
                 </div>
@@ -296,7 +301,7 @@ export default function AdminPage() {
                     activeStartup={activeStartup}
                     startups={startups}
                     recentBids={bids}
-                    onSelectStartup={(s) => setSelectedStartup(s)}
+                    onSelectStartup={(s) => setSelectedStartupId(s.id)}
                     onActionComplete={handleFullRefresh}
                   />
                 </div>

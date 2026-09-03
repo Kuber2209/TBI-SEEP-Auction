@@ -14,10 +14,10 @@ export interface PresenceUser {
 
 export function usePresence(currentProfile: Profile | null) {
   const [onlineUsers, setOnlineUsers] = useState<PresenceUser[]>([]);
-  const supabase = createClient();
 
   useEffect(() => {
-    if (!currentProfile) return;
+    if (!currentProfile?.id) return;
+    const supabase = createClient();
 
     const presenceChannel = supabase.channel('auction:presence', {
       config: {
@@ -31,7 +31,7 @@ export function usePresence(currentProfile: Profile | null) {
       .on('presence', { event: 'sync' }, () => {
         const state = presenceChannel.presenceState();
         const users: PresenceUser[] = [];
-        
+
         Object.values(state).forEach((presences: any) => {
           presences.forEach((p: any) => {
             if (p.userId) {
@@ -60,7 +60,7 @@ export function usePresence(currentProfile: Profile | null) {
     return () => {
       supabase.removeChannel(presenceChannel);
     };
-  }, [currentProfile, supabase]);
+  }, [currentProfile?.id, currentProfile?.display_user_id, currentProfile?.team_name, currentProfile?.role]);
 
   const bidderCount = onlineUsers.filter(u => u.role === 'bidder').length;
   const isUserOnline = (userId: string) => onlineUsers.some(u => u.userId === userId);

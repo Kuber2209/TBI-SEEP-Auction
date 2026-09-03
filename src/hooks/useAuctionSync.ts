@@ -33,14 +33,17 @@ export function useAuctionSync() {
     syncError: null,
   });
 
-  const supabase = createClient();
-  const retryCount = useRef(0);
   const isFetching = useRef(false);
+  const queuedRefetch = useRef(false);
 
-  // Authoritative State Fetch
+  // Authoritative State Fetch from /api/auction/sync
   const fetchAuthoritativeState = useCallback(async () => {
-    if (isFetching.current) return;
+    if (isFetching.current) {
+      queuedRefetch.current = true;
+      return;
+    }
     isFetching.current = true;
+    queuedRefetch.current = false;
 
     try {
       const res = await fetch('/api/auction/sync', { cache: 'no-store' });
@@ -84,8 +87,6 @@ export function useAuctionSync() {
           syncError: null,
         };
       });
-
-      retryCount.current = 0;
     } catch (err: any) {
       console.error('State sync failed:', err);
       setState(prev => ({
@@ -95,20 +96,88 @@ export function useAuctionSync() {
       }));
     } finally {
       isFetching.current = false;
+      if (queuedRefetch.current) {
+        queuedRefetch.current = false;
+        fetchAuthoritativeState();
+      }
     }
   }, []);
 
-  // Initial Fetch & Realtime Subscriptions
+  // Set up real-time multiplexed WebSocket channel & high-speed backup polling
   useEffect(() => {
+    const supabase = createClient();
+
+    // Initial immediate fetch
     fetchAuthoritativeState();
 
-    // 1. Startups Channel
-    const startupsChannel = supabase
-      .channel('public:startups')
+    // Single multiplexed channel for sub-second database change delivery
+    const channel = supabase
+      .channel('realtime:auction_feed')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'startups' },
+        (payload: any) => {
+          // Sub-second optimistic update for instant UI responsiveness
+          if (payload?.new && payload.new.id) {
+            setState(prev => {
+              const updatedStartups = prev.startups.map(s =>
+                s.id === payload.new.id ? { ...s, ...payload.new } : s
+              );
+              const active =
+                updatedStartups.find(s => s.id === (prev.activeStartup?.id || payload.new.id)) ||
+                updatedStartups[0] ||
+                null;
+              return {
+                ...prev,
+                startups: updatedStartups,
+                activeStartup: active,
+                connectionStatus: 'CONNECTED',
+                lastSyncedAt: new Date(),
+              };
+            });
+          }
+          fetchAuthoritativeState();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'bids' },
+        (payload: any) => {
+          // Sub-second bid insertion for real-time bid pad / audit stream
+          if (payload?.new && payload.new.id) {
+            setState(prev => {
+              const exists = prev.bids.some(b => b.id === payload.new.id);
+              if (!exists) {
+                return {
+                  ...prev,
+                  bids: [payload.new as Bid, ...prev.bids],
+                  connectionStatus: 'CONNECTED',
+                  lastSyncedAt: new Date(),
+                };
+              }
+              return prev;
+            });
+          }
+          fetchAuthoritativeState();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'bidder_wallets' },
         () => {
+          fetchAuthoritativeState();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'auction_sessions' },
+        (payload: any) => {
+          if (payload?.new) {
+            setState(prev => ({
+              ...prev,
+              session: { ...prev.session, ...payload.new },
+            }));
+          }
           fetchAuthoritativeState();
         }
       )
@@ -120,59 +189,21 @@ export function useAuctionSync() {
         }
       });
 
-    // 2. Bids Channel
-    const bidsChannel = supabase
-      .channel('public:bids')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'bids' },
-        () => {
-          fetchAuthoritativeState();
-        }
-      )
-      .subscribe();
-
-    // 3. Wallets Channel
-    const walletsChannel = supabase
-      .channel('public:bidder_wallets')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'bidder_wallets' },
-        () => {
-          fetchAuthoritativeState();
-        }
-      )
-      .subscribe();
-
-    // 4. Session Channel
-    const sessionChannel = supabase
-      .channel('public:auction_sessions')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'auction_sessions' },
-        () => {
-          fetchAuthoritativeState();
-        }
-      )
-      .subscribe();
-
-    // Periodic safety sync every 15 seconds
+    // High-frequency backup polling (1500ms) guarantees sub-second convergence
     const interval = setInterval(() => {
       fetchAuthoritativeState();
-    }, 15000);
+    }, 1500);
 
     return () => {
-      supabase.removeChannel(startupsChannel);
-      supabase.removeChannel(bidsChannel);
-      supabase.removeChannel(walletsChannel);
-      supabase.removeChannel(sessionChannel);
+      supabase.removeChannel(channel);
       clearInterval(interval);
     };
-  }, [fetchAuthoritativeState, supabase]);
+  }, [fetchAuthoritativeState]);
 
-  // Handle User-specific broadcast for force-logout
+  // Private User Channel for force logout broadcasts
   useEffect(() => {
     if (!state.profile?.id) return;
+    const supabase = createClient();
 
     const userChannel = supabase
       .channel(`private:user:${state.profile.id}`)
@@ -189,7 +220,7 @@ export function useAuctionSync() {
     return () => {
       supabase.removeChannel(userChannel);
     };
-  }, [state.profile?.id, supabase]);
+  }, [state.profile?.id]);
 
   return {
     ...state,

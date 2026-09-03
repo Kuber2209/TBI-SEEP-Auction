@@ -227,11 +227,21 @@ export function StageControlPanel({
           {/* 1. Set Presenting */}
           <button
             onClick={() => handleSetStatus('PRESENTING')}
-            disabled={Boolean(loadingAction) || activeStartup.status === 'PRESENTING'}
-            className="p-3.5 sm:p-4 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] disabled:opacity-40 disabled:cursor-not-allowed text-[#203126] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98]"
+            disabled={Boolean(loadingAction) || activeStartup.status === 'PRESENTING' || activeStartup.status === 'ACTIVE_BIDDING' || activeStartup.status === 'SOLD'}
+            className={`p-3.5 sm:p-4 rounded-md font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] ${
+              activeStartup.status === 'UPCOMING'
+                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm'
+                : activeStartup.status === 'PRESENTING'
+                ? 'bg-blue-50 text-blue-800 border border-blue-200 font-bold'
+                : 'bg-[#e5ece6] text-[#56695e] border border-[#cad7cc] opacity-40 cursor-not-allowed'
+            }`}
           >
-            <Radio className="w-4 h-4 text-[#1a5c3e]" strokeWidth={1.75} />
-            <span>1. Set Presenting</span>
+            {loadingAction === 'status_PRESENTING' ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Radio className="w-4 h-4 text-inherit" strokeWidth={1.75} />
+            )}
+            <span>{activeStartup.status === 'PRESENTING' ? '✓ Presenting' : '1. Set Presenting'}</span>
           </button>
 
           {/* 2. Start Bidding */}
@@ -242,14 +252,20 @@ export function StageControlPanel({
               activeStartup.status === 'ACTIVE_BIDDING' ||
               activeStartup.status === 'SOLD'
             }
-            className="p-3.5 sm:p-4 rounded-md bg-[#1a5c3e] hover:bg-[#144931] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm"
+            className={`p-3.5 sm:p-4 rounded-md font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] ${
+              activeStartup.status === 'PRESENTING'
+                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm'
+                : activeStartup.status === 'ACTIVE_BIDDING'
+                ? 'bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold'
+                : 'bg-[#e5ece6] text-[#56695e] border border-[#cad7cc] opacity-40 cursor-not-allowed'
+            }`}
           >
             {loadingAction === 'status_ACTIVE_BIDDING' ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <Flame className="w-4 h-4" strokeWidth={1.75} />
+              <Flame className="w-4 h-4 text-inherit" strokeWidth={1.75} />
             )}
-            <span>2. Open Bidding</span>
+            <span>{activeStartup.status === 'ACTIVE_BIDDING' ? '🔥 Bidding Active' : '2. Open Bidding'}</span>
           </button>
 
           {/* Pause / Resume */}
@@ -257,7 +273,7 @@ export function StageControlPanel({
             <button
               onClick={() => handleSetStatus('ACTIVE_BIDDING')}
               disabled={Boolean(loadingAction)}
-              className="p-3.5 sm:p-4 rounded-md bg-[#1a5c3e] hover:bg-[#144931] text-white font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm"
+              className="p-3.5 sm:p-4 rounded-md bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm animate-pulse"
             >
               <Play className="w-4 h-4" strokeWidth={1.75} />
               <span>Resume Bidding</span>
@@ -266,7 +282,11 @@ export function StageControlPanel({
             <button
               onClick={() => handleSetStatus('PAUSED')}
               disabled={Boolean(loadingAction) || activeStartup.status !== 'ACTIVE_BIDDING'}
-              className="p-3.5 sm:p-4 rounded-md bg-[#e5ece6] hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed text-[#203126] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98]"
+              className={`p-3.5 sm:p-4 rounded-md font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98] ${
+                activeStartup.status === 'ACTIVE_BIDDING'
+                  ? 'bg-[#e5ece6] hover:bg-amber-50 text-amber-900 cursor-pointer'
+                  : 'bg-[#e5ece6] text-[#56695e] opacity-40 cursor-not-allowed'
+              }`}
             >
               <Pause className="w-4 h-4 text-amber-700" strokeWidth={1.75} />
               <span>Pause Bidding</span>
@@ -280,33 +300,51 @@ export function StageControlPanel({
               Boolean(loadingAction) ||
               !['ACTIVE_BIDDING', 'PAUSED'].includes(activeStartup.status)
             }
-            className="p-3.5 sm:p-4 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] disabled:opacity-40 disabled:cursor-not-allowed text-[#203126] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98]"
+            className={`p-3.5 sm:p-4 rounded-md font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] ${
+              ['ACTIVE_BIDDING', 'PAUSED'].includes(activeStartup.status)
+                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm'
+                : ['SOLD', 'UNSOLD'].includes(activeStartup.status)
+                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                : 'bg-[#e5ece6] text-[#56695e] border border-[#cad7cc] opacity-40 cursor-not-allowed'
+            }`}
           >
             {loadingAction === 'close' ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <Gavel className="w-4 h-4 text-[#1a5c3e]" strokeWidth={1.75} />
+              <Gavel className="w-4 h-4 text-inherit" strokeWidth={1.75} />
             )}
-            <span>3. Close (Settle)</span>
+            <span>{['SOLD', 'UNSOLD'].includes(activeStartup.status) ? '✓ Settled' : '3. Close (Settle)'}</span>
           </button>
 
           {/* Reopen Auction */}
           <button
             onClick={handleReopenAuction}
             disabled={Boolean(loadingAction) || !['SOLD', 'UNSOLD'].includes(activeStartup.status)}
-            className="p-3.5 sm:p-4 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] disabled:opacity-40 disabled:cursor-not-allowed text-[#203126] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98]"
+            className={`p-3.5 sm:p-4 rounded-md font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98] ${
+              ['SOLD', 'UNSOLD'].includes(activeStartup.status)
+                ? 'bg-[#e5ece6] hover:bg-[#d8e3da] text-[#203126] cursor-pointer'
+                : 'bg-[#e5ece6] text-[#56695e] opacity-40 cursor-not-allowed'
+            }`}
           >
-            <RotateCcw className="w-4 h-4 text-[#56695e]" strokeWidth={1.75} />
+            {loadingAction === 'reopen' ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <RotateCcw className="w-4 h-4 text-[#56695e]" strokeWidth={1.75} />
+            )}
             <span>Reopen Round</span>
           </button>
 
           {/* 4. Advance Next */}
           <button
             onClick={handleAdvanceNext}
-            disabled={Boolean(loadingAction) || activeStartup.status !== 'SOLD'}
-            className="p-3.5 sm:p-4 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] disabled:opacity-40 disabled:cursor-not-allowed text-[#203126] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98]"
+            disabled={Boolean(loadingAction) || !['SOLD', 'UNSOLD'].includes(activeStartup.status) || !nextStartup}
+            className={`p-3.5 sm:p-4 rounded-md font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] ${
+              ['SOLD', 'UNSOLD'].includes(activeStartup.status) && nextStartup
+                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm'
+                : 'bg-[#e5ece6] text-[#56695e] border border-[#cad7cc] opacity-40 cursor-not-allowed'
+            }`}
           >
-            <SkipForward className="w-4 h-4 text-[#1a5c3e]" strokeWidth={1.75} />
+            <SkipForward className="w-4 h-4 text-inherit" strokeWidth={1.75} />
             <span>4. Next Lot</span>
           </button>
         </div>
