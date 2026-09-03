@@ -166,14 +166,14 @@ export default function AdminPage() {
           />
 
           {/* Emergency Control Ribbon */}
-          <div className="bg-navy-900 border-b border-navy-800 px-4 lg:px-8 py-2.5">
+          <div className="bg-navy-900 border-b border-white/[0.07] px-4 lg:px-8 py-2.5">
             <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 {/* Emergency Pause Button */}
                 <button
                   onClick={handleEmergencyToggle}
                   disabled={isProcessing}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transition shadow-md ${
+                  className={`px-3.5 py-1.5 rounded-[12px] text-xs font-black uppercase tracking-wider flex items-center gap-2 transition shadow-md ${
                     session?.status === 'PAUSED'
                       ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
                       : 'bg-rose-600 hover:bg-rose-500 text-white animate-pulse'
@@ -199,7 +199,7 @@ export default function AdminPage() {
                 <button
                   onClick={handleInitWallets}
                   disabled={isProcessing || session?.wallets_initialized}
-                  className="px-3 py-1.5 rounded-xl bg-navy-800 hover:bg-navy-700 disabled:opacity-50 text-xs font-bold text-slate-200 border border-navy-700 flex items-center gap-1.5 transition"
+                  className="px-3 py-1.5 rounded-[12px] bg-navy-800 hover:bg-navy-700 disabled:opacity-50 text-xs font-bold text-slate-200 border border-navy-700 flex items-center gap-1.5 transition"
                 >
                   <Coins className="w-3.5 h-3.5 text-gold-400" />
                   <span>
@@ -211,7 +211,7 @@ export default function AdminPage() {
                   <button
                     onClick={handleResetRehearsal}
                     disabled={isProcessing}
-                    className="px-3 py-1.5 rounded-xl bg-navy-800 hover:bg-purple-900 text-xs font-bold text-purple-300 border border-purple-500/40 flex items-center gap-1.5 transition"
+                    className="px-3 py-1.5 rounded-[12px] bg-navy-800 hover:bg-purple-900 text-xs font-bold text-purple-300 border border-purple-500/40 flex items-center gap-1.5 transition"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Reset Dry Run</span>
@@ -225,13 +225,13 @@ export default function AdminPage() {
 
           {/* Navigation Tabs */}
           <div className="max-w-7xl mx-auto px-4 lg:px-8 mt-6">
-            <div className="flex flex-wrap items-center gap-2 border-b border-navy-800 pb-3">
+            <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.07] pb-3">
               <button
                 onClick={() => setActiveTab('stage')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
+                className={`px-4 py-2 rounded-[12px] text-xs font-bold flex items-center gap-2 transition ${
                   activeTab === 'stage'
-                    ? 'bg-gold-500 text-navy-950 shadow-gold'
-                    : 'bg-navy-900 text-slate-400 hover:text-white border border-navy-800'
+                    ? 'bg-gold-500 text-navy-950 shadow-sm'
+                    : 'bg-navy-900 text-slate-400 hover:text-white border border-white/[0.07]'
                 }`}
               >
                 <LayoutDashboard className="w-4 h-4" />
@@ -240,10 +240,10 @@ export default function AdminPage() {
 
               <button
                 onClick={() => setActiveTab('bidders')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
+                className={`px-4 py-2 rounded-[12px] text-xs font-bold flex items-center gap-2 transition ${
                   activeTab === 'bidders'
-                    ? 'bg-gold-500 text-navy-950 shadow-gold'
-                    : 'bg-navy-900 text-slate-400 hover:text-white border border-navy-800'
+                    ? 'bg-gold-500 text-navy-950 shadow-sm'
+                    : 'bg-navy-900 text-slate-400 hover:text-white border border-white/[0.07]'
                 }`}
               >
                 <Users className="w-4 h-4" />
@@ -252,10 +252,10 @@ export default function AdminPage() {
 
               <button
                 onClick={() => setActiveTab('telemetry')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
+                className={`px-4 py-2 rounded-[12px] text-xs font-bold flex items-center gap-2 transition ${
                   activeTab === 'telemetry'
-                    ? 'bg-gold-500 text-navy-950 shadow-gold'
-                    : 'bg-navy-900 text-slate-400 hover:text-white border border-navy-800'
+                    ? 'bg-gold-500 text-navy-950 shadow-sm'
+                    : 'bg-navy-900 text-slate-400 hover:text-white border border-white/[0.07]'
                 }`}
               >
                 <Activity className="w-4 h-4" />
@@ -264,10 +264,10 @@ export default function AdminPage() {
 
               <button
                 onClick={() => setActiveTab('logs')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
+                className={`px-4 py-2 rounded-[12px] text-xs font-bold flex items-center gap-2 transition ${
                   activeTab === 'logs'
-                    ? 'bg-gold-500 text-navy-950 shadow-gold'
-                    : 'bg-navy-900 text-slate-400 hover:text-white border border-navy-800'
+                    ? 'bg-gold-500 text-navy-950 shadow-sm'
+                    : 'bg-navy-900 text-slate-400 hover:text-white border border-white/[0.07]'
                 }`}
               >
                 <ScrollText className="w-4 h-4" />

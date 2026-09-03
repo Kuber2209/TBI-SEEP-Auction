@@ -291,10 +291,10 @@ export function RoomTelemetryDashboard({
   return (
     <div className="space-y-6">
       {/* SECTION 1: Top Telemetry Ribbon & Cryptographic Controls */}
-      <div className="glass-card rounded-3xl p-6 sm:p-7 border border-navy-800/80 shadow-2xl space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-navy-800">
+      <div className="glass-card rounded-[24px] p-6 sm:p-7 border border-white/[0.07] shadow-sm space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-white/[0.07]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner">
+            <div className="w-10 h-10 rounded-[16px] bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner">
               <Activity className="w-5 h-5" />
             </div>
             <div>
@@ -314,7 +314,7 @@ export function RoomTelemetryDashboard({
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setShowVerifyModal(true)}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-navy-900 hover:bg-navy-850 text-xs font-bold text-slate-200 border border-navy-700 hover:border-purple-500/50 shadow-sm transition active:scale-95"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-[12px] bg-navy-900 hover:bg-navy-850 text-xs font-bold text-slate-200 border border-navy-700 hover:border-purple-500/50 shadow-sm transition active:scale-[0.98]"
             >
               <Fingerprint className="w-4 h-4 text-purple-400" />
               <span>Verify Snapshot File</span>
@@ -322,7 +322,7 @@ export function RoomTelemetryDashboard({
 
             <button
               onClick={handleDownloadSnapshot}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-gold-500 to-amber-400 hover:from-gold-400 hover:to-amber-300 text-xs font-black text-navy-950 shadow-gold transition active:scale-95"
+              className="flex items-center gap-2 px-4 py-2 rounded-[12px] bg-gradient-to-r from-gold-500 to-amber-400 hover:from-gold-400 hover:to-amber-300 text-xs font-black text-navy-950 shadow-sm transition active:scale-[0.98]"
             >
               <FileJson className="w-4 h-4 text-navy-950" />
               <span>Generate Audit Snapshot (.json)</span>
@@ -331,10 +331,10 @@ export function RoomTelemetryDashboard({
         </div>
 
         {/* Cryptographic Ledger Proof Banner */}
-        <div className="p-4 rounded-2xl bg-navy-950/90 border border-navy-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="p-4 rounded-[16px] bg-navy-950/90 border border-white/[0.07] flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-3">
             <div
-              className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+              className={`w-8 h-8 rounded-[12px] flex items-center justify-center ${
                 isGlobalConserved
                   ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
                   : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
@@ -364,10 +364,10 @@ export function RoomTelemetryDashboard({
           </div>
 
           <div className="flex items-center gap-2 font-mono text-[11px] text-slate-400">
-            <span className="px-2 py-1 rounded bg-navy-900 border border-navy-800">
+            <span className="px-2 py-1 rounded bg-navy-900 border border-white/[0.07]">
               Schema: <strong className="text-white">v4.0</strong>
             </span>
-            <span className="px-2 py-1 rounded bg-navy-900 border border-navy-800">
+            <span className="px-2 py-1 rounded bg-navy-900 border border-white/[0.07]">
               Audit Engine: <strong className="text-purple-400">SHA-256 Checksum</strong>
             </span>
           </div>
@@ -376,7 +376,7 @@ export function RoomTelemetryDashboard({
         {/* Live Room Latency & Packet Health Monitor */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* 1. Round-Trip Ping & WebSocket Health */}
-          <div className="p-4 rounded-2xl bg-navy-950/80 border border-navy-800 flex flex-col justify-between">
+          <div className="p-4 rounded-[16px] bg-navy-950/80 border border-white/[0.07] flex flex-col justify-between">
             <div className="flex items-center justify-between">
               <span className="text-[10px] uppercase font-bold text-slate-400">Round-Trip Latency</span>
               <div
@@ -390,7 +390,7 @@ export function RoomTelemetryDashboard({
               </div>
             </div>
             <div className="mt-2">
-              <span className="font-display font-black text-2xl text-white font-mono">
+              <span className="font-semibold text-2xl text-white font-mono">
                 {latencyMs >= 0 ? `${latencyMs} ms` : 'Disconnected'}
               </span>
               <span className="text-[10px] text-slate-400 block mt-0.5">
@@ -402,7 +402,7 @@ export function RoomTelemetryDashboard({
           </div>
 
           {/* 2. Jitter & Network Variance */}
-          <div className="p-4 rounded-2xl bg-navy-950/80 border border-navy-800 flex flex-col justify-between">
+          <div className="p-4 rounded-[16px] bg-navy-950/80 border border-white/[0.07] flex flex-col justify-between">
             <div className="flex items-center justify-between">
               <span className="text-[10px] uppercase font-bold text-slate-400">Latency Jitter</span>
               <div className="w-7 h-7 rounded-lg bg-seep-sky/15 text-seep-sky border border-seep-sky/30 flex items-center justify-center">
@@ -410,7 +410,7 @@ export function RoomTelemetryDashboard({
               </div>
             </div>
             <div className="mt-2">
-              <span className="font-display font-black text-2xl text-seep-sky font-mono">
+              <span className="font-semibold text-2xl text-seep-sky font-mono">
                 ±{jitterMs} ms
               </span>
               <span className="text-[10px] text-slate-400 block mt-0.5">
@@ -423,7 +423,7 @@ export function RoomTelemetryDashboard({
           </div>
 
           {/* 3. Packet Monitor & Drop Rate */}
-          <div className="p-4 rounded-2xl bg-navy-950/80 border border-navy-800 flex flex-col justify-between">
+          <div className="p-4 rounded-[16px] bg-navy-950/80 border border-white/[0.07] flex flex-col justify-between">
             <div className="flex items-center justify-between">
               <span className="text-[10px] uppercase font-bold text-slate-400">Packet Drop Rate</span>
               <div
@@ -437,7 +437,7 @@ export function RoomTelemetryDashboard({
               </div>
             </div>
             <div className="mt-2">
-              <span className="font-display font-black text-2xl text-white font-mono">
+              <span className="font-semibold text-2xl text-white font-mono">
                 {packetDropRate}%
               </span>
               <span className="text-[10px] text-slate-400 block mt-0.5">
@@ -448,7 +448,7 @@ export function RoomTelemetryDashboard({
           </div>
 
           {/* 4. Investor Teams Online Attendance */}
-          <div className="p-4 rounded-2xl bg-navy-950/80 border border-navy-800 flex flex-col justify-between">
+          <div className="p-4 rounded-[16px] bg-navy-950/80 border border-white/[0.07] flex flex-col justify-between">
             <div className="flex items-center justify-between">
               <span className="text-[10px] uppercase font-bold text-slate-400">Live Presence</span>
               <div className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
@@ -456,7 +456,7 @@ export function RoomTelemetryDashboard({
               </div>
             </div>
             <div className="mt-2">
-              <span className="font-display font-black text-2xl text-emerald-400 font-mono">
+              <span className="font-semibold text-2xl text-emerald-400 font-mono">
                 {onlineBiddersCount} / {bidders.length || 15}
               </span>
               <span className="text-[10px] text-slate-400 block mt-0.5">
@@ -470,7 +470,7 @@ export function RoomTelemetryDashboard({
         </div>
 
         {/* Real-time Latency Sparkline Histogram */}
-        <div className="p-4 rounded-2xl bg-navy-950/60 border border-navy-800/80 space-y-2">
+        <div className="p-4 rounded-[16px] bg-navy-950/60 border border-white/[0.07] space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
               Recent Ping Latency History (Last {pingHistory.length} Probes)
@@ -519,9 +519,9 @@ export function RoomTelemetryDashboard({
       </div>
 
       {/* SECTION 2: Active Bidder Capital Distribution Map */}
-      <div className="glass-card rounded-3xl p-6 sm:p-7 border border-navy-800/80 shadow-2xl space-y-6">
+      <div className="glass-card rounded-[24px] p-6 sm:p-7 border border-white/[0.07] shadow-sm space-y-6">
         {/* Header & Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-navy-800">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/[0.07]">
           <div>
             <h3 className="text-base font-display font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <span>Active Bidder Capital Distribution Map</span>
@@ -544,12 +544,12 @@ export function RoomTelemetryDashboard({
                 placeholder="Search team or ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl bg-navy-950 border border-navy-800 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500 w-44"
+                className="pl-8 pr-3 py-1.5 rounded-[12px] bg-navy-950 border border-white/[0.07] text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500 w-44"
               />
             </div>
 
             {/* Sort Selector */}
-            <div className="flex items-center gap-1 bg-navy-950 p-1 rounded-xl border border-navy-800 text-xs">
+            <div className="flex items-center gap-1 bg-navy-950 p-1 rounded-[12px] border border-white/[0.07] text-xs">
               <button
                 onClick={() => setSortBy('liquidity')}
                 className={`px-2.5 py-1 rounded-lg font-bold transition ${
@@ -590,17 +590,17 @@ export function RoomTelemetryDashboard({
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setSelectedTier('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+            className={`px-3 py-1.5 rounded-[12px] text-xs font-bold transition ${
               selectedTier === 'all'
                 ? 'bg-navy-750 text-white border border-slate-600 shadow-sm'
-                : 'bg-navy-950 text-slate-400 border border-navy-800 hover:text-white'
+                : 'bg-navy-950 text-slate-400 border border-white/[0.07] hover:text-white'
             }`}
           >
             All Teams ({tierCounts.all})
           </button>
           <button
             onClick={() => setSelectedTier('flush')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-[12px] text-xs font-bold transition flex items-center gap-1.5 ${
               selectedTier === 'flush'
                 ? 'bg-emerald-500 text-navy-950 font-black shadow-sm'
                 : 'bg-navy-950 text-emerald-400 border border-emerald-500/30'
@@ -611,7 +611,7 @@ export function RoomTelemetryDashboard({
           </button>
           <button
             onClick={() => setSelectedTier('moderate')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-[12px] text-xs font-bold transition flex items-center gap-1.5 ${
               selectedTier === 'moderate'
                 ? 'bg-amber-500 text-navy-950 font-black shadow-sm'
                 : 'bg-navy-950 text-amber-400 border border-amber-500/30'
@@ -622,7 +622,7 @@ export function RoomTelemetryDashboard({
           </button>
           <button
             onClick={() => setSelectedTier('critical')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-[12px] text-xs font-bold transition flex items-center gap-1.5 ${
               selectedTier === 'critical'
                 ? 'bg-rose-500 text-white font-black shadow-sm'
                 : 'bg-navy-950 text-rose-400 border border-rose-500/30'
@@ -633,10 +633,10 @@ export function RoomTelemetryDashboard({
           </button>
           <button
             onClick={() => setSelectedTier('depleted')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-[12px] text-xs font-bold transition flex items-center gap-1.5 ${
               selectedTier === 'depleted'
                 ? 'bg-slate-700 text-rose-300 font-black shadow-sm'
-                : 'bg-navy-950 text-slate-500 border border-navy-800'
+                : 'bg-navy-950 text-slate-500 border border-white/[0.07]'
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-rose-600" />
@@ -647,7 +647,7 @@ export function RoomTelemetryDashboard({
         {/* 15-Team Grid Map */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredBidders.length === 0 ? (
-            <div className="col-span-3 text-center py-12 text-slate-500 italic bg-navy-950/40 rounded-2xl border border-navy-800">
+            <div className="col-span-3 text-center py-12 text-slate-500 italic bg-navy-950/40 rounded-[16px] border border-white/[0.07]">
               No investor teams matching selected filter.
             </div>
           ) : (
@@ -668,7 +668,7 @@ export function RoomTelemetryDashboard({
               return (
                 <div
                   key={b.id}
-                  className={`p-4 rounded-2xl bg-navy-950/70 border transition-all duration-200 hover:border-navy-600 space-y-3 shadow-md ${
+                  className={`p-4 rounded-[16px] bg-navy-950/70 border transition-all duration-200 hover:border-navy-600 space-y-3 shadow-md ${
                     tier === 'flush'
                       ? 'border-emerald-500/25'
                       : tier === 'moderate'
@@ -691,7 +691,7 @@ export function RoomTelemetryDashboard({
                       </span>
                     </div>
 
-                    <span className="font-mono text-[10px] text-slate-400 px-2 py-0.5 rounded bg-navy-900 border border-navy-800">
+                    <span className="font-mono text-[10px] text-slate-400 px-2 py-0.5 rounded bg-navy-900 border border-white/[0.07]">
                       {b.display_user_id}
                     </span>
                   </div>
@@ -730,7 +730,7 @@ export function RoomTelemetryDashboard({
 
                   {/* Multi-Segment Spent Progress Bar */}
                   <div className="space-y-1">
-                    <div className="h-2 w-full bg-navy-900 rounded-full overflow-hidden flex border border-navy-800 shadow-inner">
+                    <div className="h-2 w-full bg-navy-900 rounded-full overflow-hidden flex border border-white/[0.07] shadow-inner">
                       <div
                         style={{ width: `${spentPct}%` }}
                         title={`Spent: ₹${spent.toLocaleString('en-IN')} (${spentPct.toFixed(0)}%)`}
@@ -762,10 +762,10 @@ export function RoomTelemetryDashboard({
       {/* SECTION 3: Snapshot Verification Modal */}
       {showVerifyModal && (
         <div className="fixed inset-0 z-50 bg-navy-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl glass-card rounded-3xl p-6 sm:p-7 border border-navy-700 shadow-2xl space-y-5 animate-fade-in">
-            <div className="flex items-center justify-between pb-4 border-b border-navy-800">
+          <div className="w-full max-w-2xl glass-card rounded-[24px] p-6 sm:p-7 border border-navy-700 shadow-sm space-y-5 animate-fade-in">
+            <div className="flex items-center justify-between pb-4 border-b border-white/[0.07]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                <div className="w-10 h-10 rounded-[16px] bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
                   <Fingerprint className="w-5 h-5" />
                 </div>
                 <div>
@@ -784,14 +784,14 @@ export function RoomTelemetryDashboard({
                   setUploadedSnapshot(null);
                   setVerificationResult(null);
                 }}
-                className="p-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-slate-400 hover:text-white"
+                className="p-2 rounded-[12px] bg-navy-900 hover:bg-navy-800 text-slate-400 hover:text-white"
               >
                 <XCircle className="w-5 h-5" />
               </button>
             </div>
 
             {/* File Upload Trigger */}
-            <div className="p-6 rounded-2xl bg-navy-950 border-2 border-dashed border-navy-800 hover:border-purple-500/50 text-center space-y-3 transition">
+            <div className="p-6 rounded-[16px] bg-navy-950 border-2 border-dashed border-white/[0.07] hover:border-purple-500/50 text-center space-y-3 transition">
               <UploadCloud className="w-8 h-8 text-purple-400 mx-auto" />
               <div>
                 <p className="text-sm font-bold text-white">Upload SEEP 4.0 Snapshot File (.json)</p>
@@ -799,7 +799,7 @@ export function RoomTelemetryDashboard({
                   Select a generated snapshot to compute client-side SHA-256 digest & verify ledger
                 </p>
               </div>
-              <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs cursor-pointer shadow-md transition">
+              <label className="inline-flex items-center gap-2 px-4 py-2 rounded-[12px] bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs cursor-pointer shadow-md transition">
                 <span>Select Snapshot JSON</span>
                 <input
                   type="file"
@@ -813,7 +813,7 @@ export function RoomTelemetryDashboard({
             {/* Verification Result Display */}
             {verificationResult && (
               <div
-                className={`p-4 rounded-2xl border space-y-3 text-xs ${
+                className={`p-4 rounded-[16px] border space-y-3 text-xs ${
                   verificationResult.valid
                     ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-200'
                     : 'bg-rose-950/30 border-rose-500/40 text-rose-200'
@@ -835,7 +835,7 @@ export function RoomTelemetryDashboard({
 
                 <p className="text-xs text-slate-300">{verificationResult.message}</p>
 
-                <div className="space-y-1.5 pt-2 border-t border-navy-800/80 font-mono text-[11px]">
+                <div className="space-y-1.5 pt-2 border-t border-white/[0.07] font-mono text-[11px]">
                   <div className="flex justify-between">
                     <span className="text-slate-400">Schema Version:</span>
                     <strong className="text-white">{verificationResult.schemaVersion}</strong>
@@ -865,7 +865,7 @@ export function RoomTelemetryDashboard({
                   setUploadedSnapshot(null);
                   setVerificationResult(null);
                 }}
-                className="px-4 py-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-xs font-bold text-slate-300"
+                className="px-4 py-2 rounded-[12px] bg-navy-900 hover:bg-navy-800 text-xs font-bold text-slate-300"
               >
                 Close Verifier
               </button>

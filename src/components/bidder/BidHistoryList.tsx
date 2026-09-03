@@ -11,8 +11,8 @@ interface BidHistoryListProps {
 
 export function BidHistoryList({ bids, currentProfile }: BidHistoryListProps) {
   return (
-    <div className="glass-card rounded-3xl p-6 border border-navy-800/80 flex flex-col h-full max-h-[440px] shadow-xl">
-      <div className="flex items-center justify-between pb-4 border-b border-navy-800 mb-4">
+    <div className="glass-card rounded-[24px] p-6 border border-white/[0.07] flex flex-col h-full max-h-[440px] shadow-xl">
+      <div className="flex items-center justify-between pb-4 border-b border-white/[0.07] mb-4">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400">
             <History className="w-4 h-4" />
@@ -24,7 +24,7 @@ export function BidHistoryList({ bids, currentProfile }: BidHistoryListProps) {
             <p className="text-[10px] text-slate-400">Real-time chronologically sequenced submissions</p>
           </div>
         </div>
-        <span className="text-xs font-mono text-slate-400 bg-navy-900/80 px-2.5 py-1 rounded-lg border border-navy-800">
+        <span className="text-xs font-mono text-slate-400 bg-navy-900/80 px-2.5 py-1 rounded-lg border border-white/[0.07]">
           {bids.length} Bids
         </span>
       </div>
@@ -44,9 +44,9 @@ export function BidHistoryList({ bids, currentProfile }: BidHistoryListProps) {
             return (
               <div
                 key={bid.id}
-                className={`p-3 sm:p-3.5 rounded-2xl border flex items-center justify-between transition-all duration-200 ${
+                className={`p-3 sm:p-3.5 rounded-[16px] border flex items-center justify-between transition-all duration-200 ${
                   isTop
-                    ? 'bg-gold-500/15 border-gold-500/50 text-gold-100 shadow-gold'
+                    ? 'bg-gold-500/15 border-gold-500/50 text-gold-100 shadow-sm'
                     : isMyBid
                     ? 'bg-navy-800/90 border-navy-700 text-white shadow-sm'
                     : 'bg-navy-950/50 border-navy-900/90 text-slate-300'
@@ -54,12 +54,12 @@ export function BidHistoryList({ bids, currentProfile }: BidHistoryListProps) {
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-mono font-black shrink-0 ${
+                    className={`w-7 h-7 rounded-[12px] flex items-center justify-center text-xs font-mono font-black shrink-0 ${
                       isTop
-                        ? 'bg-gold-500 text-navy-950 shadow-gold'
+                        ? 'bg-gold-500 text-navy-950 shadow-sm'
                         : isMyBid
                         ? 'bg-navy-700 text-gold-400 border border-gold-500/30'
-                        : 'bg-navy-900 text-slate-400 border border-navy-800'
+                        : 'bg-navy-900 text-slate-400 border border-white/[0.07]'
                     }`}
                   >
                     #{bid.server_seq}
@@ -88,7 +88,7 @@ export function BidHistoryList({ bids, currentProfile }: BidHistoryListProps) {
                 </div>
 
                 <div className="text-right shrink-0">
-                  <div className="font-display font-black text-sm sm:text-base text-white flex items-center justify-end gap-1">
+                  <div className="font-semibold text-sm sm:text-base text-white flex items-center justify-end gap-1">
                     <span>₹{Number(bid.amount).toLocaleString('en-IN')}</span>
                     {isTop && <ArrowUp className="w-4 h-4 text-gold-400 inline" />}
                   </div>

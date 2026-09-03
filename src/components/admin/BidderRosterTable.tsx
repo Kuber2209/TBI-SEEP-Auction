@@ -231,11 +231,11 @@ export function BidderRosterTable({
   };
 
   return (
-    <div className="glass-card rounded-3xl p-6 sm:p-7 border border-navy-800/80 shadow-2xl space-y-6">
+    <div className="glass-card rounded-[24px] p-6 sm:p-7 border border-white/[0.07] shadow-sm space-y-6">
       {/* Top Header & Aggregate Financial Metrics */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-navy-800">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/[0.07]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-seep-sky/15 border border-seep-sky/30 flex items-center justify-center text-seep-sky shadow-inner">
+          <div className="w-10 h-10 rounded-[16px] bg-seep-sky/15 border border-seep-sky/30 flex items-center justify-center text-seep-sky shadow-inner">
             <Users className="w-5 h-5" />
           </div>
           <div>
@@ -251,19 +251,19 @@ export function BidderRosterTable({
 
         {/* Aggregate Stats Bar */}
         <div className="flex flex-wrap items-center gap-2.5 text-xs">
-          <div className="px-3.5 py-1.5 rounded-xl bg-navy-900/90 border border-navy-800 flex items-center gap-2">
+          <div className="px-3.5 py-1.5 rounded-[12px] bg-navy-900/90 border border-white/[0.07] flex items-center gap-2">
             <span className="text-slate-400 font-medium">Allocated:</span>
             <strong className="text-white font-mono font-black">₹{totalPurse.toLocaleString('en-IN')}</strong>
           </div>
-          <div className="px-3.5 py-1.5 rounded-xl bg-navy-900/90 border border-emerald-500/30 flex items-center gap-2">
+          <div className="px-3.5 py-1.5 rounded-[12px] bg-navy-900/90 border border-emerald-500/30 flex items-center gap-2">
             <span className="text-slate-400 font-medium">Liquid:</span>
             <strong className="text-emerald-400 font-mono font-black">₹{totalAvailable.toLocaleString('en-IN')}</strong>
           </div>
-          <div className="px-3.5 py-1.5 rounded-xl bg-navy-900/90 border border-amber-500/30 flex items-center gap-2">
+          <div className="px-3.5 py-1.5 rounded-[12px] bg-navy-900/90 border border-amber-500/30 flex items-center gap-2">
             <span className="text-slate-400 font-medium">In Escrow:</span>
             <strong className="text-amber-400 font-mono font-black">₹{totalLocked.toLocaleString('en-IN')}</strong>
           </div>
-          <div className="px-3.5 py-1.5 rounded-xl bg-navy-900/90 border border-seep-sky/30 flex items-center gap-2">
+          <div className="px-3.5 py-1.5 rounded-[12px] bg-navy-900/90 border border-seep-sky/30 flex items-center gap-2">
             <span className="text-slate-400 font-medium">Spent:</span>
             <strong className="text-seep-sky font-mono font-black">₹{totalSpent.toLocaleString('en-IN')}</strong>
           </div>
@@ -276,10 +276,10 @@ export function BidderRosterTable({
         <div className="flex flex-wrap items-center gap-1.5">
           <button
             onClick={() => setTierFilter('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-[12px] text-xs font-bold transition flex items-center gap-1.5 ${
               tierFilter === 'all'
-                ? 'bg-gold-500 text-navy-950 shadow-gold'
-                : 'bg-navy-900 text-slate-400 hover:text-white border border-navy-800'
+                ? 'bg-gold-500 text-navy-950 shadow-sm'
+                : 'bg-navy-900 text-slate-400 hover:text-white border border-white/[0.07]'
             }`}
           >
             <span>All Teams</span>
@@ -288,7 +288,7 @@ export function BidderRosterTable({
 
           <button
             onClick={() => setTierFilter('flush')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-[12px] text-xs font-bold transition flex items-center gap-1.5 ${
               tierFilter === 'flush'
                 ? 'bg-emerald-500 text-navy-950 font-black shadow-md'
                 : 'bg-navy-900 text-emerald-400/80 hover:text-emerald-300 border border-emerald-500/20'
@@ -301,7 +301,7 @@ export function BidderRosterTable({
 
           <button
             onClick={() => setTierFilter('moderate')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-[12px] text-xs font-bold transition flex items-center gap-1.5 ${
               tierFilter === 'moderate'
                 ? 'bg-amber-500 text-navy-950 font-black shadow-md'
                 : 'bg-navy-900 text-amber-400/80 hover:text-amber-300 border border-amber-500/20'
@@ -314,7 +314,7 @@ export function BidderRosterTable({
 
           <button
             onClick={() => setTierFilter('critical')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-[12px] text-xs font-bold transition flex items-center gap-1.5 ${
               tierFilter === 'critical'
                 ? 'bg-rose-500 text-white font-black shadow-md'
                 : 'bg-navy-900 text-rose-400/80 hover:text-rose-300 border border-rose-500/20'
@@ -327,10 +327,10 @@ export function BidderRosterTable({
 
           <button
             onClick={() => setTierFilter('depleted')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-[12px] text-xs font-bold transition flex items-center gap-1.5 ${
               tierFilter === 'depleted'
                 ? 'bg-slate-700 text-rose-300 font-black shadow-md'
-                : 'bg-navy-900 text-slate-500 hover:text-slate-300 border border-navy-800'
+                : 'bg-navy-900 text-slate-500 hover:text-slate-300 border border-white/[0.07]'
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-rose-600" />
@@ -347,7 +347,7 @@ export function BidderRosterTable({
             className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition ${
               sortField === 'available'
                 ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                : 'bg-navy-900 text-slate-400 border-navy-800 hover:text-white'
+                : 'bg-navy-900 text-slate-400 border-white/[0.07] hover:text-white'
             }`}
           >
             Liquidity {sortField === 'available' && (sortDir === 'desc' ? '↓' : '↑')}
@@ -357,7 +357,7 @@ export function BidderRosterTable({
             className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition ${
               sortField === 'locked'
                 ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                : 'bg-navy-900 text-slate-400 border-navy-800 hover:text-white'
+                : 'bg-navy-900 text-slate-400 border-white/[0.07] hover:text-white'
             }`}
           >
             Exposure {sortField === 'locked' && (sortDir === 'desc' ? '↓' : '↑')}
@@ -367,7 +367,7 @@ export function BidderRosterTable({
             className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition ${
               sortField === 'team_name'
                 ? 'bg-seep-sky/20 text-seep-sky border-seep-sky/40'
-                : 'bg-navy-900 text-slate-400 border-navy-800 hover:text-white'
+                : 'bg-navy-900 text-slate-400 border-white/[0.07] hover:text-white'
             }`}
           >
             Team Name {sortField === 'team_name' && (sortDir === 'desc' ? '↓' : '↑')}
@@ -384,7 +384,7 @@ export function BidderRosterTable({
             placeholder="Search by team name or User ID (e.g. TEAM05)..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-navy-950 border border-navy-800 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500"
+            className="w-full pl-8 pr-3 py-1.5 rounded-[12px] bg-navy-950 border border-white/[0.07] text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500"
           />
         </div>
 
@@ -394,17 +394,17 @@ export function BidderRosterTable({
       </div>
 
       {statusMessage && (
-        <div className="p-3.5 rounded-2xl bg-navy-900 border border-gold-500/40 text-gold-300 text-xs font-semibold flex items-center gap-2 animate-fade-in">
+        <div className="p-3.5 rounded-[16px] bg-navy-900 border border-gold-500/40 text-gold-300 text-xs font-semibold flex items-center gap-2 animate-fade-in">
           <CheckCheck className="w-4 h-4 text-gold-400" />
           <span>{statusMessage}</span>
         </div>
       )}
 
       {/* Interactive Table */}
-      <div className="overflow-x-auto rounded-2xl border border-navy-800/80 shadow-lg">
+      <div className="overflow-x-auto rounded-[16px] border border-white/[0.07] shadow-lg">
         <table className="w-full text-left text-xs">
           <thead>
-            <tr className="bg-navy-950/90 border-b border-navy-800 text-slate-400 uppercase text-[10px] font-black tracking-wider select-none">
+            <tr className="bg-navy-950/90 border-b border-white/[0.07] text-slate-400 uppercase text-[10px] font-black tracking-wider select-none">
               <th
                 onClick={() => handleSort('display_user_id')}
                 className="py-3 px-4 cursor-pointer hover:text-white transition"
@@ -589,7 +589,7 @@ export function BidderRosterTable({
                     {/* Purse Utilization Progress Indicator */}
                     <td className="py-3.5 px-4 min-w-[120px]">
                       <div className="space-y-1">
-                        <div className="h-2 w-full bg-navy-950 rounded-full overflow-hidden flex border border-navy-800 shadow-inner">
+                        <div className="h-2 w-full bg-navy-950 rounded-full overflow-hidden flex border border-white/[0.07] shadow-inner">
                           <div
                             style={{ width: `${spentPct}%` }}
                             title={`Spent: ₹${spent.toLocaleString('en-IN')} (${spentPct.toFixed(1)}%)`}
@@ -619,7 +619,7 @@ export function BidderRosterTable({
                         <button
                           onClick={() => setActivePasswordModalUser(b.id)}
                           title="Reset Password"
-                          className="p-1.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-slate-300 hover:text-white border border-navy-800 hover:border-gold-500/40 transition"
+                          className="p-1.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-slate-300 hover:text-white border border-white/[0.07] hover:border-gold-500/40 transition"
                         >
                           <KeyRound className="w-3.5 h-3.5" />
                         </button>
@@ -628,7 +628,7 @@ export function BidderRosterTable({
                           onClick={() => handleForceLogout(b.id)}
                           disabled={isProcessing}
                           title="Force Disconnect / Kick Active Session"
-                          className="p-1.5 rounded-lg bg-navy-900 hover:bg-rose-950/80 text-slate-300 hover:text-rose-300 border border-navy-800 hover:border-rose-500/40 transition disabled:opacity-50"
+                          className="p-1.5 rounded-lg bg-navy-900 hover:bg-rose-950/80 text-slate-300 hover:text-rose-300 border border-white/[0.07] hover:border-rose-500/40 transition disabled:opacity-50"
                         >
                           <LogOut className="w-3.5 h-3.5" />
                         </button>
@@ -661,7 +661,7 @@ export function BidderRosterTable({
 
       {/* Password Reset Modal Popup */}
       {activePasswordModalUser && (
-        <div className="p-4 rounded-2xl bg-navy-950 border border-navy-700 space-y-2.5 animate-fade-in shadow-2xl">
+        <div className="p-4 rounded-[16px] bg-navy-950 border border-navy-700 space-y-2.5 animate-fade-in shadow-sm">
           <span className="text-xs font-bold text-white block">
             Update Password for {bidders.find((b) => b.id === activePasswordModalUser)?.team_name}:
           </span>
@@ -671,11 +671,11 @@ export function BidderRosterTable({
               placeholder="Enter new password (min 6 characters)"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="flex-1 min-w-[200px] px-3.5 py-2 rounded-xl bg-navy-900 border border-navy-700 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500"
+              className="flex-1 min-w-[200px] px-3.5 py-2 rounded-[12px] bg-navy-900 border border-navy-700 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500"
             />
             <button
               onClick={() => handleResetPassword(activePasswordModalUser)}
-              className="px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 font-black text-xs shadow-gold transition"
+              className="px-4 py-2 rounded-[12px] bg-gold-500 hover:bg-gold-400 text-navy-950 font-black text-xs shadow-sm transition"
             >
               Update Password
             </button>
@@ -684,7 +684,7 @@ export function BidderRosterTable({
                 setActivePasswordModalUser(null);
                 setNewPassword('');
               }}
-              className="px-4 py-2 rounded-xl bg-navy-800 text-xs font-semibold text-slate-300 hover:bg-navy-700"
+              className="px-4 py-2 rounded-[12px] bg-navy-800 text-xs font-semibold text-slate-300 hover:bg-navy-700"
             >
               Cancel
             </button>

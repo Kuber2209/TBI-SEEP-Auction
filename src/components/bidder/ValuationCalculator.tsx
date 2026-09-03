@@ -66,11 +66,11 @@ export function ValuationCalculator({
   const anchorValuation = Math.max(1, (basePrice || 10000) / 0.1);
 
   return (
-    <div className="p-4 sm:p-5 rounded-2xl bg-navy-950/80 border border-navy-800/90 shadow-xl space-y-4">
+    <div className="p-4 sm:p-5 rounded-[16px] bg-navy-950/80 border border-white/[0.07]/90 shadow-xl space-y-4">
       {/* Header & Mode Switcher */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-navy-800/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-white/[0.07]">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 shrink-0">
+          <div className="w-8 h-8 rounded-[12px] bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 shrink-0">
             <Calculator className="w-4 h-4" />
           </div>
           <div>
@@ -84,13 +84,13 @@ export function ValuationCalculator({
         </div>
 
         {/* View Mode Toggle */}
-        <div className="flex items-center bg-navy-900/90 p-1 rounded-xl border border-navy-800 shrink-0">
+        <div className="flex items-center bg-navy-900/90 p-1 rounded-[12px] border border-white/[0.07] shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab('slider')}
             className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold transition-all ${
               activeTab === 'slider'
-                ? 'bg-gold-500 text-navy-950 shadow-gold'
+                ? 'bg-gold-500 text-navy-950 shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -103,7 +103,7 @@ export function ValuationCalculator({
             onClick={() => setActiveTab('matrix')}
             className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold transition-all ${
               activeTab === 'matrix'
-                ? 'bg-gold-500 text-navy-950 shadow-gold'
+                ? 'bg-gold-500 text-navy-950 shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -117,7 +117,7 @@ export function ValuationCalculator({
       {activeTab === 'slider' && (
         <div className="space-y-4 animate-fade-in">
           {/* Active Offer Banner */}
-          <div className="flex items-center justify-between p-2.5 rounded-xl bg-navy-900/70 border border-navy-800 text-xs">
+          <div className="flex items-center justify-between p-2.5 rounded-[12px] bg-navy-900/70 border border-white/[0.07] text-xs">
             <span className="text-slate-400 font-medium flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-gold-400" />
               Active Modeling Base:
@@ -144,7 +144,7 @@ export function ValuationCalculator({
               value={targetEquityPct}
               onChange={(e) => setTargetEquityPct(Number(e.target.value))}
               aria-label="Target Equity Percentage Slider"
-              className="w-full h-2 bg-navy-900 rounded-lg appearance-none cursor-pointer accent-gold-500 border border-navy-800"
+              className="w-full h-2 bg-navy-900 rounded-lg appearance-none cursor-pointer accent-gold-500 border border-white/[0.07]"
             />
 
             {/* Quick Presets */}
@@ -156,8 +156,8 @@ export function ValuationCalculator({
                   onClick={() => setTargetEquityPct(preset)}
                   className={`px-2 py-1 rounded-lg text-[10px] font-mono font-bold transition flex-1 ${
                     targetEquityPct === preset
-                      ? 'bg-gold-500 text-navy-950 shadow-gold'
-                      : 'bg-navy-900/90 text-slate-400 hover:text-white hover:bg-navy-850 border border-navy-800'
+                      ? 'bg-gold-500 text-navy-950 shadow-sm'
+                      : 'bg-navy-900/90 text-slate-400 hover:text-white hover:bg-navy-850 border border-white/[0.07]'
                   }`}
                 >
                   {preset}%
@@ -168,14 +168,14 @@ export function ValuationCalculator({
 
           {/* Calculated Output Metrics Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <div className="p-3.5 rounded-xl bg-navy-900/90 border border-navy-800 shadow-inner">
+            <div className="p-3.5 rounded-[12px] bg-navy-900/90 border border-white/[0.07] shadow-inner">
               <div className="flex items-center justify-between text-slate-400 mb-1">
                 <span className="text-[10px] uppercase font-bold tracking-wider">
                   Implied Post-Money Valuation
                 </span>
                 <TrendingUp className="w-3.5 h-3.5 text-gold-400" />
               </div>
-              <span className="font-display font-black text-lg sm:text-xl text-white block">
+              <span className="font-semibold text-lg sm:text-xl text-white block">
                 ₹ {Math.round(impliedPostMoney).toLocaleString('en-IN')}
               </span>
               <span className="text-[10px] text-slate-500 mt-1 block">
@@ -183,14 +183,14 @@ export function ValuationCalculator({
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-navy-900/90 border border-navy-800 shadow-inner">
+            <div className="p-3.5 rounded-[12px] bg-navy-900/90 border border-white/[0.07] shadow-inner">
               <div className="flex items-center justify-between text-slate-400 mb-1">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400">
                   Implied Pre-Money Floor
                 </span>
                 <Shield className="w-3.5 h-3.5 text-emerald-400" />
               </div>
-              <span className="font-display font-black text-lg sm:text-xl text-emerald-400 block">
+              <span className="font-semibold text-lg sm:text-xl text-emerald-400 block">
                 ₹ {Math.round(impliedPreMoney).toLocaleString('en-IN')}
               </span>
               <span className="text-[10px] text-slate-500 mt-1 block">
@@ -200,7 +200,7 @@ export function ValuationCalculator({
           </div>
 
           {/* Cost Per 1% Equity Callout */}
-          <div className="p-2.5 rounded-xl bg-navy-900/50 border border-navy-800/80 flex items-center justify-between text-[11px] text-slate-400">
+          <div className="p-2.5 rounded-[12px] bg-navy-900/50 border border-white/[0.07] flex items-center justify-between text-[11px] text-slate-400">
             <span className="flex items-center gap-1.5">
               <Info className="w-3.5 h-3.5 text-seep-sky" />
               Cost Per 1% Equity Stake:
@@ -228,7 +228,7 @@ export function ValuationCalculator({
                   className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold ${
                     targetEquityPct === p
                       ? 'bg-gold-500 text-navy-950'
-                      : 'bg-navy-900 text-slate-400 hover:text-white border border-navy-800'
+                      : 'bg-navy-900 text-slate-400 hover:text-white border border-white/[0.07]'
                   }`}
                 >
                   {p}%
@@ -251,15 +251,15 @@ export function ValuationCalculator({
               return (
                 <div
                   key={optAmount}
-                  className={`p-3 rounded-xl border flex flex-col justify-between transition-all ${
+                  className={`p-3 rounded-[12px] border flex flex-col justify-between transition-all ${
                     isSelected
-                      ? 'bg-gold-500/10 border-gold-500/50 shadow-gold'
-                      : 'bg-navy-900/80 border-navy-800 hover:border-navy-700'
+                      ? 'bg-gold-500/10 border-gold-500/50 shadow-sm'
+                      : 'bg-navy-900/80 border-white/[0.07] hover:border-navy-700'
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-navy-950 text-gold-400 border border-navy-800">
+                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-navy-950 text-gold-400 border border-white/[0.07]">
                         Option #{idx + 1}
                       </span>
                       {isSelected && (
@@ -269,12 +269,12 @@ export function ValuationCalculator({
                       )}
                     </div>
 
-                    <span className="text-xs sm:text-sm font-display font-black text-white block">
+                    <span className="text-xs sm:text-sm font-semibold text-white block">
                       ₹{optAmount.toLocaleString('en-IN')}
                     </span>
                   </div>
 
-                  <div className="mt-2.5 pt-2 border-t border-navy-800/80 space-y-1 text-[10px]">
+                  <div className="mt-2.5 pt-2 border-t border-white/[0.07] space-y-1 text-[10px]">
                     <div>
                       <span className="text-slate-500 block text-[9px] uppercase">Post-Money</span>
                       <span className="font-mono font-bold text-slate-200">

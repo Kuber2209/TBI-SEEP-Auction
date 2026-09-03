@@ -260,17 +260,17 @@ export function PortfolioDrawer({
 
       {/* Slide-over Panel Container */}
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
-        <div className="w-screen max-w-2xl bg-navy-950/95 border-l border-navy-800/90 shadow-2xl flex flex-col justify-between overflow-hidden text-slate-100">
+        <div className="w-screen max-w-2xl bg-navy-950/95 border-l border-white/[0.07]/90 shadow-sm flex flex-col justify-between overflow-hidden text-slate-100">
           {/* Header */}
-          <div className="px-6 py-5 border-b border-navy-800/90 bg-navy-900/60 flex items-center justify-between gap-4 shrink-0">
+          <div className="px-6 py-5 border-b border-white/[0.07]/90 bg-navy-900/60 flex items-center justify-between gap-4 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-gold-600 via-gold-500 to-amber-300 flex items-center justify-center text-navy-950 font-black shadow-gold shrink-0">
+              <div className="w-11 h-11 rounded-[16px] bg-gradient-to-tr from-gold-600 via-gold-500 to-amber-300 flex items-center justify-center text-navy-950 font-black shadow-sm shrink-0">
                 <Briefcase className="w-5 h-5" />
               </div>
               <div>
                 <h2
                   id="portfolio-drawer-title"
-                  className="text-base sm:text-lg font-display font-black text-white flex items-center gap-2"
+                  className="text-base sm:text-lg font-semibold text-white flex items-center gap-2"
                 >
                   <span>{teamName}&rsquo;s Capital Intelligence</span>
                   <span className="px-2.5 py-0.5 rounded-full bg-gold-500/20 text-gold-300 text-xs font-mono font-bold border border-gold-500/30">
@@ -286,7 +286,7 @@ export function PortfolioDrawer({
             <button
               onClick={onClose}
               aria-label="Close portfolio drawer"
-              className="p-2.5 rounded-xl bg-navy-900 hover:bg-navy-850 text-slate-400 hover:text-white border border-navy-800 transition active:scale-95 shrink-0"
+              className="p-2.5 rounded-[12px] bg-navy-900 hover:bg-navy-850 text-slate-400 hover:text-white border border-white/[0.07] transition active:scale-[0.98] shrink-0"
             >
               <X className="w-5 h-5" />
             </button>
@@ -295,7 +295,7 @@ export function PortfolioDrawer({
           {/* Scrollable Content Body */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {/* Live Purse Burn-Rate Gauge & Core Financials */}
-            <div className="p-5 rounded-2xl bg-navy-900/80 border border-navy-800 shadow-xl space-y-4">
+            <div className="p-5 rounded-[16px] bg-navy-900/80 border border-white/[0.07] shadow-xl space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Gauge className="w-4 h-4 text-gold-400" />
@@ -310,7 +310,7 @@ export function PortfolioDrawer({
 
               {/* Multi-tier Capital Deployment Bar */}
               <div>
-                <div className="h-3 w-full bg-navy-950 rounded-full overflow-hidden flex border border-navy-800 p-0.5 shadow-inner">
+                <div className="h-3 w-full bg-navy-950 rounded-full overflow-hidden flex border border-white/[0.07] p-0.5 shadow-inner">
                   <div
                     style={{ width: `${burnRatePct}%` }}
                     title={`Spent: ₹${spent.toLocaleString('en-IN')} (${burnRatePct.toFixed(1)}%)`}
@@ -346,30 +346,30 @@ export function PortfolioDrawer({
 
               {/* Metric Highlights Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                <div className="p-3 rounded-xl bg-navy-950/70 border border-navy-800">
+                <div className="p-3 rounded-[12px] bg-navy-950/70 border border-white/[0.07]">
                   <span className="text-[9px] uppercase font-bold text-slate-400 block">Total Purse</span>
-                  <span className="font-display font-black text-sm sm:text-base text-white mt-0.5 block">
+                  <span className="font-semibold text-sm sm:text-base text-white mt-0.5 block">
                     ₹{initial.toLocaleString('en-IN')}
                   </span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-navy-950/70 border border-navy-800">
+                <div className="p-3 rounded-[12px] bg-navy-950/70 border border-white/[0.07]">
                   <span className="text-[9px] uppercase font-bold text-slate-400 block">Capital Spent</span>
-                  <span className="font-display font-black text-sm sm:text-base text-gold-400 mt-0.5 block">
+                  <span className="font-semibold text-sm sm:text-base text-gold-400 mt-0.5 block">
                     ₹{spent.toLocaleString('en-IN')}
                   </span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-navy-950/70 border border-navy-800">
+                <div className="p-3 rounded-[12px] bg-navy-950/70 border border-white/[0.07]">
                   <span className="text-[9px] uppercase font-bold text-slate-400 block">Avg Lot Cost</span>
-                  <span className="font-display font-black text-sm sm:text-base text-seep-sky mt-0.5 block">
+                  <span className="font-semibold text-sm sm:text-base text-seep-sky mt-0.5 block">
                     ₹{avgAcquisitionCost.toLocaleString('en-IN')}
                   </span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-navy-950/70 border border-navy-800">
+                <div className="p-3 rounded-[12px] bg-navy-950/70 border border-white/[0.07]">
                   <span className="text-[9px] uppercase font-bold text-slate-400 block">Liquid Runway</span>
-                  <span className="font-display font-black text-sm sm:text-base text-emerald-400 mt-0.5 block">
+                  <span className="font-semibold text-sm sm:text-base text-emerald-400 mt-0.5 block">
                     ₹{available.toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -377,7 +377,7 @@ export function PortfolioDrawer({
             </div>
 
             {/* Visual Sector Diversification Breakdown (5 Key Sectors) */}
-            <div className="p-5 rounded-2xl bg-navy-900/80 border border-navy-800 shadow-xl space-y-4">
+            <div className="p-5 rounded-[16px] bg-navy-900/80 border border-white/[0.07] shadow-xl space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <PieChart className="w-4 h-4 text-seep-sky" />
@@ -403,7 +403,7 @@ export function PortfolioDrawer({
                             <Icon className="w-3.5 h-3.5" />
                           </span>
                           <span className="font-bold text-slate-200">{sec.name}</span>
-                          <span className="text-[10px] font-mono text-slate-400 bg-navy-950 px-1.5 py-0.2 rounded border border-navy-800">
+                          <span className="text-[10px] font-mono text-slate-400 bg-navy-950 px-1.5 py-0.2 rounded border border-white/[0.07]">
                             {sec.count} lot{sec.count === 1 ? '' : 's'}
                           </span>
                         </div>
@@ -419,7 +419,7 @@ export function PortfolioDrawer({
                       </div>
 
                       {/* Percentage Bar */}
-                      <div className="h-2 w-full bg-navy-950 rounded-full overflow-hidden border border-navy-800">
+                      <div className="h-2 w-full bg-navy-950 rounded-full overflow-hidden border border-white/[0.07]">
                         <div
                           style={{ width: `${sec.percentage}%` }}
                           className={`h-full ${sec.meta.barColor} transition-all duration-500 rounded-full`}
@@ -432,7 +432,7 @@ export function PortfolioDrawer({
             </div>
 
             {/* 4 Capital Allocation Risk Indicators */}
-            <div className="p-5 rounded-2xl bg-navy-900/80 border border-navy-800 shadow-xl space-y-4">
+            <div className="p-5 rounded-[16px] bg-navy-900/80 border border-white/[0.07] shadow-xl space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4 text-amber-400" />
@@ -446,10 +446,10 @@ export function PortfolioDrawer({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* 1. Sector Overconcentration */}
                 <div
-                  className={`p-3.5 rounded-xl border transition-all ${
+                  className={`p-3.5 rounded-[12px] border transition-all ${
                     riskAnalysis.overconcentration.triggered
                       ? 'bg-rose-500/10 border-rose-500/40 text-rose-200'
-                      : 'bg-navy-950/70 border-navy-800 text-slate-300'
+                      : 'bg-navy-950/70 border-white/[0.07] text-slate-300'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
@@ -478,10 +478,10 @@ export function PortfolioDrawer({
 
                 {/* 2. Rapid Depletion Velocity */}
                 <div
-                  className={`p-3.5 rounded-xl border transition-all ${
+                  className={`p-3.5 rounded-[12px] border transition-all ${
                     riskAnalysis.depletionVelocity.triggered
                       ? 'bg-amber-500/10 border-amber-500/40 text-amber-200'
-                      : 'bg-navy-950/70 border-navy-800 text-slate-300'
+                      : 'bg-navy-950/70 border-white/[0.07] text-slate-300'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
@@ -510,10 +510,10 @@ export function PortfolioDrawer({
 
                 {/* 3. Active Escrow Exposure */}
                 <div
-                  className={`p-3.5 rounded-xl border transition-all ${
+                  className={`p-3.5 rounded-[12px] border transition-all ${
                     riskAnalysis.escrowExposure.triggered
                       ? 'bg-amber-500/10 border-amber-500/40 text-amber-200'
-                      : 'bg-navy-950/70 border-navy-800 text-slate-300'
+                      : 'bg-navy-950/70 border-white/[0.07] text-slate-300'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
@@ -542,10 +542,10 @@ export function PortfolioDrawer({
 
                 {/* 4. Low Runway Buffer */}
                 <div
-                  className={`p-3.5 rounded-xl border transition-all ${
+                  className={`p-3.5 rounded-[12px] border transition-all ${
                     riskAnalysis.runwayBuffer.triggered
                       ? 'bg-rose-500/10 border-rose-500/40 text-rose-200'
-                      : 'bg-navy-950/70 border-navy-800 text-slate-300'
+                      : 'bg-navy-950/70 border-white/[0.07] text-slate-300'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
@@ -587,7 +587,7 @@ export function PortfolioDrawer({
               </div>
 
               {wonStartups.length === 0 ? (
-                <div className="p-8 rounded-2xl bg-navy-900/40 border border-navy-800 text-center text-slate-500 flex flex-col items-center justify-center">
+                <div className="p-8 rounded-[16px] bg-navy-900/40 border border-white/[0.07] text-center text-slate-500 flex flex-col items-center justify-center">
                   <Briefcase className="w-10 h-10 text-navy-700 mb-2" />
                   <p className="text-sm font-bold text-slate-300">No startup allocations acquired yet</p>
                   <p className="text-xs text-slate-500 max-w-sm mt-1">
@@ -602,7 +602,7 @@ export function PortfolioDrawer({
                     return (
                       <div
                         key={s.id}
-                        className="p-4 rounded-2xl bg-navy-900/80 border border-navy-800 hover:border-gold-500/40 transition flex items-center justify-between gap-3 shadow-sm"
+                        className="p-4 rounded-[16px] bg-navy-900/80 border border-white/[0.07] hover:border-gold-500/40 transition flex items-center justify-between gap-3 shadow-sm"
                       >
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
@@ -626,7 +626,7 @@ export function PortfolioDrawer({
                           <span className="text-[9px] uppercase font-bold text-emerald-400 block">
                             Won Price
                           </span>
-                          <span className="font-display font-black text-sm sm:text-base text-white">
+                          <span className="font-semibold text-sm sm:text-base text-white">
                             ₹{Number(s.winning_bid_amount || 0).toLocaleString('en-IN')}
                           </span>
                         </div>
@@ -639,14 +639,14 @@ export function PortfolioDrawer({
           </div>
 
           {/* Drawer Footer */}
-          <div className="px-6 py-4 border-t border-navy-800/90 bg-navy-900/80 flex items-center justify-between shrink-0">
+          <div className="px-6 py-4 border-t border-white/[0.07]/90 bg-navy-900/80 flex items-center justify-between shrink-0">
             <span className="flex items-center gap-1.5 text-xs text-slate-400">
               <Sparkles className="w-4 h-4 text-gold-400" />
               Verified on SEEP 4.0 Realtime Ledger
             </span>
             <button
               onClick={onClose}
-              className="px-5 py-2 rounded-xl bg-gradient-to-r from-gold-500 to-amber-400 hover:from-gold-400 hover:to-amber-300 text-navy-950 font-black text-xs uppercase tracking-wider shadow-gold transition active:scale-95"
+              className="px-5 py-2 rounded-[12px] bg-gradient-to-r from-gold-500 to-amber-400 hover:from-gold-400 hover:to-amber-300 text-navy-950 font-black text-xs uppercase tracking-wider shadow-sm transition active:scale-[0.98]"
             >
               Close Drawer
             </button>

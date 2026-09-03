@@ -3,94 +3,96 @@
 @tailwind utilities;
 
 :root {
-  --background: #030712;
-  --foreground: #f8fafc;
+  --background: #090A0F;
+  --foreground: #F8FAFC;
+  --shadow-border: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-border-hover: 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+html {
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.08) 0px, transparent 50%),
-    radial-gradient(at 50% 50%, rgba(8, 14, 33, 0.8) 0px, transparent 100%);
-  background-attachment: fixed;
 }
 
-/* Glassmorphic Panels & Cards */
+/* Surfaces & Cards following better-ui/surfaces.md */
 .glass-panel {
-  background: rgba(8, 14, 33, 0.78);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(30, 58, 138, 0.45);
+  background-color: #0F131D;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .glass-card {
-  background: rgba(13, 24, 56, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(30, 58, 138, 0.35);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background-color: #0F131D;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px -4px rgba(0, 0, 0, 0.4);
 }
 
 .glass-card-interactive {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: #0F131D;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transition-property: box-shadow, background-color, transform;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
 }
 
 .glass-card-interactive:hover {
-  background: rgba(13, 24, 56, 0.85);
-  border-color: rgba(245, 158, 11, 0.6);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 35px -8px rgba(245, 158, 11, 0.25);
+  background-color: #141A27;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 6px 20px -2px rgba(0, 0, 0, 0.35);
 }
 
-/* Gold Glowing Text & Borders */
-.gold-glow {
-  text-shadow: 0 0 20px rgba(245, 158, 11, 0.65);
-}
-
-.emerald-glow {
-  text-shadow: 0 0 20px rgba(16, 185, 129, 0.65);
-}
-
+/* Subtle border states */
 .gold-border-glow {
-  border-color: #f59e0b;
-  box-shadow: 0 0 30px -5px rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.4), 0 4px 20px -2px rgba(245, 158, 11, 0.15);
 }
 
 .emerald-border-glow {
-  border-color: #10b981;
-  box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.4), 0 4px 20px -2px rgba(16, 185, 129, 0.15);
 }
 
-/* Shimmer Animation Effect */
-.shimmer-gradient {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.12) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  background-size: 200% 100%;
+/* Optical alignment helpers per better-ui */
+.button-icon-optical {
+  padding-inline-start: 1rem;
+  padding-inline-end: 0.875rem; /* text side - 2px */
 }
 
-/* Smooth Custom Scrollbars */
+/* Text balance & pretty per better-typography */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+  letter-spacing: -0.015em;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Tabular numbers for price counters per better-typography */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Minimalist scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #030712;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #13234f;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #1e3a8a;
+  background: rgba(255, 255, 255, 0.2);
 }

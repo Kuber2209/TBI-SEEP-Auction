@@ -76,10 +76,10 @@ export function PortfolioAnalytics({
   };
 
   return (
-    <div className="glass-card rounded-3xl p-6 border border-navy-800/80 shadow-2xl space-y-5">
-      <div className="flex items-center justify-between pb-3 border-b border-navy-800">
+    <div className="glass-card rounded-[24px] p-6 border border-white/[0.07] shadow-sm space-y-5">
+      <div className="flex items-center justify-between pb-3 border-b border-white/[0.07]">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-seep-sky/15 border border-seep-sky/30 flex items-center justify-center text-seep-sky shrink-0">
+          <div className="w-8 h-8 rounded-[12px] bg-seep-sky/15 border border-seep-sky/30 flex items-center justify-center text-seep-sky shrink-0">
             <PieChart className="w-4 h-4" />
           </div>
           <div>
@@ -93,7 +93,7 @@ export function PortfolioAnalytics({
         {handleOpen && (
           <button
             onClick={handleOpen}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-navy-900 hover:bg-navy-850 text-xs font-bold text-gold-400 hover:text-gold-300 border border-navy-800 hover:border-gold-500/40 transition shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-[12px] bg-navy-900 hover:bg-navy-850 text-xs font-bold text-gold-400 hover:text-gold-300 border border-white/[0.07] hover:border-gold-500/40 transition shadow-sm"
           >
             <span>Open Drawer</span>
             <ExternalLink className="w-3 h-3" />
@@ -103,29 +103,29 @@ export function PortfolioAnalytics({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div className="p-3.5 rounded-2xl bg-navy-950/80 border border-navy-800 shadow-inner">
+        <div className="p-3.5 rounded-[16px] bg-navy-950/80 border border-white/[0.07] shadow-inner">
           <span className="text-[9px] uppercase font-bold text-slate-400 block">
             Avg Lot Cost
           </span>
-          <span className="font-display font-black text-base sm:text-lg text-white mt-0.5 block">
+          <span className="font-semibold text-base sm:text-lg text-white mt-0.5 block">
             ₹ {avgAcquisitionCost.toLocaleString('en-IN')}
           </span>
         </div>
 
-        <div className="p-3.5 rounded-2xl bg-navy-950/80 border border-navy-800 shadow-inner">
+        <div className="p-3.5 rounded-[16px] bg-navy-950/80 border border-white/[0.07] shadow-inner">
           <span className="text-[9px] uppercase font-bold text-slate-400 block">
             Purse Deployment
           </span>
-          <span className="font-display font-black text-base sm:text-lg text-seep-sky mt-0.5 block">
+          <span className="font-semibold text-base sm:text-lg text-seep-sky mt-0.5 block">
             {portfolioBurnRate.toFixed(1)}% Deployed
           </span>
         </div>
 
-        <div className="p-3.5 rounded-2xl bg-navy-950/80 border border-navy-800 shadow-inner col-span-2 sm:col-span-1">
+        <div className="p-3.5 rounded-[16px] bg-navy-950/80 border border-white/[0.07] shadow-inner col-span-2 sm:col-span-1">
           <span className="text-[9px] uppercase font-bold text-slate-400 block">
             Remaining Runway
           </span>
-          <span className="font-display font-black text-base sm:text-lg text-emerald-400 mt-0.5 block">
+          <span className="font-semibold text-base sm:text-lg text-emerald-400 mt-0.5 block">
             ₹ {available.toLocaleString('en-IN')}
           </span>
         </div>
@@ -143,7 +143,7 @@ export function PortfolioAnalytics({
         </div>
 
         {wonCount === 0 ? (
-          <div className="p-4 rounded-xl bg-navy-950/40 border border-navy-800 text-center text-slate-500 text-xs italic">
+          <div className="p-4 rounded-[12px] bg-navy-950/40 border border-white/[0.07] text-center text-slate-500 text-xs italic">
             Sector distribution breakdown will appear here once lots are won.
           </div>
         ) : (
@@ -155,7 +155,7 @@ export function PortfolioAnalytics({
                 return (
                   <div
                     key={sector}
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-xl bg-navy-950 border text-xs ${style.badge}`}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-[12px] bg-navy-950 border text-xs ${style.badge}`}
                   >
                     <span className={`w-2 h-2 rounded-full ${style.dot}`} />
                     <span className="font-semibold text-slate-200">{sector}:</span>
@@ -173,7 +173,7 @@ export function PortfolioAnalytics({
       {handleOpen && (
         <button
           onClick={handleOpen}
-          className="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-navy-900 to-navy-850 hover:from-navy-850 hover:to-navy-800 border border-navy-700 hover:border-gold-500/50 text-xs font-bold text-gold-300 flex items-center justify-center gap-2 transition active:scale-98 shadow-sm group"
+          className="w-full py-2.5 px-4 rounded-[16px] bg-gradient-to-r from-navy-900 to-navy-850 hover:from-navy-850 hover:to-navy-800 border border-navy-700 hover:border-gold-500/50 text-xs font-bold text-gold-300 flex items-center justify-center gap-2 transition active:scale-98 shadow-sm group"
         >
           <span>View Deep-Tier Capital Efficiency & Risk Command</span>
           <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />

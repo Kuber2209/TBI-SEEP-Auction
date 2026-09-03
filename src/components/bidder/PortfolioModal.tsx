@@ -26,15 +26,15 @@ export function PortfolioModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in">
-      <div className="glass-panel w-full max-w-2xl rounded-3xl border border-navy-700 shadow-2xl p-6 sm:p-8 relative max-h-[85vh] flex flex-col">
+      <div className="glass-panel w-full max-w-2xl rounded-[24px] border border-navy-700 shadow-sm p-6 sm:p-8 relative max-h-[85vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-navy-800">
+        <div className="flex items-center justify-between pb-4 border-b border-white/[0.07]">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-gold-600 via-gold-500 to-amber-300 flex items-center justify-center text-navy-950 font-black shadow-gold">
+            <div className="w-11 h-11 rounded-[16px] bg-gradient-to-tr from-gold-600 via-gold-500 to-amber-300 flex items-center justify-center text-navy-950 font-black shadow-sm">
               <Briefcase className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-display font-black text-white flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-semibold text-white flex items-center gap-2">
                 <span>{teamName}&rsquo;s Portfolio</span>
                 <span className="px-2.5 py-0.5 rounded-full bg-gold-500/20 text-gold-300 text-xs font-mono font-bold border border-gold-500/30">
                   {wonStartups.length} Won
@@ -48,21 +48,21 @@ export function PortfolioModal({
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-slate-400 hover:text-white transition"
+            className="p-2 rounded-[12px] bg-navy-900 hover:bg-navy-800 text-slate-400 hover:text-white transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Investment Aggregate Metric Card */}
-        <div className="my-5 p-4 sm:p-5 rounded-2xl bg-navy-950/80 border border-navy-800 flex items-center justify-between shadow-inner">
+        <div className="my-5 p-4 sm:p-5 rounded-[16px] bg-navy-950/80 border border-white/[0.07] flex items-center justify-between shadow-inner">
           <div>
             <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400 block">
               Total Capital Committed
             </span>
             <span className="text-xs text-slate-500">Across {wonStartups.length} startup venture lots</span>
           </div>
-          <span className="font-display font-black text-2xl sm:text-3xl text-gold-400">
+          <span className="font-semibold text-2xl sm:text-3xl text-gold-400">
             ₹ {totalInvested.toLocaleString('en-IN')}
           </span>
         </div>
@@ -71,7 +71,7 @@ export function PortfolioModal({
         <div className="overflow-y-auto space-y-3 flex-1 pr-1">
           {wonStartups.length === 0 ? (
             <div className="text-center py-14 text-slate-500 flex flex-col items-center justify-center">
-              <div className="w-16 h-16 rounded-2xl bg-navy-900 border border-navy-800 flex items-center justify-center text-navy-700 mb-3 shadow-inner">
+              <div className="w-16 h-16 rounded-[16px] bg-navy-900 border border-white/[0.07] flex items-center justify-center text-navy-700 mb-3 shadow-inner">
                 <Trophy className="w-8 h-8" />
               </div>
               <p className="text-base font-display font-bold text-slate-300">No startup lots acquired yet</p>
@@ -83,7 +83,7 @@ export function PortfolioModal({
             wonStartups.map((s) => (
               <div
                 key={s.id}
-                className="p-4 sm:p-4.5 rounded-2xl bg-navy-950/70 border border-navy-800 hover:border-gold-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm"
+                className="p-4 sm:p-4.5 rounded-[16px] bg-navy-950/70 border border-white/[0.07] hover:border-gold-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm"
               >
                 <div>
                   <div className="flex items-center gap-2">
@@ -104,7 +104,7 @@ export function PortfolioModal({
                   <span className="text-[10px] uppercase font-bold text-emerald-400 block">
                     Winning Price
                   </span>
-                  <span className="font-display font-black text-lg text-white">
+                  <span className="font-semibold text-lg text-white">
                     ₹ {Number(s.winning_bid_amount).toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -114,14 +114,14 @@ export function PortfolioModal({
         </div>
 
         {/* Footer */}
-        <div className="mt-5 pt-4 border-t border-navy-800 flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-5 pt-4 border-t border-white/[0.07] flex items-center justify-between text-xs text-slate-400">
           <span className="flex items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-gold-400" />
             Verified on SEEP 4.0 Transaction Ledger
           </span>
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-amber-400 hover:from-gold-400 hover:to-amber-300 text-navy-950 font-black text-xs uppercase tracking-wider shadow-gold transition"
+            className="px-5 py-2.5 rounded-[12px] bg-gradient-to-r from-gold-500 to-amber-400 hover:from-gold-400 hover:to-amber-300 text-navy-950 font-black text-xs uppercase tracking-wider shadow-sm transition"
           >
             Done
           </button>

@@ -25,7 +25,7 @@ export function ConnectionBanner({ status, onRetry }: ConnectionBannerProps) {
       {onRetry && (
         <button
           onClick={onRetry}
-          className="flex items-center gap-1.5 px-2.5 py-1 bg-white/20 hover:bg-white/30 rounded text-xs transition active:scale-95"
+          className="flex items-center gap-1.5 px-2.5 py-1 bg-white/20 hover:bg-white/30 rounded text-xs transition active:scale-[0.98]"
         >
           <RefreshCw className="w-3 h-3 animate-spin" />
           <span>Re-sync Now</span>

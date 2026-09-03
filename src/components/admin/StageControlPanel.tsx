@@ -45,7 +45,7 @@ export function StageControlPanel({
 
   if (!activeStartup) {
     return (
-      <div className="glass-card rounded-3xl p-8 text-center flex flex-col items-center justify-center min-h-[320px] border-navy-800">
+      <div className="glass-card rounded-[24px] p-8 text-center flex flex-col items-center justify-center min-h-[320px] border-white/[0.07]">
         <Radio className="w-12 h-12 text-navy-700 mb-3 animate-pulse" />
         <h3 className="text-xl font-display font-bold text-white">No Active Startup Selected</h3>
         <p className="text-xs text-slate-400 mt-1 max-w-sm">
@@ -123,15 +123,15 @@ export function StageControlPanel({
   };
 
   return (
-    <div className="glass-card rounded-3xl p-6 sm:p-7 lg:p-8 border border-navy-800/80 shadow-2xl space-y-6">
+    <div className="glass-card rounded-[24px] p-6 sm:p-7 lg:p-8 border border-white/[0.07] shadow-sm space-y-6">
       {/* Active Lot Header Info */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-navy-800/80">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-white/[0.07]">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="px-3 py-1 rounded-lg bg-gold-500/20 text-gold-400 font-mono text-xs font-black border border-gold-500/30 shadow-gold">
+            <span className="px-3 py-1 rounded-lg bg-gold-500/20 text-gold-400 font-mono text-xs font-black border border-gold-500/30 shadow-sm">
               LOT #{activeStartup.display_order}
             </span>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-display font-black text-white">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white">
               {activeStartup.name}
             </h2>
           </div>
@@ -144,13 +144,13 @@ export function StageControlPanel({
           <span
             className={`px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider ${
               activeStartup.status === 'ACTIVE_BIDDING'
-                ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-emerald animate-pulse'
+                ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-sm animate-pulse'
                 : activeStartup.status === 'PRESENTING'
                 ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
                 : activeStartup.status === 'PAUSED'
                 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
                 : activeStartup.status === 'SOLD'
-                ? 'bg-gold-500/25 text-gold-300 border border-gold-500/50 shadow-gold'
+                ? 'bg-gold-500/25 text-gold-300 border border-gold-500/50 shadow-sm'
                 : 'bg-slate-800 text-slate-400 border border-slate-700'
             }`}
           >
@@ -160,7 +160,7 @@ export function StageControlPanel({
       </div>
 
       {actionError && (
-        <div className="p-4 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-semibold flex items-center gap-2">
+        <div className="p-4 rounded-[16px] bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-semibold flex items-center gap-2">
           <AlertOctagon className="w-4 h-4 shrink-0 text-rose-400" />
           <span>{actionError}</span>
         </div>
@@ -177,7 +177,7 @@ export function StageControlPanel({
           <button
             onClick={() => handleSetStatus('PRESENTING')}
             disabled={Boolean(loadingAction) || activeStartup.status === 'PRESENTING'}
-            className="p-4 rounded-2xl bg-navy-900 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-navy-700 hover:border-blue-400 transition shadow-md active:scale-95 group"
+            className="p-4 rounded-[16px] bg-navy-900 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-navy-700 hover:border-blue-400 transition shadow-md active:scale-[0.98] group"
           >
             <Radio className="w-5 h-5 text-blue-400 group-hover:scale-110 transition" />
             <span>1. Set Presenting</span>
@@ -191,7 +191,7 @@ export function StageControlPanel({
               activeStartup.status === 'ACTIVE_BIDDING' ||
               activeStartup.status === 'SOLD'
             }
-            className="p-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-emerald-500 shadow-emerald transition active:scale-95 group"
+            className="p-4 rounded-[16px] bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-emerald-500 shadow-sm transition active:scale-[0.98] group"
           >
             {loadingAction === 'status_ACTIVE_BIDDING' ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -206,7 +206,7 @@ export function StageControlPanel({
             <button
               onClick={() => handleSetStatus('ACTIVE_BIDDING')}
               disabled={Boolean(loadingAction)}
-              className="p-4 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-amber-400 shadow-md transition active:scale-95"
+              className="p-4 rounded-[16px] bg-amber-600 hover:bg-amber-500 text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-amber-400 shadow-md transition active:scale-[0.98]"
             >
               <Play className="w-5 h-5" />
               <span>Resume Bidding</span>
@@ -215,7 +215,7 @@ export function StageControlPanel({
             <button
               onClick={() => handleSetStatus('PAUSED')}
               disabled={Boolean(loadingAction) || activeStartup.status !== 'ACTIVE_BIDDING'}
-              className="p-4 rounded-2xl bg-navy-900 hover:bg-amber-700/80 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-navy-700 transition active:scale-95"
+              className="p-4 rounded-[16px] bg-navy-900 hover:bg-amber-700/80 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-navy-700 transition active:scale-[0.98]"
             >
               <Pause className="w-5 h-5 text-amber-400" />
               <span>Pause Bidding</span>
@@ -229,7 +229,7 @@ export function StageControlPanel({
               Boolean(loadingAction) ||
               !['ACTIVE_BIDDING', 'PAUSED'].includes(activeStartup.status)
             }
-            className="p-4 rounded-2xl bg-gold-500 hover:bg-gold-400 disabled:opacity-50 disabled:cursor-not-allowed text-navy-950 font-display font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-gold-400 shadow-gold transition active:scale-95 group"
+            className="p-4 rounded-[16px] bg-gold-500 hover:bg-gold-400 disabled:opacity-50 disabled:cursor-not-allowed text-navy-950 font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-gold-400 shadow-sm transition active:scale-[0.98] group"
           >
             {loadingAction === 'close' ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -243,7 +243,7 @@ export function StageControlPanel({
           <button
             onClick={handleReopenAuction}
             disabled={Boolean(loadingAction) || !['SOLD', 'UNSOLD'].includes(activeStartup.status)}
-            className="p-4 rounded-2xl bg-navy-900 hover:bg-purple-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-navy-700 transition active:scale-95"
+            className="p-4 rounded-[16px] bg-navy-900 hover:bg-purple-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-navy-700 transition active:scale-[0.98]"
           >
             <RotateCcw className="w-5 h-5 text-purple-400" />
             <span>Reopen Round</span>
@@ -253,7 +253,7 @@ export function StageControlPanel({
           <button
             onClick={handleAdvanceNext}
             disabled={Boolean(loadingAction) || activeStartup.status !== 'SOLD'}
-            className="p-4 rounded-2xl bg-navy-900 hover:bg-navy-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-navy-700 transition active:scale-95 group"
+            className="p-4 rounded-[16px] bg-navy-900 hover:bg-navy-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center gap-2 border border-navy-700 transition active:scale-[0.98] group"
           >
             <SkipForward className="w-5 h-5 text-seep-sky group-hover:translate-x-1 transition" />
             <span>4. Next Lot ➡️</span>
@@ -262,14 +262,14 @@ export function StageControlPanel({
       </div>
 
       {/* Live Highest Bid Monitor & Void Actions */}
-      <div className="p-5 rounded-2xl bg-navy-950/80 border border-navy-800 shadow-inner">
+      <div className="p-5 rounded-[16px] bg-navy-950/80 border border-white/[0.07] shadow-inner">
         <div className="flex items-center justify-between mb-4">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-gold-400" />
             Active Highest Bid Leader
           </span>
           {activeStartup.current_highest_bid !== null && (
-            <span className="font-display font-black text-xl text-gold-400">
+            <span className="font-semibold text-xl text-gold-400">
               ₹{Number(activeStartup.current_highest_bid).toLocaleString('en-IN')}
             </span>
           )}
@@ -280,7 +280,7 @@ export function StageControlPanel({
             {recentBids.slice(0, 5).map((b) => (
               <div
                 key={b.id}
-                className="p-3 rounded-xl bg-navy-900 border border-navy-800/80 flex items-center justify-between text-xs"
+                className="p-3 rounded-[12px] bg-navy-900 border border-white/[0.07] flex items-center justify-between text-xs"
               >
                 <div>
                   <span className="font-bold text-white mr-2">
@@ -310,7 +310,7 @@ export function StageControlPanel({
 
         {/* Void confirmation popup */}
         {targetVoidBidId && (
-          <div className="mt-4 p-4 rounded-2xl bg-rose-950/70 border border-rose-500/50 space-y-3 animate-fade-in">
+          <div className="mt-4 p-4 rounded-[16px] bg-rose-950/70 border border-rose-500/50 space-y-3 animate-fade-in">
             <span className="text-xs font-bold text-rose-300 block">
               Confirm Bid Invalidation / Void:
             </span>
@@ -319,18 +319,18 @@ export function StageControlPanel({
               placeholder="Reason for voiding (e.g., misclick, network dispute)"
               value={voidReason}
               onChange={(e) => setVoidReason(e.target.value)}
-              className="w-full px-3.5 py-2 rounded-xl bg-navy-950 border border-navy-700 text-xs text-white placeholder:text-slate-500"
+              className="w-full px-3.5 py-2 rounded-[12px] bg-navy-950 border border-navy-700 text-xs text-white placeholder:text-slate-500"
             />
             <div className="flex items-center justify-end gap-2">
               <button
                 onClick={() => setTargetVoidBidId(null)}
-                className="px-3.5 py-1.5 rounded-xl bg-navy-800 text-xs font-semibold text-slate-300 hover:bg-navy-700"
+                className="px-3.5 py-1.5 rounded-[12px] bg-navy-800 text-xs font-semibold text-slate-300 hover:bg-navy-700"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleVoidBid(targetVoidBidId)}
-                className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-black text-white shadow-md"
+                className="px-4 py-1.5 rounded-[12px] bg-rose-600 hover:bg-rose-500 text-xs font-black text-white shadow-md"
               >
                 Confirm Void Bid
               </button>

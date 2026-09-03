@@ -21,8 +21,8 @@ export function AuditLogViewer({ events, onRefresh }: AuditLogViewerProps) {
   });
 
   return (
-    <div className="glass-card rounded-2xl p-5 border border-navy-800 flex flex-col h-full max-h-[480px]">
-      <div className="flex items-center justify-between pb-3 border-b border-navy-800 mb-3">
+    <div className="glass-card rounded-[16px] p-5 border border-white/[0.07] flex flex-col h-full max-h-[480px]">
+      <div className="flex items-center justify-between pb-3 border-b border-white/[0.07] mb-3">
         <div className="flex items-center gap-2">
           <ScrollText className="w-4 h-4 text-gold-400" />
           <h3 className="text-sm font-bold text-white uppercase tracking-wider">

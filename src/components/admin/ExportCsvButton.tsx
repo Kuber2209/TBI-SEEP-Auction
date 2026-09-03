@@ -32,7 +32,7 @@ export function ExportCsvButton() {
     <button
       onClick={handleExport}
       disabled={isExporting}
-      className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-navy-700 text-xs font-bold text-white shadow-sm transition active:scale-95 disabled:opacity-50"
+      className="flex items-center gap-2 px-3.5 py-1.5 rounded-[12px] bg-navy-800 hover:bg-navy-700 border border-navy-700 text-xs font-bold text-white shadow-sm transition active:scale-[0.98] disabled:opacity-50"
     >
       {isExporting ? (
         <Loader2 className="w-3.5 h-3.5 animate-spin text-gold-400" />

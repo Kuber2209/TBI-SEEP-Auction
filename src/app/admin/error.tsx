@@ -47,17 +47,17 @@ export default function AdminErrorBoundary({ error, reset }: AdminErrorProps) {
 
       <div className="w-full max-w-2xl z-10 space-y-6">
         {/* Main Panel */}
-        <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-rose-500/50 shadow-2xl relative overflow-hidden">
+        <div className="glass-panel rounded-[24px] p-6 sm:p-8 border border-rose-500/50 shadow-sm relative overflow-hidden">
           {/* Header & Status */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center shrink-0 shadow-inner">
+            <div className="w-14 h-14 rounded-[16px] bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center shrink-0 shadow-inner">
               <ServerCrash className="w-8 h-8 text-rose-400" />
             </div>
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-300 text-[10px] font-mono uppercase tracking-wider mb-1 font-bold">
                 Operator Console Runtime Exception
               </div>
-              <h1 className="text-xl sm:text-2xl font-display font-black text-white tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
                 Command Center Interrupted
               </h1>
               <p className="text-xs text-slate-400 mt-1">
@@ -67,7 +67,7 @@ export default function AdminErrorBoundary({ error, reset }: AdminErrorProps) {
           </div>
 
           {/* Critical Operational Status Notice */}
-          <div className="mb-6 p-4 rounded-2xl bg-navy-900/90 border border-amber-500/30 text-xs text-amber-200/90 flex items-start gap-3">
+          <div className="mb-6 p-4 rounded-[16px] bg-navy-900/90 border border-amber-500/30 text-xs text-amber-200/90 flex items-start gap-3">
             <Activity className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
             <div>
               <span className="font-bold font-display uppercase tracking-wider block text-amber-300 mb-0.5">
@@ -80,7 +80,7 @@ export default function AdminErrorBoundary({ error, reset }: AdminErrorProps) {
           </div>
 
           {/* Fault Summary Display */}
-          <div className="p-4 rounded-2xl bg-navy-950 border border-navy-800 text-xs font-mono text-rose-300 mb-6 break-words">
+          <div className="p-4 rounded-[16px] bg-navy-950 border border-white/[0.07] text-xs font-mono text-rose-300 mb-6 break-words">
             <div className="text-[10px] font-sans font-bold uppercase tracking-wider text-slate-400 mb-1">
               Captured Exception Details
             </div>
@@ -100,7 +100,7 @@ export default function AdminErrorBoundary({ error, reset }: AdminErrorProps) {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <button
                 onClick={() => reset()}
-                className="py-3 px-3 rounded-xl bg-gradient-to-r from-gold-500 via-amber-400 to-gold-500 hover:from-gold-400 hover:to-amber-300 text-navy-950 font-display font-black text-xs uppercase tracking-wider shadow-gold hover:shadow-gold-lg transition flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-gold-400 outline-none"
+                className="py-3 px-3 rounded-[12px] bg-gradient-to-r from-gold-500 via-amber-400 to-gold-500 hover:from-gold-400 hover:to-amber-300 text-navy-950 font-semibold text-xs uppercase tracking-wider shadow-sm hover:shadow-sm transition flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-gold-400 outline-none"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Retry Render</span>
@@ -108,7 +108,7 @@ export default function AdminErrorBoundary({ error, reset }: AdminErrorProps) {
 
               <button
                 onClick={handleForceResync}
-                className="py-3 px-3 rounded-xl bg-navy-850 hover:bg-navy-800 border border-navy-700 hover:border-slate-500 text-slate-200 font-display font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-gold-400 outline-none"
+                className="py-3 px-3 rounded-[12px] bg-navy-850 hover:bg-navy-800 border border-navy-700 hover:border-slate-500 text-slate-200 font-display font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-gold-400 outline-none"
               >
                 <RefreshCw className="w-3.5 h-3.5 text-gold-400" />
                 <span>Force Resync</span>
@@ -116,7 +116,7 @@ export default function AdminErrorBoundary({ error, reset }: AdminErrorProps) {
 
               <button
                 onClick={handleAdminReset}
-                className="py-3 px-3 rounded-xl bg-navy-850 hover:bg-navy-800 border border-navy-700 hover:border-slate-500 text-slate-300 font-display font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-gold-400 outline-none"
+                className="py-3 px-3 rounded-[12px] bg-navy-850 hover:bg-navy-800 border border-navy-700 hover:border-slate-500 text-slate-300 font-display font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-gold-400 outline-none"
               >
                 <Sliders className="w-3.5 h-3.5 text-slate-400" />
                 <span>Reset Admin</span>
@@ -125,7 +125,7 @@ export default function AdminErrorBoundary({ error, reset }: AdminErrorProps) {
           </div>
 
           {/* Diagnostic Inspection Section */}
-          <div className="mt-6 pt-4 border-t border-navy-800/80">
+          <div className="mt-6 pt-4 border-t border-white/[0.07]">
             <button
               type="button"
               onClick={() => setShowDiagnostics(!showDiagnostics)}
@@ -139,7 +139,7 @@ export default function AdminErrorBoundary({ error, reset }: AdminErrorProps) {
             </button>
 
             {showDiagnostics && (
-              <div className="mt-3 p-3.5 rounded-xl bg-navy-950 border border-navy-800 text-[11px] font-mono text-slate-400 max-h-48 overflow-y-auto space-y-2">
+              <div className="mt-3 p-3.5 rounded-[12px] bg-navy-950 border border-white/[0.07] text-[11px] font-mono text-slate-400 max-h-48 overflow-y-auto space-y-2">
                 <div>
                   <span className="text-slate-500">Timestamp:</span> {new Date().toISOString()}
                 </div>
