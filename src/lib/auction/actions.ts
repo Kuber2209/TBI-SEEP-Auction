@@ -212,3 +212,42 @@ export async function reorderStartupsAction(orderedIds: string[]) {
   revalidatePath('/bidder');
   return { success: true };
 }
+
+export async function setStageToWelcomeLobbyAction(sessionId: string) {
+  const supabase = createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Unauthorized' };
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (!profile || (profile as any).role !== 'admin') {
+    return { success: false, error: 'Forbidden: Admin access required' };
+  }
+
+  // Clear active_startup_id on session to put room in Welcome / Standby Lobby mode
+  const { error: sessionError } = await (supabase.from('auction_sessions') as any)
+    .update({ active_startup_id: null })
+    .eq('id', sessionId);
+
+  if (sessionError) return { success: false, error: sessionError.message };
+
+  // Log audit event
+  try {
+    await (supabase.from('auction_events') as any).insert({
+      session_id: sessionId,
+      event_type: 'STAGE_SET_WELCOME_LOBBY',
+      actor_id: user.id,
+      payload: { mode: 'welcome_lobby', timestamp: new Date().toISOString() },
+    });
+  } catch (e) {}
+
+  revalidatePath('/admin');
+  revalidatePath('/bidder');
+  return { success: true };
+}
+

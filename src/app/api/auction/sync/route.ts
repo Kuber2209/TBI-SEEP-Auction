@@ -36,8 +36,10 @@ export async function GET() {
     .select('*')
     .order('display_order', { ascending: true });
 
-  const activeStartupId = (session as any)?.active_startup_id || (startups as any[])?.find(s => ['PRESENTING', 'ACTIVE_BIDDING', 'PAUSED'].includes(s.status))?.id;
-  const activeStartup = (startups as any[])?.find(s => s.id === activeStartupId) || (startups as any[])?.[0] || null;
+  const activeStartupId = (session as any)?.active_startup_id;
+  const activeStartup = activeStartupId
+    ? (startups as any[])?.find((s) => s.id === activeStartupId) || null
+    : null;
 
   // 4. Fetch Recent Bids for Active Startup
   let recentBids: any[] = [];

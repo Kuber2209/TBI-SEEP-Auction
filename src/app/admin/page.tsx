@@ -17,7 +17,9 @@ import {
   emergencyResumeAction,
   initializeSessionWalletsAction,
   resetRehearsalSessionAction,
+  setStageToWelcomeLobbyAction,
 } from '@/lib/auction/actions';
+import { WelcomeLobbyScreen } from '@/components/bidder/WelcomeLobbyScreen';
 import { Startup, Profile, BidderWallet, AuctionEvent } from '@/lib/supabase/types';
 import {
   AlertTriangle,
@@ -30,6 +32,7 @@ import {
   Radio,
   Loader2,
   Activity,
+  Sparkles,
 } from 'lucide-react';
 
 export default function AdminPage() {
@@ -45,7 +48,7 @@ export default function AdminPage() {
 
   const { onlineUsers, bidderCount, isUserOnline } = usePresence(profile);
   const [selectedStartupId, setSelectedStartupId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'stage' | 'bidders' | 'telemetry' | 'logs'>('stage');
+  const [activeTab, setActiveTab] = useState<'stage' | 'welcome' | 'bidders' | 'telemetry' | 'logs'>('stage');
   const [bidders, setBidders] = useState<(Profile & { wallet?: BidderWallet })[]>([]);
   const [events, setEvents] = useState<AuctionEvent[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -144,6 +147,25 @@ export default function AdminPage() {
     }
   };
 
+  const handleBroadcastWelcomeLobby = async () => {
+    if (!session) return;
+    setIsProcessing(true);
+    setOpMessage(null);
+    try {
+      const res = await setStageToWelcomeLobbyAction(session.id);
+      if (res.success) {
+        setOpMessage('Welcome Screen broadcasted. All connected bidders are now in the Welcome Lobby.');
+        handleFullRefresh();
+      } else {
+        alert(res.error || 'Failed to broadcast welcome screen');
+      }
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   if (!profile) {
     return (
       <div className="min-h-screen bg-[#f0f5f1] flex items-center justify-center text-[#33404f]">
@@ -223,6 +245,20 @@ export default function AdminPage() {
                   </button>
                 )}
 
+                <button
+                  onClick={handleBroadcastWelcomeLobby}
+                  disabled={isProcessing}
+                  className={`px-3 py-1.5 rounded-md text-xs font-semibold border flex items-center gap-1.5 transition active:scale-[0.98] ${
+                    !session?.active_startup_id
+                      ? 'bg-[#1a5c3e] text-white border-[#1a5c3e] shadow-sm'
+                      : 'bg-[#e5ece6] hover:bg-[#d8e3da] text-[#203126] border-[#cad7cc]'
+                  }`}
+                  title="Broadcast Welcome & Rules Screen to all connected bidders"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-inherit" strokeWidth={1.75} />
+                  <span>{!session?.active_startup_id ? 'Welcome Screen (Live)' : 'Show Welcome Screen'}</span>
+                </button>
+
                 <ExportCsvButton />
               </div>
             </div>
@@ -241,6 +277,21 @@ export default function AdminPage() {
               >
                 <LayoutDashboard className="w-3.5 h-3.5" strokeWidth={1.75} />
                 <span>Live Stage Driver</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('welcome')}
+                className={`px-3.5 py-1.5 rounded-md text-xs font-semibold flex items-center gap-2 transition ${
+                  activeTab === 'welcome'
+                    ? 'bg-[#1a5c3e] text-white shadow-sm'
+                    : 'text-[#56695e] hover:text-[#203126] hover:bg-[#cad7cc]/50'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" strokeWidth={1.75} />
+                <span>Welcome Screen</span>
+                {!session?.active_startup_id && (
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Currently Broadcasting to Bidders" />
+                )}
               </button>
 
               <button
@@ -303,8 +354,61 @@ export default function AdminPage() {
                     recentBids={bids}
                     onSelectStartup={(s) => setSelectedStartupId(s.id)}
                     onActionComplete={handleFullRefresh}
+                    onShowWelcomeScreen={handleBroadcastWelcomeLobby}
                   />
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'welcome' && (
+              <div className="space-y-4 animate-fade-in">
+                {/* Admin Welcome Screen Control Ribbon */}
+                <div className="p-4 sm:p-5 rounded-xl bg-[#eff4f0] border border-[#cad7cc] shadow-sm flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-[#203126] flex items-center gap-2">
+                      <span>Institutional Welcome & Rules Lobby</span>
+                      {!session?.active_startup_id ? (
+                        <span className="px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 text-[10px] font-mono font-bold border border-emerald-200">
+                          CURRENTLY BROADCASTING TO ALL BIDDERS
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-0.5 rounded-md bg-[#e5ece6] text-[#56695e] text-[10px] font-mono font-bold border border-[#cad7cc]">
+                          LOT #{syncedActiveStartup?.display_order || '1'} LIVE ON STAGE
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-xs text-[#56695e] mt-0.5">
+                      This is the official onboarding presentation, rules briefing, and venture lots deal sheet shown to bidders.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      onClick={handleBroadcastWelcomeLobby}
+                      disabled={isProcessing}
+                      className="px-4 py-2 rounded-md bg-[#1a5c3e] hover:bg-[#144931] text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition active:scale-[0.98]"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Broadcast Welcome Screen to Bidders</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('stage')}
+                      className="px-4 py-2 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] text-[#203126] text-xs font-semibold border border-[#cad7cc] flex items-center gap-1.5 transition"
+                    >
+                      <LayoutDashboard className="w-3.5 h-3.5 text-[#1a5c3e]" />
+                      <span>Go to Stage Driver</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Render exact Welcome Lobby Screen */}
+                <WelcomeLobbyScreen
+                  profile={profile}
+                  startups={startups}
+                  wallet={null}
+                  onlineCount={bidderCount}
+                  onEnterArena={() => setActiveTab('stage')}
+                />
               </div>
             )}
 

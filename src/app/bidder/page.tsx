@@ -30,7 +30,8 @@ export default function BidderPage() {
 
   const { bidderCount } = usePresence(profile);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
-  const [userViewOverride, setUserViewOverride] = useState<'lobby' | 'arena' | null>(null);
+  // Default start is 'lobby' as requested
+  const [userViewOverride, setUserViewOverride] = useState<'lobby' | 'arena'>('lobby');
 
   // Determine if auction has officially started live on stage
   const isAuctionLive = Boolean(
@@ -39,12 +40,12 @@ export default function BidderPage() {
       ['PRESENTING', 'ACTIVE_BIDDING', 'PAUSED'].includes(activeStartup.status)
   );
 
-  // Auto-switch to arena once bidding or pitching becomes active
+  // If stage resets to Welcome Lobby (active_startup_id === null), ensure view returns to lobby
   useEffect(() => {
-    if (isAuctionLive && userViewOverride === 'lobby') {
-      setUserViewOverride(null);
+    if (!activeStartup) {
+      setUserViewOverride('lobby');
     }
-  }, [isAuctionLive, userViewOverride]);
+  }, [activeStartup]);
 
   if (!profile) {
     return (
@@ -60,7 +61,7 @@ export default function BidderPage() {
   }
 
   const increments = session?.bid_increments || [1000, 2500, 5000, 10000];
-  const shouldShowLobby = userViewOverride === 'lobby' || (!isAuctionLive && userViewOverride !== 'arena');
+  const shouldShowLobby = userViewOverride === 'lobby';
 
   return (
     <ErrorBoundary fallbackTitle="Investor Console Interface Error">
@@ -78,42 +79,54 @@ export default function BidderPage() {
             wonCount={wonStartups.length}
           />
 
-          {/* Lobby / Arena Mode Switcher Bar (Visible when in pre-auction standby) */}
-          {!isAuctionLive && (
-            <div className="bg-[#eff4f0] border-b border-[#cad7cc] px-4 sm:px-6 lg:px-8 py-2">
-              <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2 text-[#56695e]">
-                  <span className="w-2 h-2 rounded-full bg-[#1a5c3e] animate-pulse" />
-                  <span>Pre-Auction Standby</span>
-                  <span>·</span>
-                  <span>Stage Operator preparing Lot #01</span>
-                </div>
+          {/* Lobby / Arena Mode Switcher Bar (Always accessible for easy navigation) */}
+          <div className="bg-[#eff4f0] border-b border-[#cad7cc] px-4 sm:px-6 lg:px-8 py-2">
+            <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2 text-[#56695e]">
+                {isAuctionLive ? (
+                  <>
+                    <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                    <span className="font-semibold text-emerald-800">Stage Live: Lot #{activeStartup?.display_order}</span>
+                    <span>·</span>
+                    <span className="text-[#203126] font-medium">{activeStartup?.name}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="w-2 h-2 rounded-full bg-[#1a5c3e] animate-pulse" />
+                    <span>Pre-Auction Standby</span>
+                    <span>·</span>
+                    <span>Welcome & Rules Briefing Active</span>
+                  </>
+                )}
+              </div>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setUserViewOverride('lobby')}
-                    className={`px-3 py-1 rounded-md text-xs font-semibold transition ${
-                      shouldShowLobby
-                        ? 'bg-[#1a5c3e] text-white shadow-sm'
-                        : 'text-[#56695e] hover:text-[#203126]'
-                    }`}
-                  >
-                    Lobby & Rules Briefing
-                  </button>
-                  <button
-                    onClick={() => setUserViewOverride('arena')}
-                    className={`px-3 py-1 rounded-md text-xs font-semibold transition ${
-                      !shouldShowLobby
-                        ? 'bg-[#1a5c3e] text-white shadow-sm'
-                        : 'text-[#56695e] hover:text-[#203126]'
-                    }`}
-                  >
-                    Live Bidding Arena
-                  </button>
-                </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setUserViewOverride('lobby')}
+                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1.5 ${
+                    shouldShowLobby
+                      ? 'bg-[#1a5c3e] text-white shadow-sm'
+                      : 'bg-[#e5ece6] text-[#56695e] hover:text-[#203126] border border-[#cad7cc]'
+                  }`}
+                >
+                  <span>Welcome & Rules</span>
+                </button>
+                <button
+                  onClick={() => setUserViewOverride('arena')}
+                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1.5 ${
+                    !shouldShowLobby
+                      ? 'bg-[#1a5c3e] text-white shadow-sm'
+                      : 'bg-[#e5ece6] text-[#56695e] hover:text-[#203126] border border-[#cad7cc]'
+                  }`}
+                >
+                  <span>Live Bidding Arena</span>
+                  {isAuctionLive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                  )}
+                </button>
               </div>
             </div>
-          )}
+          </div>
 
           {/* Render Welcome Screen OR Live Bidding Arena */}
           {shouldShowLobby ? (

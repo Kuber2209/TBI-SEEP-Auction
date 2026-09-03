@@ -21,6 +21,7 @@ import {
   Flame,
   ShieldCheck,
   TrendingUp,
+  Sparkles,
 } from 'lucide-react';
 
 interface StageControlPanelProps {
@@ -29,6 +30,7 @@ interface StageControlPanelProps {
   recentBids: Bid[];
   onSelectStartup: (startup: Startup) => void;
   onActionComplete?: () => void;
+  onShowWelcomeScreen?: () => void;
 }
 
 export function StageControlPanel({
@@ -37,6 +39,7 @@ export function StageControlPanel({
   recentBids,
   onSelectStartup,
   onActionComplete,
+  onShowWelcomeScreen,
 }: StageControlPanelProps) {
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -219,9 +222,21 @@ export function StageControlPanel({
 
       {/* Stage Action Controls Grid */}
       <div className="space-y-3">
-        <span className="text-xs font-semibold uppercase tracking-wider text-[#56695e] block">
-          Stage Workflow Controls
-        </span>
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#56695e] block">
+            Stage Workflow Controls
+          </span>
+          {onShowWelcomeScreen && (
+            <button
+              onClick={onShowWelcomeScreen}
+              className="text-xs font-semibold text-[#1a5c3e] hover:text-[#144931] flex items-center gap-1.5 transition underline-offset-2 hover:underline"
+              title="Broadcast the Welcome Lobby to all connected bidders"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#1a5c3e]" />
+              <span>Show Welcome Screen to Bidders</span>
+            </button>
+          )}
+        </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
           {/* 1. Set Presenting */}
