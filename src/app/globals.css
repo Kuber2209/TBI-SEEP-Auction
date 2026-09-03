@@ -3,137 +3,149 @@
 @tailwind utilities;
 
 :root {
-  /* Eye-friendly, low-glare soft paper light mode (not blinding harsh white) */
-  --background: #ECEFF4;
-  --foreground: #0A1128;
-  --shadow-border: 0 0 0 1px rgba(203, 213, 225, 0.9), 0 1px 3px rgba(0, 0, 0, 0.04);
-  --shadow-border-hover: 0 0 0 1px rgba(148, 163, 184, 0.8), 0 4px 12px rgba(0, 0, 0, 0.06);
+  /* Prime Steeltech Manufacturing ERP Design System */
+  --background: #f0f5f1; /* Soft Sage Page Background */
+  --foreground: #33404f; /* Deep Slate Primary Text */
+  --card: #f9f8f6; /* Warm Off-White Card / Panel */
+  --border: #e2e5ea; /* Soft Slate Border */
+  --muted-surface: #f1f4f7; /* Very Light Neutral Surface */
+  --text-muted: #6b7a8d; /* Slate Gray Secondary Text */
+  --brand: #1a5c3e; /* Forest Green Primary Action */
+  --brand-hover: #154c33;
+  --supporting: #69a64e;
+  --destructive: #f04040;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-border: 0 0 0 1px #e2e5ea, 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-border-hover: 0 0 0 1px #cbd5e1, 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .dark {
-  /* Authentic midnight navy palette from original SEEP 4.0 branding */
-  --background: #030712;
-  --foreground: #F8FAFC;
-  --shadow-border: 0 0 0 1px rgba(30, 58, 138, 0.4);
-  --shadow-border-hover: 0 0 0 1px rgba(245, 158, 11, 0.35);
+  /* Aligned with Prime Steeltech calm enterprise aesthetic */
+  --background: #f0f5f1;
+  --foreground: #33404f;
+  --card: #f9f8f6;
+  --border: #e2e5ea;
+  --muted-surface: #f1f4f7;
+  --text-muted: #6b7a8d;
+  --brand: #1a5c3e;
+  --brand-hover: #154c33;
+  --supporting: #69a64e;
+  --destructive: #f04040;
 }
 
 html {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: #f0f5f1;
+  color: #33404f;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: #f0f5f1;
+  color: #33404f;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Soft Paper Light Mode Surfaces */
+/* Warm Off-White Industrial ERP Panels & Cards */
 .glass-panel {
-  background-color: #F8FAFC;
-  box-shadow: 0 0 0 1px rgba(203, 213, 225, 0.8), 0 1px 3px rgba(0, 0, 0, 0.04);
+  background-color: #f9f8f6;
+  border: 1px solid #e2e5ea;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .glass-card {
-  background-color: #F8FAFC;
-  box-shadow: 0 0 0 1px rgba(203, 213, 225, 0.8), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+  background-color: #f9f8f6;
+  border: 1px solid #e2e5ea;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .glass-card-interactive {
-  background-color: #F8FAFC;
-  box-shadow: 0 0 0 1px rgba(203, 213, 225, 0.8);
-  transition-property: box-shadow, background-color, transform;
+  background-color: #f9f8f6;
+  border: 1px solid #e2e5ea;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition-property: border-color, background-color, box-shadow;
   transition-duration: 150ms;
   transition-timing-function: ease-out;
 }
 
 .glass-card-interactive:hover {
-  background-color: #FFFFFF;
-  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.9), 0 6px 16px -2px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
-/* Authentic Midnight Navy Dark Mode Surfaces (from original SEEP image) */
+/* Backward-compatible classes mapped to clean industrial tokens */
 .dark .glass-panel {
-  background-color: #070D1E;
-  box-shadow: 0 0 0 1px rgba(30, 58, 138, 0.4);
+  background-color: #f9f8f6;
+  border: 1px solid #e2e5ea;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .dark .glass-card {
-  background-color: #070D1E;
-  box-shadow: 0 0 0 1px rgba(30, 58, 138, 0.35), 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+  background-color: #f9f8f6;
+  border: 1px solid #e2e5ea;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .dark .glass-card-interactive {
-  background-color: #070D1E;
-  box-shadow: 0 0 0 1px rgba(30, 58, 138, 0.35);
-  transition-property: box-shadow, background-color, transform;
-  transition-duration: 150ms;
-  transition-timing-function: ease-out;
+  background-color: #f9f8f6;
+  border: 1px solid #e2e5ea;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .dark .glass-card-interactive:hover {
-  background-color: #0D1838;
-  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.4), 0 6px 20px -2px rgba(0, 0, 0, 0.5);
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
-/* Subtle border states */
-.gold-border-glow {
-  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.5), 0 4px 16px -2px rgba(245, 158, 11, 0.15);
+/* Subtle focus & active states */
+.focus-forest:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #f0f5f1, 0 0 0 4px #1a5c3e;
 }
 
-.emerald-border-glow {
-  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.5), 0 4px 16px -2px rgba(16, 185, 129, 0.15);
-}
-
-/* Optical alignment helpers per better-ui */
+/* Optical alignment helpers */
 .button-icon-optical {
   padding-inline-start: 1rem;
-  padding-inline-end: 0.875rem; /* text side - 2px */
+  padding-inline-end: 0.875rem;
 }
 
-/* Text balance & pretty per better-typography */
+/* Typography balancing */
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
   letter-spacing: -0.015em;
+  color: #33404f;
 }
 
 p {
   text-wrap: pretty;
 }
 
-/* Tabular numbers for price counters per better-typography */
+/* Tabular numbers for financial metrics per design system */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
 }
 
-/* Minimalist scrollbar */
+/* Minimalist Industrial scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f0f5f1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 9999px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(30, 58, 138, 0.6);
+  background: #cbd5e1;
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.35);
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.5);
+  background: #94a3b8;
 }

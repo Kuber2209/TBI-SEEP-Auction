@@ -1,13 +1,40 @@
+import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 
 export async function POST() {
+  // 1. Authenticate caller session
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized: Authentication required' }, { status: 401 });
+  }
+
+  // 2. Authorize administrator role server-side
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  const userProfile = profile as any;
+  if (!userProfile || userProfile.role !== 'admin') {
+    return NextResponse.json(
+      { error: 'Forbidden: Administrator privileges required' },
+      { status: 403 }
+    );
+  }
+
   try {
+    // 3. Privileged seeding executes ONLY after strict authentication & authorization
     const admin = createAdminClient();
 
-    // 1. Create Admin Account (ADMIN01)
+    // Create/Ensure Admin Account (ADMIN01)
     const adminEmail = 'admin01@seep.internal';
-    const adminPassword = 'AdminPassword123!';
+    const adminPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'AdminPassword123!';
 
     const { data: adminUser } = await admin.auth.admin.createUser({
       email: adminEmail,
@@ -26,7 +53,7 @@ export async function POST() {
       });
     }
 
-    // 2. Create 15 Bidder Team Accounts (TEAM01 to TEAM15)
+    // Create 15 Bidder Team Accounts (TEAM01 to TEAM15)
     const teamNames = [
       'Team Alpha Venture',
       'Apex Capital',
@@ -45,7 +72,7 @@ export async function POST() {
       'Zenith Collective',
     ];
 
-    const createdTeams = [];
+    const seededTeams = [];
 
     for (let i = 1; i <= 15; i++) {
       const displayId = `TEAM${String(i).padStart(2, '0')}`;
@@ -78,17 +105,22 @@ export async function POST() {
           total_spent: 0.0,
         });
 
-        createdTeams.push({ displayId, teamName, password });
+        // Sanitize: do NOT expose passwords in response
+        seededTeams.push({ displayId, teamName });
       }
     }
 
+    // Response strictly sanitized: ZERO plaintext credentials returned
     return NextResponse.json({
       success: true,
-      message: 'Successfully generated 15 bidder accounts and 1 admin account.',
-      admin: { userId: 'ADMIN01', password: adminPassword },
-      teams: createdTeams,
+      message: 'Successfully initialized 15 bidder accounts and administrator.',
+      admin: { userId: 'ADMIN01' },
+      teams: seededTeams,
     });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to complete seeding operations' },
+      { status: 500 }
+    );
   }
 }

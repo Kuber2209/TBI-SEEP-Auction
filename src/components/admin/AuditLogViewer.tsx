@@ -21,31 +21,31 @@ export function AuditLogViewer({ events, onRefresh }: AuditLogViewerProps) {
   });
 
   return (
-    <div className="glass-card rounded-[16px] p-5 border border-white/[0.07] flex flex-col h-full max-h-[480px]">
-      <div className="flex items-center justify-between pb-3 border-b border-white/[0.07] mb-3">
+    <div className="rounded-xl p-5 bg-[#f9f8f6] border border-[#e2e5ea] flex flex-col h-full max-h-[480px] shadow-sm text-[#33404f]">
+      <div className="flex items-center justify-between pb-3 border-b border-[#e2e5ea] mb-3">
         <div className="flex items-center gap-2">
-          <ScrollText className="w-4 h-4 text-gold-400" />
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+          <ScrollText className="w-4 h-4 text-[#1a5c3e]" />
+          <h3 className="text-sm font-semibold text-[#33404f]">
             Authoritative Event Audit Log
           </h3>
         </div>
 
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-2.5 top-2 text-slate-400" />
+            <Search className="w-3.5 h-3.5 absolute left-2.5 top-2 text-[#6b7a8d]" />
             <input
               type="text"
               placeholder="Search event type..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8 pr-2.5 py-1 rounded-lg bg-navy-950 border border-navy-700 text-xs text-white placeholder:text-slate-500 w-44"
+              className="pl-8 pr-2.5 py-1 rounded-md bg-white border border-[#e2e5ea] text-xs text-[#33404f] placeholder:text-[#6b7a8d] focus:outline-none focus:border-[#1a5c3e] focus:ring-1 focus:ring-[#1a5c3e] w-44"
             />
           </div>
           {onRefresh && (
             <button
               onClick={onRefresh}
               title="Refresh Logs"
-              className="p-1.5 rounded-lg bg-navy-800 hover:bg-navy-700 text-slate-300"
+              className="p-1.5 rounded-md bg-white hover:bg-[#f1f4f7] text-[#33404f] border border-[#e2e5ea] transition"
             >
               <RefreshCw className="w-3.5 h-3.5" />
             </button>
@@ -55,22 +55,22 @@ export function AuditLogViewer({ events, onRefresh }: AuditLogViewerProps) {
 
       <div className="overflow-y-auto space-y-2 pr-1 flex-1 font-mono text-[11px]">
         {filtered.length === 0 ? (
-          <div className="text-center py-10 text-slate-500 italic">
+          <div className="text-center py-10 text-[#6b7a8d] italic">
             No audit records matching query.
           </div>
         ) : (
           filtered.map((e) => (
             <div
               key={e.id}
-              className="p-2.5 rounded-lg bg-navy-950/60 border border-navy-900 flex items-start justify-between gap-3"
+              className="p-2.5 rounded-md bg-white border border-[#e2e5ea] flex items-start justify-between gap-3 text-xs"
             >
               <div>
-                <span className="font-bold text-gold-400 mr-2">[{e.event_type}]</span>
-                <span className="text-slate-300">
+                <span className="font-semibold text-[#1a5c3e] mr-2">[{e.event_type}]</span>
+                <span className="text-[#33404f]">
                   {JSON.stringify(e.payload)}
                 </span>
               </div>
-              <span className="text-slate-500 text-[10px] shrink-0">
+              <span className="text-[#6b7a8d] text-[10px] shrink-0 font-mono">
                 {new Date(e.created_at).toLocaleTimeString()}
               </span>
             </div>

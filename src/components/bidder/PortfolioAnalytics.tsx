@@ -39,14 +39,14 @@ export function PortfolioAnalytics({
   });
 
   return (
-    <div className="rounded-xl p-5 sm:p-6 bg-white dark:bg-[#0F131D] border border-slate-200/80 dark:border-white/[0.06] space-y-5 transition-colors duration-150">
+    <div className="rounded-xl p-5 sm:p-6 bg-[#f9f8f6] border border-[#e2e5ea] space-y-5 shadow-sm transition-colors duration-150">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-white/[0.06]">
+      <div className="flex items-center justify-between pb-3.5 border-b border-[#e2e5ea]">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+          <h3 className="text-sm font-semibold text-[#33404f]">
             Portfolio Telemetry
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-[#6b7a8d]">
             Capital deployment & diversification
           </p>
         </div>
@@ -54,33 +54,33 @@ export function PortfolioAnalytics({
         {handleOpen && (
           <button
             onClick={handleOpen}
-            className="text-xs font-medium text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 flex items-center gap-1 transition-colors"
+            className="text-xs font-semibold text-[#1a5c3e] hover:text-[#154c33] flex items-center gap-1 transition-colors"
           >
             <span>Full Drawer</span>
-            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
           </button>
         )}
       </div>
 
-      {/* Metrics Row (Integrated and un-boxed) */}
+      {/* Metrics Row */}
       <div className="grid grid-cols-3 gap-3 text-xs">
         <div>
-          <span className="text-slate-400 dark:text-slate-500 block">Avg Lot Cost</span>
-          <span className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white tabular-nums mt-0.5 block">
+          <span className="text-[#6b7a8d] block font-medium">Avg Lot Cost</span>
+          <span className="text-sm sm:text-base font-semibold text-[#33404f] font-mono tabular-nums mt-0.5 block">
             ₹{avgAcquisitionCost.toLocaleString('en-IN')}
           </span>
         </div>
 
         <div>
-          <span className="text-slate-400 dark:text-slate-500 block">Deployment</span>
-          <span className="text-sm sm:text-base font-semibold text-slate-700 dark:text-slate-300 tabular-nums mt-0.5 block">
+          <span className="text-[#6b7a8d] block font-medium">Deployment</span>
+          <span className="text-sm sm:text-base font-semibold text-[#33404f] font-mono tabular-nums mt-0.5 block">
             {portfolioBurnRate.toFixed(0)}%
           </span>
         </div>
 
         <div>
-          <span className="text-slate-400 dark:text-slate-500 block">Lots Won</span>
-          <span className="text-sm sm:text-base font-semibold text-amber-700 dark:text-amber-400 tabular-nums mt-0.5 block">
+          <span className="text-[#6b7a8d] block font-medium">Lots Won</span>
+          <span className="text-sm sm:text-base font-semibold text-[#1a5c3e] font-mono tabular-nums mt-0.5 block">
             {wonCount}
           </span>
         </div>
@@ -88,13 +88,13 @@ export function PortfolioAnalytics({
 
       {/* Sector Allocation Breakdown */}
       <div className="pt-2">
-        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
-          <span>Sector Allocation</span>
+        <div className="flex items-center justify-between text-xs text-[#6b7a8d] mb-2">
+          <span className="font-medium text-[#33404f]">Sector Allocation</span>
           <span>{wonCount} won</span>
         </div>
 
         {wonCount === 0 ? (
-          <p className="text-xs text-slate-400 dark:text-slate-500 italic py-2">
+          <p className="text-xs text-[#6b7a8d] italic py-2">
             No startups won yet. Allocations will calculate as lots settle.
           </p>
         ) : (
@@ -104,10 +104,10 @@ export function PortfolioAnalytics({
               return (
                 <span
                   key={sector}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 text-xs font-medium"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#f1f4f7] border border-[#e2e5ea] text-[#33404f] text-xs font-medium"
                 >
                   <span>{sector}</span>
-                  <span className="text-slate-400 dark:text-slate-500 font-mono">
+                  <span className="text-[#6b7a8d] font-mono">
                     ({data.count} · {pct}%)
                   </span>
                 </span>

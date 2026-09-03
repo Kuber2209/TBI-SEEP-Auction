@@ -33,7 +33,7 @@ export default function LoginPage() {
 
   return (
     <ErrorBoundary fallbackTitle="Authentication Interface Error">
-      <div className="min-h-screen bg-[#ECEFF4] dark:bg-[#030712] text-slate-900 dark:text-white flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden transition-colors duration-150">
+      <div className="min-h-screen bg-[#f0f5f1] text-[#33404f] flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden transition-colors duration-150">
         {/* Top-Right Theme Toggle */}
         <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
           <ThemeToggle />
@@ -43,45 +43,45 @@ export default function LoginPage() {
         <div className="w-full max-w-md z-10 space-y-6">
           {/* Brand Banner */}
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-[12px] bg-white dark:bg-navy-850 border border-slate-200 dark:border-white/[0.07] shadow-sm mb-4">
-              <Building2 className="w-6 h-6 text-amber-600 dark:text-gold-500" strokeWidth={1.5} />
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#1a5c3e]/10 border border-[#1a5c3e]/20 shadow-sm mb-4">
+              <Building2 className="w-6 h-6 text-[#1a5c3e]" strokeWidth={1.75} />
             </div>
-            <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white tracking-tight text-balance">
-              SEEP <span className="text-amber-600 dark:text-gold-500">4.0</span>
+            <h1 className="text-3xl sm:text-4xl font-semibold text-[#33404f] tracking-tight text-balance">
+              SEEP <span className="text-[#1a5c3e]">4.0</span>
             </h1>
-            <p className="text-xs font-semibold uppercase tracking-widest text-amber-700 dark:text-gold-400 mt-1">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#1a5c3e] mt-1">
               Student Entrepreneurs Encouragement Program
             </p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+            <p className="text-[11px] text-[#6b7a8d] font-medium mt-0.5">
               Technology Business Incubator · BITS Pilani Hyderabad Campus
             </p>
           </div>
 
           {/* Login Box */}
-          <div className="glass-panel rounded-[16px] p-7 sm:p-9 border border-slate-200 dark:border-white/[0.07] shadow-sm relative overflow-hidden">
+          <div className="bg-[#f9f8f6] rounded-xl p-7 sm:p-9 border border-[#e2e5ea] shadow-sm relative overflow-hidden">
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white tracking-tight text-balance">
+              <h2 className="text-xl font-semibold text-[#33404f] tracking-tight text-balance">
                 Live Auction Console Access
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 text-pretty">
+              <p className="text-xs text-[#6b7a8d] mt-1 text-pretty">
                 Enter your pre-assigned team credentials to enter the live room.
               </p>
             </div>
 
             {error && (
-              <div className="mb-5 p-3.5 rounded-[12px] bg-rose-500/10 border border-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-semibold flex items-center gap-2.5">
-                <AlertCircle className="w-4 h-4 text-rose-500 dark:text-rose-400 shrink-0" strokeWidth={1.5} />
+              <div className="mb-5 p-3.5 rounded-md bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center gap-2.5">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" strokeWidth={1.5} />
                 <span>{error}</span>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#33404f] block mb-1.5">
                   Team User ID
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" strokeWidth={1.75} />
+                  <User className="w-4 h-4 absolute left-3.5 top-3 text-[#6b7a8d]" strokeWidth={1.75} />
                   <input
                     type="text"
                     name="userId"
@@ -90,17 +90,17 @@ export default function LoginPage() {
                     onChange={(e) => setUserIdVal(e.target.value)}
                     placeholder="e.g. TEAM01 or ADMIN01"
                     autoCapitalize="characters"
-                    className="w-full pl-10 pr-4 py-3 rounded-[12px] bg-white dark:bg-navy-950/50 border border-slate-300 dark:border-white/[0.07] text-base sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 dark:focus:border-gold-500 focus:ring-1 focus:ring-amber-500 dark:focus:ring-gold-500 transition-colors duration-150"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-md bg-white border border-[#e2e5ea] text-sm text-[#33404f] placeholder:text-[#6b7a8d] focus:outline-none focus:border-[#1a5c3e] focus:ring-1 focus:ring-[#1a5c3e] transition-colors duration-150"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#33404f] block mb-1.5">
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" strokeWidth={1.75} />
+                  <Lock className="w-4 h-4 absolute left-3.5 top-3 text-[#6b7a8d]" strokeWidth={1.75} />
                   <input
                     type="password"
                     name="password"
@@ -108,7 +108,7 @@ export default function LoginPage() {
                     value={passwordVal}
                     onChange={(e) => setPasswordVal(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full pl-10 pr-4 py-3 rounded-[12px] bg-white dark:bg-navy-950/50 border border-slate-300 dark:border-white/[0.07] text-base sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 dark:focus:border-gold-500 focus:ring-1 focus:ring-amber-500 dark:focus:ring-gold-500 transition-colors duration-150"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-md bg-white border border-[#e2e5ea] text-sm text-[#33404f] placeholder:text-[#6b7a8d] focus:outline-none focus:border-[#1a5c3e] focus:ring-1 focus:ring-[#1a5c3e] transition-colors duration-150"
                   />
                 </div>
               </div>
@@ -116,7 +116,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-3 py-3 px-4 rounded-[12px] bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold text-sm transition-colors duration-150 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50"
+                className="w-full mt-3 py-2.5 px-4 rounded-md bg-[#1a5c3e] hover:bg-[#154c33] text-white font-semibold text-sm transition-colors duration-150 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 shadow-sm"
               >
                 <span>{loading ? 'Authenticating...' : 'Enter Live Auction'}</span>
                 <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
@@ -124,31 +124,31 @@ export default function LoginPage() {
             </form>
 
             {/* Quick Demo Rehearsal Helpers */}
-            <div className="mt-6 pt-5 border-t border-slate-200 dark:border-white/[0.07]">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 block mb-2 text-center">
+            <div className="mt-6 pt-5 border-t border-[#e2e5ea]">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#6b7a8d] block mb-2 text-center">
                 Rehearsal Quick Credentials
               </span>
               <div className="grid grid-cols-2 gap-2 text-[11px]">
                 <button
                   type="button"
                   onClick={() => fillQuickCredentials('ADMIN01', 'AdminPassword123!')}
-                  className="p-2 rounded-[8px] bg-slate-100 hover:bg-slate-200 dark:bg-navy-900 dark:hover:bg-navy-850 border border-slate-200 dark:border-white/[0.07] text-amber-700 dark:text-gold-400 text-center transition-colors duration-150 flex items-center justify-center gap-1.5 active:scale-[0.98]"
+                  className="p-2 rounded-md bg-[#f1f4f7] hover:bg-[#e2e5ea] border border-[#e2e5ea] text-[#33404f] font-medium text-center transition-colors duration-150 flex items-center justify-center gap-1.5 active:scale-[0.98]"
                 >
-                  <KeyRound className="w-3.5 h-3.5" strokeWidth={1.75} /> Admin
+                  <KeyRound className="w-3.5 h-3.5 text-[#1a5c3e]" strokeWidth={1.75} /> Admin
                 </button>
                 <button
                   type="button"
                   onClick={() => fillQuickCredentials('TEAM01', 'PassTEAM01#2026')}
-                  className="p-2 rounded-[8px] bg-slate-100 hover:bg-slate-200 dark:bg-navy-900 dark:hover:bg-navy-850 border border-slate-200 dark:border-white/[0.07] text-blue-700 dark:text-blue-400 text-center transition-colors duration-150 flex items-center justify-center gap-1.5 active:scale-[0.98]"
+                  className="p-2 rounded-md bg-[#f1f4f7] hover:bg-[#e2e5ea] border border-[#e2e5ea] text-[#33404f] font-medium text-center transition-colors duration-150 flex items-center justify-center gap-1.5 active:scale-[0.98]"
                 >
-                  <Building2 className="w-3.5 h-3.5" strokeWidth={1.75} /> Team 01
+                  <Building2 className="w-3.5 h-3.5 text-[#1a5c3e]" strokeWidth={1.75} /> Team 01
                 </button>
               </div>
             </div>
 
             {/* Security Guarantee */}
-            <div className="mt-5 pt-4 border-t border-slate-200 dark:border-white/[0.07]/60 flex items-center justify-center gap-2 text-[11px] text-slate-500 font-medium">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />
+            <div className="mt-5 pt-4 border-t border-[#e2e5ea] flex items-center justify-center gap-2 text-[11px] text-[#6b7a8d] font-medium">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
               <span>Single-Device Session Encryption Active</span>
             </div>
           </div>

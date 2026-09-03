@@ -30,21 +30,21 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-[280px] p-6 rounded-[24px] bg-navy-950 border border-rose-500/40 flex flex-col items-center justify-center text-center space-y-4">
-          <div className="w-12 h-12 rounded-[16px] bg-rose-500/20 text-rose-400 flex items-center justify-center">
+        <div className="min-h-[260px] p-6 rounded-xl bg-[#f9f8f6] border border-red-200 flex flex-col items-center justify-center text-center space-y-4 shadow-sm">
+          <div className="w-12 h-12 rounded-lg bg-red-50 border border-red-200 text-red-600 flex items-center justify-center">
             <AlertTriangle className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-base font-display font-bold text-white">
+            <h3 className="text-base font-semibold text-[#33404f]">
               {this.props.fallbackTitle || 'A Component Rendering Error Occurred'}
             </h3>
-            <p className="text-xs text-slate-400 max-w-sm mt-1">
+            <p className="text-xs text-[#6b7a8d] max-w-sm mt-1">
               {this.state.error?.message || 'The system caught an unexpected exception and preserved application state.'}
             </p>
           </div>
           <button
             onClick={() => this.setState({ hasError: false, error: null })}
-            className="px-4 py-2 rounded-[12px] bg-navy-850 hover:bg-navy-800 border border-navy-700 text-xs font-bold text-slate-200 flex items-center gap-2 transition"
+            className="px-4 py-2 rounded-md bg-[#1a5c3e] hover:bg-[#154c33] text-xs font-semibold text-white flex items-center gap-2 transition shadow-sm"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset Component State</span>

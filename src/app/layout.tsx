@@ -12,17 +12,10 @@ const themeInitScript = `
 (function() {
   try {
     var saved = localStorage.getItem('seep-theme');
-    if (saved === 'light') {
-      document.documentElement.classList.remove('dark');
-    } else if (saved === 'dark') {
+    if (saved === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
-      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (prefersDark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      document.documentElement.classList.remove('dark');
     }
   } catch (e) {}
 })();
@@ -34,11 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" className="light" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-screen bg-slate-50 dark:bg-navy-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-white dark:selection:bg-gold-500 dark:selection:text-navy-950">
+      <body className="min-h-screen bg-[#f0f5f1] text-[#33404f] font-sans antialiased selection:bg-[#1a5c3e] selection:text-white">
         <ThemeProvider>
           {children}
           <Analytics />

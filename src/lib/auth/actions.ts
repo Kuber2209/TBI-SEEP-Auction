@@ -110,6 +110,11 @@ export async function logoutAction() {
 }
 
 export async function forceLogoutBidderAction(targetUserId: string) {
+  const profile = await getCurrentProfile();
+  if (!profile || profile.role !== 'admin') {
+    return { success: false, error: 'Unauthorized. Admin role required.' };
+  }
+
   const supabase = createClient();
   const { data, error } = await (supabase.rpc as any)('force_logout_bidder', {
     p_user_id: targetUserId,

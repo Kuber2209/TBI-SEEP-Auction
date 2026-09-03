@@ -41,14 +41,47 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   const pathname = request.nextUrl.pathname;
 
-  // If user is accessing protected routes without session
+  // 1. API Route Guards: Authenticated-by-default with RBAC
+  if (pathname.startsWith('/api/')) {
+    // Explicitly allowlisted public API routes (health checks, webhooks, public telemetry)
+    const isPublicApi = pathname === '/api/health' || pathname.startsWith('/api/public/');
+    if (isPublicApi) {
+      return response;
+    }
+
+    // All protected API routes require an authenticated session
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required' }, { status: 401 });
+    }
+
+    // Role-based access control for administrative API endpoints
+    if (pathname.startsWith('/api/admin/')) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, is_active')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile || !profile.is_active) {
+        return NextResponse.json({ error: 'Account inactive or revoked' }, { status: 403 });
+      }
+
+      if (profile.role !== 'admin') {
+        return NextResponse.json({ error: 'Forbidden: Admin privileges required' }, { status: 403 });
+      }
+    }
+
+    return response;
+  }
+
+  // 2. Browser Page Route Guards: Unauthenticated redirect to /login
   if (!user && (pathname.startsWith('/admin') || pathname.startsWith('/bidder'))) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/login';
     return NextResponse.redirect(redirectUrl);
   }
 
-  // If authenticated, check role for route segregation
+  // 3. Browser Page Role segregation for authenticated users
   if (user) {
     // If on /login or root /, redirect to appropriate panel
     if (pathname === '/login' || pathname === '/') {
@@ -65,7 +98,7 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    // Role-based route guards
+    // Role-based route guards for browser pages
     if (pathname.startsWith('/admin') || pathname.startsWith('/bidder')) {
       const { data: profile } = await supabase
         .from('profiles')
@@ -98,5 +131,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/login', '/bidder/:path*', '/admin/:path*'],
+  matcher: ['/', '/login', '/bidder/:path*', '/admin/:path*', '/api/:path*'],
 };

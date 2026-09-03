@@ -13,20 +13,18 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark');
+  const [theme, setThemeState] = useState<Theme>('light');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     // Read saved preference or system default
     const saved = localStorage.getItem('seep-theme') as Theme | null;
-    if (saved === 'light' || saved === 'dark') {
-      setThemeState(saved);
-      document.documentElement.classList.toggle('dark', saved === 'dark');
+    if (saved === 'dark') {
+      setThemeState('dark');
+      document.documentElement.classList.add('dark');
     } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const initial = prefersDark ? 'dark' : 'light';
-      setThemeState(initial);
-      document.documentElement.classList.toggle('dark', prefersDark);
+      setThemeState('light');
+      document.documentElement.classList.remove('dark');
     }
     setMounted(true);
   }, []);

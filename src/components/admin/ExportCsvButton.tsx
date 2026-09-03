@@ -32,12 +32,12 @@ export function ExportCsvButton() {
     <button
       onClick={handleExport}
       disabled={isExporting}
-      className="flex items-center gap-2 px-3.5 py-1.5 rounded-[12px] bg-navy-800 hover:bg-navy-700 border border-navy-700 text-xs font-bold text-white shadow-sm transition active:scale-[0.98] disabled:opacity-50"
+      className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-white hover:bg-[#f1f4f7] border border-[#e2e5ea] text-xs font-semibold text-[#33404f] shadow-sm transition active:scale-[0.98] disabled:opacity-50"
     >
       {isExporting ? (
-        <Loader2 className="w-3.5 h-3.5 animate-spin text-gold-400" />
+        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#1a5c3e]" />
       ) : (
-        <Download className="w-3.5 h-3.5 text-gold-400" />
+        <Download className="w-3.5 h-3.5 text-[#1a5c3e]" />
       )}
       <span>Export CSV Ledger</span>
     </button>

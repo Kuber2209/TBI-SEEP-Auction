@@ -171,43 +171,43 @@ export function BiddingPad({
   }, [isBiddingOpen, isCurrentlyWinning, isSubmitting, bidOptions, handlePlaceBid]);
 
   return (
-    <div className="rounded-xl p-6 sm:p-8 bg-white dark:bg-[#0F131D] border border-slate-200/80 dark:border-white/[0.06] flex flex-col justify-between h-full transition-colors duration-150">
+    <div className="rounded-xl p-6 sm:p-8 bg-[#f9f8f6] border border-[#e2e5ea] shadow-sm flex flex-col justify-between h-full transition-colors duration-150">
       {/* Screen Reader Region */}
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {srAnnouncement}
       </div>
 
       <div className="space-y-6">
-        {/* Primary Focal Point: Current Offer & Status (No box inside box) */}
+        {/* Primary Focal Point: Current Offer & Status */}
         <div>
           <div className="flex items-center justify-between gap-2 mb-1">
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+            <span className="text-xs text-[#6b7a8d] font-medium">
               {currentBid !== null ? 'Current Highest Offer' : 'Floor Reserve'}
             </span>
             {isCurrentlyWinning ? (
-              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
                 Your Team Leading
               </span>
             ) : isBiddingOpen ? (
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1a5c3e] bg-[#1a5c3e]/10 px-2.5 py-0.5 rounded-md border border-[#1a5c3e]/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#1a5c3e] animate-pulse" />
                 Live Round Active
               </span>
             ) : (
-              <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+              <span className="text-xs text-[#6b7a8d] font-medium">
                 {startup?.status === 'PRESENTING' ? 'Pitch in Progress' : 'Standby'}
               </span>
             )}
           </div>
 
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <span className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#33404f] tracking-tight font-mono tabular-nums">
               ₹{Number(currentBid || basePrice).toLocaleString('en-IN')}
             </span>
           </div>
 
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-[#6b7a8d] mt-1">
             {currentBid !== null
               ? isCurrentlyWinning
                 ? 'Your capital is held in escrow until outbid or lot closes.'
@@ -220,18 +220,18 @@ export function BiddingPad({
         {errorMessage && (
           <div
             role="alert"
-            className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-medium flex items-center gap-2"
+            className="p-3 rounded-md bg-red-50 border border-red-200 text-red-800 text-xs font-medium flex items-center gap-2"
           >
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" strokeWidth={1.75} />
+            <AlertCircle className="w-4 h-4 shrink-0 text-red-600" strokeWidth={1.75} />
             <span>{errorMessage}</span>
           </div>
         )}
 
         {/* Available Bid Actions: 4 Integrated Increment Buttons */}
         <div>
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2.5">
-            <span className="font-medium">Place Next Bid</span>
-            <span className="text-[11px] text-slate-400 dark:text-slate-500">Keys 1 – 4</span>
+          <div className="flex items-center justify-between text-xs text-[#6b7a8d] mb-2.5">
+            <span className="font-semibold text-[#33404f]">Place Next Bid</span>
+            <span className="text-[11px] text-[#6b7a8d]">Keys 1 – 4</span>
           </div>
 
           <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
@@ -253,39 +253,39 @@ export function BiddingPad({
                   disabled={isDisabled}
                   aria-keyshortcuts={shortcutKey}
                   aria-label={`Place bid for ₹${optAmount.toLocaleString('en-IN')}`}
-                  className={`group relative p-3 sm:p-3.5 rounded-lg border text-left transition-colors duration-150 active:scale-[0.98] outline-none ${
+                  className={`group relative p-3 sm:p-3.5 rounded-md border text-left transition-colors duration-150 active:scale-[0.98] outline-none ${
                     isDisabled
-                      ? 'bg-slate-50 dark:bg-navy-950/40 border-slate-200/60 dark:border-white/[0.04] text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-60'
-                      : 'bg-white dark:bg-[#141A27] hover:bg-slate-50 dark:hover:bg-[#1A2234] border-slate-200 dark:border-white/[0.08] hover:border-amber-500/50 dark:hover:border-amber-500/50 text-slate-900 dark:text-white shadow-sm'
+                      ? 'bg-[#f1f4f7] border-[#e2e5ea] text-[#6b7a8d] cursor-not-allowed opacity-50'
+                      : 'bg-[#f9f8f6] hover:bg-white border-[#e2e5ea] hover:border-[#1a5c3e] text-[#33404f] shadow-sm'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-1">
-                    <span className="text-base sm:text-lg font-semibold tracking-tight tabular-nums">
+                    <span className="text-base sm:text-lg font-semibold tracking-tight font-mono tabular-nums text-[#33404f]">
                       ₹{optAmount.toLocaleString('en-IN')}
                     </span>
                     <ArrowUpRight
                       className={`w-3.5 h-3.5 transition-transform duration-150 ${
                         isDisabled
-                          ? 'text-slate-400'
-                          : 'text-amber-600 dark:text-amber-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5'
+                          ? 'text-[#6b7a8d]'
+                          : 'text-[#1a5c3e] group-hover:translate-x-0.5 group-hover:-translate-y-0.5'
                       }`}
                       strokeWidth={2}
                     />
                   </div>
 
-                  <div className="flex items-center justify-between text-xs mt-0.5 text-slate-500 dark:text-slate-400">
-                    <span className="text-[11px] font-medium tabular-nums">
+                  <div className="flex items-center justify-between text-xs mt-0.5 text-[#6b7a8d]">
+                    <span className="text-[11px] font-medium font-mono tabular-nums">
                       {currentBid === null && optAmount === basePrice
                         ? 'Opening floor'
                         : `+₹${diff.toLocaleString('en-IN')}`}
                     </span>
-                    <span className="font-mono text-[10px] text-slate-400 dark:text-slate-500">
+                    <span className="font-mono text-[10px] text-[#6b7a8d]">
                       [{shortcutKey}]
                     </span>
                   </div>
 
                   {!hasEnoughFunds && isBiddingOpen && (
-                    <span className="text-[10px] text-rose-600 dark:text-rose-400 font-medium block mt-1">
+                    <span className="text-[10px] text-red-700 font-medium block mt-1">
                       Exceeds purse
                     </span>
                   )}
@@ -295,13 +295,13 @@ export function BiddingPad({
           </div>
         </div>
 
-        {/* Progressive Disclosure: Valuation Modeler (Clean and Un-boxed) */}
-        <div className="pt-3 border-t border-slate-100 dark:border-white/[0.06]">
+        {/* Progressive Disclosure: Valuation Modeler */}
+        <div className="pt-3 border-t border-[#e2e5ea]">
           <button
             type="button"
             onClick={() => setShowValuationModal(!showValuationModal)}
             aria-expanded={showValuationModal}
-            className="w-full flex items-center justify-between text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 py-1 transition-colors"
+            className="w-full flex items-center justify-between text-xs font-medium text-[#6b7a8d] hover:text-[#33404f] py-1 transition-colors"
           >
             <span>Valuation & Ownership Modeler</span>
             {showValuationModal ? (
@@ -312,7 +312,7 @@ export function BiddingPad({
           </button>
 
           {showValuationModal && (
-            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-white/[0.04]">
+            <div className="mt-3 pt-3 border-t border-[#e2e5ea]">
               <ValuationCalculator
                 activeAmount={currentBid || basePrice}
                 currentBidAmount={currentBid || 0}
@@ -325,8 +325,8 @@ export function BiddingPad({
         </div>
       </div>
 
-      {/* Footer: Status / Pass Control (Quiet and understated) */}
-      <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between text-xs">
+      {/* Footer: Status / Pass Control */}
+      <div className="mt-6 pt-4 border-t border-[#e2e5ea] flex items-center justify-between text-xs">
         <button
           onClick={() => {
             setPassAcknowledged(!passAcknowledged);
@@ -334,18 +334,18 @@ export function BiddingPad({
           }}
           disabled={!isBiddingOpen}
           aria-pressed={passAcknowledged}
-          className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors active:scale-[0.98] ${
+          className={`px-3 py-1.5 rounded-md border text-xs font-medium transition-colors active:scale-[0.98] ${
             passAcknowledged
-              ? 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-600'
-              : 'bg-transparent hover:bg-slate-50 dark:hover:bg-navy-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/[0.08]'
+              ? 'bg-[#e2e5ea] text-[#33404f] border-[#cbd5e1]'
+              : 'bg-[#f1f4f7] hover:bg-white text-[#6b7a8d] hover:text-[#33404f] border-[#e2e5ea]'
           }`}
         >
           <span>{passAcknowledged ? 'Passed (Standing By)' : 'Pass Round'}</span>
-          <span className="ml-1.5 font-mono text-[10px] text-slate-400 dark:text-slate-500">[Space]</span>
+          <span className="ml-1.5 font-mono text-[10px] text-[#6b7a8d]">[Space]</span>
         </button>
 
         {isSubmitting && (
-          <span className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 font-medium" aria-live="polite">
+          <span className="flex items-center gap-1.5 text-xs text-[#1a5c3e] font-medium" aria-live="polite">
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
             <span>Recording bid...</span>
           </span>
