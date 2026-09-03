@@ -40,12 +40,14 @@ export default function BidderPage() {
       ['PRESENTING', 'ACTIVE_BIDDING', 'PAUSED'].includes(activeStartup.status)
   );
 
-  // If stage resets to Welcome Lobby (active_startup_id === null), ensure view returns to lobby
+  // Automatically transition view based on stage state
   useEffect(() => {
     if (!activeStartup) {
       setUserViewOverride('lobby');
+    } else if (isAuctionLive && userViewOverride === 'lobby') {
+      setUserViewOverride('arena');
     }
-  }, [activeStartup]);
+  }, [activeStartup, isAuctionLive]);
 
   if (!profile) {
     return (
