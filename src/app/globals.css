@@ -3,109 +3,109 @@
 @tailwind utilities;
 
 :root {
-  /* Prime Steeltech Manufacturing ERP Design System */
-  --background: #f0f5f1; /* Soft Sage Page Background */
-  --foreground: #33404f; /* Deep Slate Primary Text */
-  --card: #f9f8f6; /* Warm Off-White Card / Panel */
-  --border: #e2e5ea; /* Soft Slate Border */
-  --muted-surface: #f1f4f7; /* Very Light Neutral Surface */
-  --text-muted: #6b7a8d; /* Slate Gray Secondary Text */
+  /* Prime Steeltech Eye-Friendly Matte Sage & Warm Stone Parchment */
+  --background: #dfe7e0; /* Soothing Matte Sage Canvas (Zero screen glare) */
+  --foreground: #203126; /* Deep Forest Slate Text (Soft on the eyes, high contrast) */
+  --card: #eff4f0; /* Warm Soothing Stone/Parchment Surface */
+  --border: #cad7cc; /* Gentle Natural Sage Border */
+  --muted-surface: #e5ece6; /* Soft Muted Neutral Surface */
+  --text-muted: #56695e; /* Calm Sage Gray Secondary Text */
   --brand: #1a5c3e; /* Forest Green Primary Action */
-  --brand-hover: #154c33;
-  --supporting: #69a64e;
-  --destructive: #f04040;
+  --brand-hover: #144931;
+  --supporting: #5b9643;
+  --destructive: #d93838;
 
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-border: 0 0 0 1px #e2e5ea, 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-border-hover: 0 0 0 1px #cbd5e1, 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 1px 3px rgba(32, 49, 38, 0.05);
+  --shadow-border: 0 0 0 1px #cad7cc, 0 1px 2px rgba(32, 49, 38, 0.04);
+  --shadow-border-hover: 0 0 0 1px #b6c7b9, 0 2px 4px rgba(32, 49, 38, 0.06);
 }
 
 .dark {
-  /* Aligned with Prime Steeltech calm enterprise aesthetic */
-  --background: #f0f5f1;
-  --foreground: #33404f;
-  --card: #f9f8f6;
-  --border: #e2e5ea;
-  --muted-surface: #f1f4f7;
-  --text-muted: #6b7a8d;
+  /* Aligned with Prime Steeltech eye-friendly palette */
+  --background: #dfe7e0;
+  --foreground: #203126;
+  --card: #eff4f0;
+  --border: #cad7cc;
+  --muted-surface: #e5ece6;
+  --text-muted: #56695e;
   --brand: #1a5c3e;
-  --brand-hover: #154c33;
-  --supporting: #69a64e;
-  --destructive: #f04040;
+  --brand-hover: #144931;
+  --supporting: #5b9643;
+  --destructive: #d93838;
 }
 
 html {
-  background-color: #f0f5f1;
-  color: #33404f;
+  background-color: #dfe7e0;
+  color: #203126;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
 body {
-  background-color: #f0f5f1;
-  color: #33404f;
+  background-color: #dfe7e0;
+  color: #203126;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Warm Off-White Industrial ERP Panels & Cards */
+/* Warm Soothing Industrial Panels & Cards */
 .glass-panel {
-  background-color: #f9f8f6;
-  border: 1px solid #e2e5ea;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  background-color: #eff4f0;
+  border: 1px solid #cad7cc;
+  box-shadow: 0 1px 3px rgba(32, 49, 38, 0.05);
 }
 
 .glass-card {
-  background-color: #f9f8f6;
-  border: 1px solid #e2e5ea;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  background-color: #eff4f0;
+  border: 1px solid #cad7cc;
+  box-shadow: 0 1px 3px rgba(32, 49, 38, 0.05);
 }
 
 .glass-card-interactive {
-  background-color: #f9f8f6;
-  border: 1px solid #e2e5ea;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  background-color: #eff4f0;
+  border: 1px solid #cad7cc;
+  box-shadow: 0 1px 3px rgba(32, 49, 38, 0.05);
   transition-property: border-color, background-color, box-shadow;
   transition-duration: 150ms;
   transition-timing-function: ease-out;
 }
 
 .glass-card-interactive:hover {
-  background-color: #ffffff;
-  border-color: #cbd5e1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  background-color: #f5f8f5;
+  border-color: #1a5c3e;
+  box-shadow: 0 2px 6px rgba(26, 92, 62, 0.08);
 }
 
-/* Backward-compatible classes mapped to clean industrial tokens */
+/* Backward-compatible classes */
 .dark .glass-panel {
-  background-color: #f9f8f6;
-  border: 1px solid #e2e5ea;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  background-color: #eff4f0;
+  border: 1px solid #cad7cc;
+  box-shadow: 0 1px 3px rgba(32, 49, 38, 0.05);
 }
 
 .dark .glass-card {
-  background-color: #f9f8f6;
-  border: 1px solid #e2e5ea;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  background-color: #eff4f0;
+  border: 1px solid #cad7cc;
+  box-shadow: 0 1px 3px rgba(32, 49, 38, 0.05);
 }
 
 .dark .glass-card-interactive {
-  background-color: #f9f8f6;
-  border: 1px solid #e2e5ea;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  background-color: #eff4f0;
+  border: 1px solid #cad7cc;
+  box-shadow: 0 1px 3px rgba(32, 49, 38, 0.05);
 }
 
 .dark .glass-card-interactive:hover {
-  background-color: #ffffff;
-  border-color: #cbd5e1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  background-color: #f5f8f5;
+  border-color: #1a5c3e;
+  box-shadow: 0 2px 6px rgba(26, 92, 62, 0.08);
 }
 
-/* Subtle focus & active states */
+/* Focus & active states */
 .focus-forest:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #f0f5f1, 0 0 0 4px #1a5c3e;
+  box-shadow: 0 0 0 2px #dfe7e0, 0 0 0 4px #1a5c3e;
 }
 
 /* Optical alignment helpers */
@@ -118,7 +118,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
   letter-spacing: -0.015em;
-  color: #33404f;
+  color: #203126;
 }
 
 p {
@@ -138,14 +138,14 @@ p {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f0f5f1;
+  background: #dfe7e0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #b5c4b8;
   border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #8e9f91;
 }

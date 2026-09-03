@@ -17,48 +17,48 @@ const config: Config = {
           300: "#83c09f",
           400: "#4ea479",
           500: "#1a5c3e", // Primary Brand Forest Green
-          600: "#154c33",
+          600: "#144931",
           700: "#103b27",
           800: "#0b2a1c",
           900: "#061a11",
         },
         sage: {
-          50: "#f7faf8",
-          100: "#f0f5f1", // Page Background Soft Sage
-          200: "#e2ebe4",
-          300: "#cdded1",
+          50: "#f4f8f5",
+          100: "#dfe7e0", // Soothing Matte Sage Canvas
+          200: "#d3ded5",
+          300: "#cad7cc",
         },
         steel: {
-          card: "#f9f8f6", // Warm Off-White Card/Panel
-          canvas: "#f0f5f1", // Soft Sage Page Background
-          muted: "#f1f4f7", // Muted Surface (tables, secondary sections)
-          border: "#e2e5ea", // Soft Slate Border
-          text: "#33404f", // Primary Text Deep Slate
-          secondary: "#6b7a8d", // Secondary Text Slate Gray
-          supporting: "#69a64e", // Supporting Green
-          destructive: "#f04040", // Destructive Red
+          card: "#eff4f0", // Warm Stone / Parchment Surface
+          canvas: "#dfe7e0", // Soothing Matte Sage Canvas
+          muted: "#e5ece6", // Muted Surface
+          border: "#cad7cc", // Gentle Natural Sage Border
+          text: "#203126", // Deep Forest Slate
+          secondary: "#56695e", // Sage Slate Gray
+          supporting: "#5b9643",
+          destructive: "#d93838",
         },
         navy: {
-          950: "#33404f", // Remapped to Deep Slate
-          900: "#f9f8f6", // Remapped to Warm Off-White
-          850: "#f1f4f7", // Remapped to Muted Surface
-          800: "#e2e5ea", // Remapped to Soft Slate Border
-          700: "#6b7a8d", // Remapped to Slate Gray
-          600: "#1a5c3e", // Remapped to Forest Green
+          950: "#203126",
+          900: "#eff4f0",
+          850: "#e5ece6",
+          800: "#cad7cc",
+          700: "#56695e",
+          600: "#1a5c3e",
         },
         gold: {
           300: "#fef3c7",
           400: "#fde68a",
-          500: "#1a5c3e", // Remapped gold to forest green primary brand
-          600: "#154c33",
+          500: "#1a5c3e",
+          600: "#144931",
           700: "#103b27",
         },
         paper: {
-          50: "#f9f8f6",
-          100: "#f1f4f7",
-          200: "#e2e5ea",
-          300: "#cbd5e1",
-          canvas: "#f0f5f1",
+          50: "#eff4f0",
+          100: "#e5ece6",
+          200: "#cad7cc",
+          300: "#b6c7b9",
+          canvas: "#dfe7e0",
         },
       },
       fontFamily: {

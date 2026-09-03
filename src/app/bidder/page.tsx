@@ -48,10 +48,10 @@ export default function BidderPage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-[#f0f5f1] flex items-center justify-center text-[#33404f] transition-colors duration-150">
+      <div className="min-h-screen bg-[#dfe7e0] flex items-center justify-center text-[#203126] transition-colors duration-150">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="w-6 h-6 animate-spin text-[#1a5c3e]" />
-          <p className="text-xs font-medium text-[#6b7a8d]">
+          <p className="text-xs font-medium text-[#56695e]">
             Initializing Live Auction Console...
           </p>
         </div>
@@ -64,7 +64,7 @@ export default function BidderPage() {
 
   return (
     <ErrorBoundary fallbackTitle="Investor Console Interface Error">
-      <div className="min-h-screen bg-[#f0f5f1] flex flex-col justify-between text-[#33404f] transition-colors duration-150">
+      <div className="min-h-screen bg-[#dfe7e0] flex flex-col justify-between text-[#203126] transition-colors duration-150">
         {/* Top Section */}
         <div>
           <ConnectionBanner status={connectionStatus} onRetry={refresh} />
@@ -80,9 +80,9 @@ export default function BidderPage() {
 
           {/* Lobby / Arena Mode Switcher Bar (Visible when in pre-auction standby) */}
           {!isAuctionLive && (
-            <div className="bg-[#f9f8f6] border-b border-[#e2e5ea] px-4 sm:px-6 lg:px-8 py-2">
+            <div className="bg-[#eff4f0] border-b border-[#cad7cc] px-4 sm:px-6 lg:px-8 py-2">
               <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2 text-[#6b7a8d]">
+                <div className="flex items-center gap-2 text-[#56695e]">
                   <span className="w-2 h-2 rounded-full bg-[#1a5c3e] animate-pulse" />
                   <span>Pre-Auction Standby</span>
                   <span>·</span>
@@ -95,7 +95,7 @@ export default function BidderPage() {
                     className={`px-3 py-1 rounded-md text-xs font-semibold transition ${
                       shouldShowLobby
                         ? 'bg-[#1a5c3e] text-white shadow-sm'
-                        : 'text-[#6b7a8d] hover:text-[#33404f]'
+                        : 'text-[#56695e] hover:text-[#203126]'
                     }`}
                   >
                     Lobby & Rules Briefing
@@ -105,10 +105,10 @@ export default function BidderPage() {
                     className={`px-3 py-1 rounded-md text-xs font-semibold transition ${
                       !shouldShowLobby
                         ? 'bg-[#1a5c3e] text-white shadow-sm'
-                        : 'text-[#6b7a8d] hover:text-[#33404f]'
+                        : 'text-[#56695e] hover:text-[#203126]'
                     }`}
                   >
-                    Bidding Pad Preview
+                    Live Bidding Arena
                   </button>
                 </div>
               </div>

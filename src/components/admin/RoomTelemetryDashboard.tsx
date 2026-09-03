@@ -289,16 +289,16 @@ export function RoomTelemetryDashboard({
   };
 
   return (
-    <div className="space-y-6 text-[#33404f]">
+    <div className="space-y-6 text-[#203126]">
       {/* SECTION 1: Top Telemetry Ribbon & Cryptographic Controls */}
-      <div className="rounded-xl p-6 sm:p-7 bg-[#f9f8f6] border border-[#e2e5ea] shadow-sm space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-[#e2e5ea]">
+      <div className="rounded-xl p-6 sm:p-7 bg-[#eff4f0] border border-[#cad7cc] shadow-sm space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-[#cad7cc]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-md bg-[#1a5c3e]/10 border border-[#1a5c3e]/20 flex items-center justify-center text-[#1a5c3e] shadow-sm">
               <Activity className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-[#33404f] tracking-tight flex items-center gap-2">
+              <h3 className="text-base font-semibold text-[#203126] tracking-tight flex items-center gap-2">
                 <span>Room Telemetry & Risk Command Dashboard</span>
                 <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
                   LIVE TELEMETRY ACTIVE
@@ -519,17 +519,17 @@ export function RoomTelemetryDashboard({
       </div>
 
       {/* SECTION 2: Active Bidder Capital Distribution Map */}
-      <div className="rounded-xl p-6 sm:p-7 bg-[#f9f8f6] border border-[#e2e5ea] shadow-sm space-y-6">
+      <div className="rounded-xl p-6 sm:p-7 bg-[#eff4f0] border border-[#cad7cc] shadow-sm space-y-6">
         {/* Header & Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#e2e5ea]">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#cad7cc]">
           <div>
-            <h3 className="text-base font-semibold text-[#33404f] tracking-tight flex items-center gap-2">
+            <h3 className="text-base font-semibold text-[#203126] tracking-tight flex items-center gap-2">
               <span>Active Bidder Capital Distribution Map</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#f1f4f7] border border-[#e2e5ea] text-[#1a5c3e] font-semibold">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#e5ece6] border border-[#cad7cc] text-[#1a5c3e] font-semibold">
                 15 Investor Teams
               </span>
             </h3>
-            <p className="text-xs text-[#6b7a8d]">
+            <p className="text-xs text-[#56695e]">
               Live liquidity tiers, active escrow holds, and capital deployment progress
             </p>
           </div>
@@ -754,17 +754,17 @@ export function RoomTelemetryDashboard({
       {/* SECTION 3: Snapshot Verification Modal */}
       {showVerifyModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-[#f9f8f6] rounded-xl p-6 sm:p-7 border border-[#e2e5ea] shadow-xl space-y-5 animate-fade-in text-[#33404f]">
-            <div className="flex items-center justify-between pb-4 border-b border-[#e2e5ea]">
+          <div className="w-full max-w-2xl bg-[#eff4f0] rounded-xl p-6 sm:p-7 border border-[#cad7cc] shadow-xl space-y-5 animate-fade-in text-[#203126]">
+            <div className="flex items-center justify-between pb-4 border-b border-[#cad7cc]">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-md bg-[#1a5c3e]/10 border border-[#1a5c3e]/20 flex items-center justify-center text-[#1a5c3e]">
                   <Fingerprint className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-[#33404f]">
+                  <h3 className="text-base font-semibold text-[#203126]">
                     Cryptographic Snapshot Verifier
                   </h3>
-                  <p className="text-xs text-[#6b7a8d]">
+                  <p className="text-xs text-[#56695e]">
                     Verify SHA-256 state integrity & financial conservation proof
                   </p>
                 </div>

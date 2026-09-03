@@ -131,19 +131,19 @@ export function StageControlPanel({
   const topBid = recentBids.find((b) => b.status === 'WINNING' || b.status === 'SETTLED');
 
   return (
-    <div className="rounded-xl p-5 sm:p-6 lg:p-7 bg-[#f9f8f6] border border-[#e2e5ea] shadow-sm space-y-6 transition-colors duration-150">
+    <div className="rounded-xl p-5 sm:p-6 lg:p-7 bg-[#eff4f0] border border-[#cad7cc] shadow-sm space-y-6 transition-colors duration-150">
       {/* Active Lot Header Info */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#e2e5ea]">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#cad7cc]">
         <div>
           <div className="flex items-center gap-2.5">
             <span className="px-2.5 py-0.5 rounded-md bg-[#1a5c3e]/10 text-[#1a5c3e] font-mono text-xs font-semibold border border-[#1a5c3e]/20">
               LOT #{activeStartup.display_order}
             </span>
-            <h2 className="text-xl sm:text-2xl font-semibold text-[#33404f] tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-semibold text-[#203126] tracking-tight">
               {activeStartup.name}
             </h2>
           </div>
-          <p className="text-xs text-[#6b7a8d] mt-1">
+          <p className="text-xs text-[#56695e] mt-1">
             {activeStartup.sector} · Floor Reserve: ₹{Number(activeStartup.base_price).toLocaleString('en-IN')}
           </p>
         </div>
@@ -159,7 +159,7 @@ export function StageControlPanel({
                 ? 'bg-amber-50 text-amber-800 border border-amber-200'
                 : activeStartup.status === 'SOLD'
                 ? 'bg-[#1a5c3e]/10 text-[#1a5c3e] border border-[#1a5c3e]/20'
-                : 'bg-[#f1f4f7] text-[#33404f] border border-[#e2e5ea]'
+                : 'bg-[#e5ece6] text-[#203126] border border-[#cad7cc]'
             }`}
           >
             {activeStartup.status.replace('_', ' ')}
@@ -175,24 +175,24 @@ export function StageControlPanel({
       )}
 
       {/* 🔴 OPERATOR TELEPROMPTER: High-Visibility Current Bid Display (For admin facing laptop) */}
-      <div className="p-5 rounded-xl bg-white border border-[#e2e5ea] shadow-sm">
+      <div className="p-5 rounded-xl bg-[#e5ece6] border border-[#cad7cc] shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#6b7a8d] flex items-center gap-1.5">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#56695e] flex items-center gap-1.5">
             <TrendingUp className="w-3.5 h-3.5 text-[#1a5c3e]" />
             Current Highest Offer (Live Teleprompter)
           </span>
-          <span className="text-xs font-mono text-[#6b7a8d]">
+          <span className="text-xs font-mono text-[#56695e]">
             {recentBids.length} bids placed
           </span>
         </div>
 
         <div className="flex flex-wrap items-baseline justify-between gap-4">
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#33404f] font-mono tabular-nums tracking-tight">
+            <span className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#203126] font-mono tabular-nums tracking-tight">
               ₹{Number(currentBid || basePrice).toLocaleString('en-IN')}
             </span>
             {currentBid === null && (
-              <span className="text-xs text-[#6b7a8d] font-medium">
+              <span className="text-xs text-[#56695e] font-medium">
                 (Floor Reserve)
               </span>
             )}
@@ -204,12 +204,12 @@ export function StageControlPanel({
                 <span className="text-xs font-semibold text-emerald-800 block">
                   Leading: {topBid.bidder_profile?.team_name || 'Team'}
                 </span>
-                <span className="text-[11px] text-[#6b7a8d] font-mono">
+                <span className="text-[11px] text-[#56695e] font-mono">
                   {topBid.bidder_profile?.display_user_id} · Escrow Locked
                 </span>
               </div>
             ) : (
-              <span className="text-xs text-[#6b7a8d] italic">
+              <span className="text-xs text-[#56695e] italic">
                 Awaiting opening offer
               </span>
             )}
@@ -219,7 +219,7 @@ export function StageControlPanel({
 
       {/* Stage Action Controls Grid */}
       <div className="space-y-3">
-        <span className="text-xs font-semibold uppercase tracking-wider text-[#6b7a8d] block">
+        <span className="text-xs font-semibold uppercase tracking-wider text-[#56695e] block">
           Stage Workflow Controls
         </span>
 
@@ -228,7 +228,7 @@ export function StageControlPanel({
           <button
             onClick={() => handleSetStatus('PRESENTING')}
             disabled={Boolean(loadingAction) || activeStartup.status === 'PRESENTING'}
-            className="p-3.5 sm:p-4 rounded-md bg-[#f1f4f7] hover:bg-[#e2e5ea] disabled:opacity-40 disabled:cursor-not-allowed text-[#33404f] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#e2e5ea] transition active:scale-[0.98]"
+            className="p-3.5 sm:p-4 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] disabled:opacity-40 disabled:cursor-not-allowed text-[#203126] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98]"
           >
             <Radio className="w-4 h-4 text-[#1a5c3e]" strokeWidth={1.75} />
             <span>1. Set Presenting</span>
@@ -242,7 +242,7 @@ export function StageControlPanel({
               activeStartup.status === 'ACTIVE_BIDDING' ||
               activeStartup.status === 'SOLD'
             }
-            className="p-3.5 sm:p-4 rounded-md bg-[#1a5c3e] hover:bg-[#154c33] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm"
+            className="p-3.5 sm:p-4 rounded-md bg-[#1a5c3e] hover:bg-[#144931] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm"
           >
             {loadingAction === 'status_ACTIVE_BIDDING' ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -257,7 +257,7 @@ export function StageControlPanel({
             <button
               onClick={() => handleSetStatus('ACTIVE_BIDDING')}
               disabled={Boolean(loadingAction)}
-              className="p-3.5 sm:p-4 rounded-md bg-[#1a5c3e] hover:bg-[#154c33] text-white font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm"
+              className="p-3.5 sm:p-4 rounded-md bg-[#1a5c3e] hover:bg-[#144931] text-white font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm"
             >
               <Play className="w-4 h-4" strokeWidth={1.75} />
               <span>Resume Bidding</span>
@@ -266,7 +266,7 @@ export function StageControlPanel({
             <button
               onClick={() => handleSetStatus('PAUSED')}
               disabled={Boolean(loadingAction) || activeStartup.status !== 'ACTIVE_BIDDING'}
-              className="p-3.5 sm:p-4 rounded-md bg-[#f1f4f7] hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed text-[#33404f] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#e2e5ea] transition active:scale-[0.98]"
+              className="p-3.5 sm:p-4 rounded-md bg-[#e5ece6] hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed text-[#203126] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98]"
             >
               <Pause className="w-4 h-4 text-amber-700" strokeWidth={1.75} />
               <span>Pause Bidding</span>
@@ -280,7 +280,7 @@ export function StageControlPanel({
               Boolean(loadingAction) ||
               !['ACTIVE_BIDDING', 'PAUSED'].includes(activeStartup.status)
             }
-            className="p-3.5 sm:p-4 rounded-md bg-[#f1f4f7] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed text-[#33404f] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#e2e5ea] transition active:scale-[0.98]"
+            className="p-3.5 sm:p-4 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] disabled:opacity-40 disabled:cursor-not-allowed text-[#203126] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98]"
           >
             {loadingAction === 'close' ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -294,9 +294,9 @@ export function StageControlPanel({
           <button
             onClick={handleReopenAuction}
             disabled={Boolean(loadingAction) || !['SOLD', 'UNSOLD'].includes(activeStartup.status)}
-            className="p-3.5 sm:p-4 rounded-md bg-[#f1f4f7] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed text-[#33404f] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#e2e5ea] transition active:scale-[0.98]"
+            className="p-3.5 sm:p-4 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] disabled:opacity-40 disabled:cursor-not-allowed text-[#203126] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98]"
           >
-            <RotateCcw className="w-4 h-4 text-[#6b7a8d]" strokeWidth={1.75} />
+            <RotateCcw className="w-4 h-4 text-[#56695e]" strokeWidth={1.75} />
             <span>Reopen Round</span>
           </button>
 
@@ -304,7 +304,7 @@ export function StageControlPanel({
           <button
             onClick={handleAdvanceNext}
             disabled={Boolean(loadingAction) || activeStartup.status !== 'SOLD'}
-            className="p-3.5 sm:p-4 rounded-md bg-[#f1f4f7] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed text-[#33404f] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#e2e5ea] transition active:scale-[0.98]"
+            className="p-3.5 sm:p-4 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] disabled:opacity-40 disabled:cursor-not-allowed text-[#203126] font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 border border-[#cad7cc] transition active:scale-[0.98]"
           >
             <SkipForward className="w-4 h-4 text-[#1a5c3e]" strokeWidth={1.75} />
             <span>4. Next Lot</span>
@@ -313,21 +313,21 @@ export function StageControlPanel({
       </div>
 
       {/* 🔴 OPERATOR LIVE BID LOG: Real-time stream of all submissions on this lot */}
-      <div className="pt-4 border-t border-[#e2e5ea] space-y-3">
+      <div className="pt-4 border-t border-[#cad7cc] space-y-3">
         <div className="flex items-center justify-between text-xs">
-          <span className="font-semibold text-[#33404f] flex items-center gap-1.5">
+          <span className="font-semibold text-[#203126] flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-[#1a5c3e]" strokeWidth={1.75} />
             Live Lot Bid Stream & Audit Log
           </span>
-          <span className="text-[#6b7a8d] font-mono text-[11px]">
+          <span className="text-[#56695e] font-mono text-[11px]">
             {recentBids.length} total submissions
           </span>
         </div>
 
         {recentBids.length === 0 ? (
-          <div className="p-6 rounded-md bg-white border border-[#e2e5ea] text-center text-[#6b7a8d] text-xs">
+          <div className="p-6 rounded-md bg-[#e5ece6] border border-[#cad7cc] text-center text-[#56695e] text-xs">
             <p>No bids recorded for this lot yet.</p>
-            <p className="text-[11px] mt-1 text-[#6b7a8d]">
+            <p className="text-[11px] mt-1 text-[#56695e]">
               Offers placed by investor teams will appear here in real time with sequence numbers.
             </p>
           </div>
@@ -340,29 +340,29 @@ export function StageControlPanel({
                   key={b.id}
                   className={`p-2.5 rounded-md border flex items-center justify-between text-xs transition-colors ${
                     isTop
-                      ? 'bg-emerald-50 border-emerald-200 text-[#33404f] font-medium'
-                      : 'bg-white border-[#e2e5ea] text-[#33404f]'
+                      ? 'bg-emerald-50 border-emerald-200 text-[#203126] font-medium'
+                      : 'bg-[#f5f8f5] border-[#cad7cc] text-[#203126]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-[11px] text-[#6b7a8d] w-7 tabular-nums font-semibold">
+                    <span className="font-mono text-[11px] text-[#56695e] w-7 tabular-nums font-semibold">
                       #{b.server_seq}
                     </span>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-[#33404f]">
+                        <span className="font-semibold text-[#203126]">
                           {b.bidder_profile?.team_name || 'Investor Team'}
                         </span>
-                        <span className="text-[10px] text-[#6b7a8d] font-mono">
+                        <span className="text-[10px] text-[#56695e] font-mono">
                           ({b.bidder_profile?.display_user_id})
                         </span>
                         {isTop && (
                           <span className="text-[10px] text-emerald-800 font-semibold">
-                            · Current Lead
+                            ★ LEADING
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] text-[#6b7a8d] font-mono">
+                      <span className="text-[10px] text-[#56695e] block font-mono">
                         {new Date(b.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                       </span>
                     </div>
@@ -370,10 +370,10 @@ export function StageControlPanel({
 
                   <div className="flex items-center gap-3">
                     <div className="text-right">
-                      <span className="font-semibold text-sm text-[#33404f] font-mono tabular-nums">
+                      <span className="font-semibold text-sm text-[#203126] font-mono tabular-nums">
                         ₹{Number(b.amount).toLocaleString('en-IN')}
                       </span>
-                      <span className="text-[10px] text-[#6b7a8d] block capitalize">
+                      <span className="text-[10px] text-[#56695e] block capitalize">
                         {b.status.toLowerCase()}
                       </span>
                     </div>

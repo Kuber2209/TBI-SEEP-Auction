@@ -260,9 +260,9 @@ export function PortfolioDrawer({
 
       {/* Slide-over Panel Container */}
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
-        <div className="w-screen max-w-2xl bg-[#f9f8f6] border-l border-[#e2e5ea] shadow-xl flex flex-col justify-between overflow-hidden text-[#33404f]">
+        <div className="w-screen max-w-2xl bg-[#eff4f0] border-l border-[#cad7cc] shadow-xl flex flex-col justify-between overflow-hidden text-[#203126]">
           {/* Header */}
-          <div className="px-6 py-5 border-b border-[#e2e5ea] bg-[#f9f8f6] flex items-center justify-between gap-4 shrink-0">
+          <div className="px-6 py-5 border-b border-[#cad7cc] bg-[#eff4f0] flex items-center justify-between gap-4 shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-md bg-[#1a5c3e]/10 border border-[#1a5c3e]/20 flex items-center justify-center text-[#1a5c3e] font-bold shrink-0">
                 <Briefcase className="w-5 h-5" strokeWidth={1.5} />
@@ -270,7 +270,7 @@ export function PortfolioDrawer({
               <div>
                 <h2
                   id="portfolio-drawer-title"
-                  className="text-base sm:text-lg font-semibold text-[#33404f] flex items-center gap-2"
+                  className="text-base sm:text-lg font-semibold text-[#203126] flex items-center gap-2"
                 >
                   <span>{teamName}&rsquo;s Capital Intelligence</span>
                   <span className="px-2.5 py-0.5 rounded-md bg-[#1a5c3e]/10 text-[#1a5c3e] text-xs font-mono font-bold border border-[#1a5c3e]/20">
@@ -639,14 +639,14 @@ export function PortfolioDrawer({
           </div>
 
           {/* Drawer Footer */}
-          <div className="px-6 py-4 border-t border-[#e2e5ea] bg-[#f9f8f6] flex items-center justify-between shrink-0">
-            <span className="flex items-center gap-1.5 text-xs text-[#6b7a8d]">
+          <div className="px-6 py-4 border-t border-[#cad7cc] bg-[#eff4f0] flex items-center justify-between shrink-0">
+            <span className="flex items-center gap-1.5 text-xs text-[#56695e]">
               <Sparkles className="w-4 h-4 text-[#1a5c3e]" />
               Verified on SEEP 4.0 Realtime Ledger
             </span>
             <button
               onClick={onClose}
-              className="px-5 py-2 rounded-md bg-[#1a5c3e] hover:bg-[#154c33] text-white font-semibold text-xs uppercase tracking-wider shadow-sm transition active:scale-[0.98]"
+              className="px-5 py-2 rounded-md bg-[#1a5c3e] hover:bg-[#144931] text-white font-semibold text-xs uppercase tracking-wider shadow-sm transition active:scale-[0.98]"
             >
               Close Drawer
             </button>

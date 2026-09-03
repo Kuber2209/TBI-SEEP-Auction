@@ -231,41 +231,41 @@ export function BidderRosterTable({
   };
 
   return (
-    <div className="rounded-xl p-5 sm:p-6 bg-white dark:bg-[#070D1E] border border-slate-200/80 dark:border-white/[0.08] shadow-sm space-y-6 transition-colors duration-150">
+    <div className="rounded-xl p-5 sm:p-6 bg-[#eff4f0] border border-[#cad7cc] shadow-sm space-y-6 transition-colors duration-150">
       {/* Top Header & Aggregate Financial Metrics */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/[0.06]">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#cad7cc]">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+          <div className="w-9 h-9 rounded-lg bg-[#1a5c3e]/10 border border-[#1a5c3e]/20 flex items-center justify-center text-[#1a5c3e]">
             <Users className="w-4 h-4" strokeWidth={1.75} />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-[#33404f] flex items-center gap-2">
+            <h3 className="text-base font-semibold text-[#203126] flex items-center gap-2">
               <span>Investor Teams Financial Roster</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#f1f4f7] text-[#6b7a8d] border border-[#e2e5ea]">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#e5ece6] text-[#56695e] border border-[#cad7cc]">
                 15 Teams
               </span>
             </h3>
-            <p className="text-xs text-[#6b7a8d]">Purse telemetry, escrow exposure & session control</p>
+            <p className="text-xs text-[#56695e]">Purse telemetry, escrow exposure & session control</p>
           </div>
         </div>
 
         {/* Aggregate Stats Bar */}
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <div className="px-3 py-1.5 rounded-md bg-[#f1f4f7] border border-[#e2e5ea] flex items-center gap-1.5">
-            <span className="text-[#6b7a8d]">Total Purse:</span>
-            <strong className="text-[#33404f] font-mono tabular-nums">₹{totalPurse.toLocaleString('en-IN')}</strong>
+          <div className="px-3 py-1.5 rounded-md bg-[#e5ece6] border border-[#cad7cc] flex items-center gap-1.5">
+            <span className="text-[#56695e]">Total Purse:</span>
+            <strong className="text-[#203126] font-mono tabular-nums">₹{totalPurse.toLocaleString('en-IN')}</strong>
           </div>
           <div className="px-3 py-1.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-1.5">
-            <span className="text-[#6b7a8d]">Liquid Cash:</span>
+            <span className="text-[#56695e]">Liquid Cash:</span>
             <strong className="text-emerald-800 font-mono tabular-nums">₹{totalAvailable.toLocaleString('en-IN')}</strong>
           </div>
           <div className="px-3 py-1.5 rounded-md bg-amber-50 border border-amber-200 text-amber-800 flex items-center gap-1.5">
-            <span className="text-[#6b7a8d]">In Escrow:</span>
+            <span className="text-[#56695e]">In Escrow:</span>
             <strong className="text-amber-800 font-mono tabular-nums">₹{totalLocked.toLocaleString('en-IN')}</strong>
           </div>
-          <div className="px-3 py-1.5 rounded-md bg-[#f1f4f7] border border-[#e2e5ea] flex items-center gap-1.5">
-            <span className="text-[#6b7a8d]">Spent:</span>
-            <strong className="text-[#33404f] font-mono tabular-nums">₹{totalSpent.toLocaleString('en-IN')}</strong>
+          <div className="px-3 py-1.5 rounded-md bg-[#e5ece6] border border-[#cad7cc] flex items-center gap-1.5">
+            <span className="text-[#56695e]">Spent:</span>
+            <strong className="text-[#203126] font-mono tabular-nums">₹{totalSpent.toLocaleString('en-IN')}</strong>
           </div>
         </div>
       </div>
@@ -279,7 +279,7 @@ export function BidderRosterTable({
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1.5 ${
               tierFilter === 'all'
                 ? 'bg-[#1a5c3e] text-white shadow-sm'
-                : 'bg-white text-[#33404f] hover:bg-[#f1f4f7] border border-[#e2e5ea]'
+                : 'bg-[#e5ece6] text-[#203126] hover:bg-[#d8e3da] border border-[#cad7cc]'
             }`}
           >
             <span>All Teams</span>
@@ -291,7 +291,7 @@ export function BidderRosterTable({
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1.5 ${
               tierFilter === 'flush'
                 ? 'bg-emerald-700 text-white shadow-sm'
-                : 'bg-white text-emerald-800 hover:bg-emerald-50 border border-emerald-200'
+                : 'bg-[#e5ece6] text-emerald-800 hover:bg-emerald-50 border border-[#cad7cc]'
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-600" />
@@ -304,7 +304,7 @@ export function BidderRosterTable({
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1.5 ${
               tierFilter === 'moderate'
                 ? 'bg-amber-700 text-white shadow-sm'
-                : 'bg-white text-amber-800 hover:bg-amber-50 border border-amber-200'
+                : 'bg-[#e5ece6] text-amber-800 hover:bg-amber-50 border border-[#cad7cc]'
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-amber-600" />
@@ -317,7 +317,7 @@ export function BidderRosterTable({
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1.5 ${
               tierFilter === 'critical'
                 ? 'bg-red-700 text-white shadow-sm'
-                : 'bg-white text-red-800 hover:bg-red-50 border border-red-200'
+                : 'bg-[#e5ece6] text-red-800 hover:bg-red-50 border border-[#cad7cc]'
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-red-600" />
@@ -329,8 +329,8 @@ export function BidderRosterTable({
             onClick={() => setTierFilter('depleted')}
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1.5 ${
               tierFilter === 'depleted'
-                ? 'bg-slate-700 text-white shadow-sm'
-                : 'bg-white text-[#6b7a8d] hover:bg-[#f1f4f7] border border-[#e2e5ea]'
+                ? 'bg-[#203126] text-white shadow-sm'
+                : 'bg-[#e5ece6] text-[#56695e] hover:bg-[#d8e3da] border border-[#cad7cc]'
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-slate-400" />
@@ -378,17 +378,17 @@ export function BidderRosterTable({
       {/* Search Bar */}
       <div className="flex items-center justify-between gap-3">
         <div className="relative flex-1 max-w-sm">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#6b7a8d]" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#56695e]" />
           <input
             type="text"
             placeholder="Search by team name or User ID (e.g. TEAM05)..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 rounded-md bg-white border border-[#e2e5ea] text-xs text-[#33404f] placeholder:text-[#6b7a8d] focus:outline-none focus:border-[#1a5c3e] focus:ring-1 focus:ring-[#1a5c3e]"
+            className="w-full pl-8 pr-3 py-1.5 rounded-md bg-[#e5ece6] border border-[#cad7cc] text-xs text-[#203126] placeholder:text-[#56695e] focus:outline-none focus:border-[#1a5c3e] focus:ring-1 focus:ring-[#1a5c3e]"
           />
         </div>
 
-        <span className="text-xs font-mono text-[#6b7a8d]">
+        <span className="text-xs font-mono text-[#56695e]">
           Showing {processedBidders.length} of {bidders.length} Teams
         </span>
       </div>
@@ -401,10 +401,10 @@ export function BidderRosterTable({
       )}
 
       {/* Interactive Table */}
-      <div className="overflow-x-auto rounded-lg border border-[#e2e5ea] shadow-sm">
+      <div className="overflow-x-auto rounded-lg border border-[#cad7cc] shadow-sm">
         <table className="w-full text-left text-xs">
           <thead>
-            <tr className="bg-[#f1f4f7] border-b border-[#e2e5ea] text-[#6b7a8d] uppercase text-[10px] font-semibold tracking-wider select-none">
+            <tr className="bg-[#e5ece6] border-b border-[#cad7cc] text-[#56695e] uppercase text-[10px] font-semibold tracking-wider select-none">
               <th
                 onClick={() => handleSort('display_user_id')}
                 className="py-3 px-4 cursor-pointer hover:text-[#33404f] transition"
@@ -487,10 +487,10 @@ export function BidderRosterTable({
               <th className="py-3 px-4 text-center">Controls</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#e2e5ea] bg-white">
+          <tbody className="divide-y divide-[#cad7cc] bg-[#eff4f0]">
             {processedBidders.length === 0 ? (
               <tr>
-                <td colSpan={8} className="py-8 text-center text-[#6b7a8d] italic">
+                <td colSpan={8} className="py-8 text-center text-[#56695e] italic">
                   No bidder teams matching current search or tier filter.
                 </td>
               </tr>
@@ -514,7 +514,7 @@ export function BidderRosterTable({
                 const isConserved = initial === (available + locked + spent);
 
                 return (
-                  <tr key={b.id} className="hover:bg-[#f9f8f6] transition">
+                  <tr key={b.id} className="hover:bg-[#e5ece6] transition">
                     {/* User ID */}
                     <td className="py-3.5 px-4 font-mono font-semibold text-[#33404f]">
                       <div className="flex items-center gap-1.5">

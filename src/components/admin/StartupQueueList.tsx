@@ -122,11 +122,11 @@ export function StartupQueueList({
   const isFilterActive = searchTerm.trim().length > 0;
 
   return (
-    <div className="rounded-xl p-5 sm:p-6 bg-[#f9f8f6] border border-[#e2e5ea] flex flex-col h-full max-h-[660px] shadow-sm transition-colors duration-150">
+    <div className="rounded-xl p-5 sm:p-6 bg-[#eff4f0] border border-[#cad7cc] flex flex-col h-full max-h-[660px] shadow-sm transition-colors duration-150">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3.5 border-b border-[#e2e5ea] mb-3">
+      <div className="flex items-center justify-between pb-3.5 border-b border-[#cad7cc] mb-3">
         <div>
-          <h3 className="text-sm font-semibold text-[#33404f] flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-[#203126] flex items-center gap-2">
             <span>Startup Queue</span>
             {isSaving && (
               <span className="flex items-center gap-1 text-[11px] text-[#1a5c3e] font-normal">
@@ -141,24 +141,24 @@ export function StartupQueueList({
               </span>
             )}
           </h3>
-          <p className="text-xs text-[#6b7a8d]">
+          <p className="text-xs text-[#56695e]">
             {items.length} Scheduled Venture Lots · Drag to reorder
           </p>
         </div>
-        <span className="text-xs font-mono text-[#6b7a8d]">
+        <span className="text-xs font-mono text-[#56695e]">
           {filtered.length} visible
         </span>
       </div>
 
       {/* Search Input */}
       <div className="relative mb-3">
-        <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#6b7a8d]" />
+        <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#56695e]" />
         <input
           type="text"
           placeholder="Filter by startup or sector..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-8 pr-3 py-1.5 rounded-md bg-white border border-[#e2e5ea] text-xs text-[#33404f] placeholder:text-[#6b7a8d] focus:outline-none focus:border-[#1a5c3e] focus:ring-1 focus:ring-[#1a5c3e]"
+          className="w-full pl-8 pr-3 py-1.5 rounded-md bg-[#e5ece6] border border-[#cad7cc] text-xs text-[#203126] placeholder:text-[#56695e] focus:outline-none focus:border-[#1a5c3e] focus:ring-1 focus:ring-[#1a5c3e]"
         />
       </div>
 
@@ -191,15 +191,15 @@ export function StartupQueueList({
                   : isDragOver
                   ? 'border-t-2 border-t-[#1a5c3e] bg-[#1a5c3e]/10'
                   : isActive
-                  ? 'bg-[#1a5c3e]/10 border-[#1a5c3e]/40 text-[#33404f]'
-                  : 'bg-white border-[#e2e5ea] hover:bg-[#f1f4f7] text-[#33404f]'
+                  ? 'bg-[#1a5c3e]/10 border-[#1a5c3e]/40 text-[#203126]'
+                  : 'bg-[#f5f8f5] border-[#cad7cc] hover:bg-[#e5ece6] text-[#203126]'
               }`}
             >
               {/* Left Side: Drag Handle + Index Badge + Details */}
               <div className="flex items-center gap-2.5 min-w-0">
                 {/* Drag Handle & Up/Down Controls */}
                 {!isFilterActive && (
-                  <div className="flex items-center gap-0.5 text-[#6b7a8d] group-hover:text-[#33404f]">
+                  <div className="flex items-center gap-0.5 text-[#56695e] group-hover:text-[#203126]">
                     <span title="Drag to reorder">
                       <GripVertical
                         className="w-3.5 h-3.5 cursor-grab active:cursor-grabbing shrink-0"
@@ -230,10 +230,10 @@ export function StartupQueueList({
 
                 {/* Lot Number Badge */}
                 <span
-                  className={`w-6 h-6 rounded-md flex items-center justify-center font-mono text-xs font-semibold shrink-0 tabular-nums ${
+                  className={`w-6 h-6 rounded flex items-center justify-center font-mono text-xs font-semibold shrink-0 tabular-nums ${
                     isActive
                       ? 'bg-[#1a5c3e] text-white shadow-sm'
-                      : 'bg-[#f1f4f7] border border-[#e2e5ea] text-[#33404f]'
+                      : 'bg-[#e5ece6] text-[#56695e]'
                   }`}
                 >
                   #{startup.display_order}
@@ -241,11 +241,11 @@ export function StartupQueueList({
 
                 {/* Startup Name & Floor */}
                 <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#33404f] truncate">
+                  <h4 className="text-xs sm:text-sm font-semibold text-[#203126] truncate">
                     {startup.name}
                   </h4>
-                  <span className="text-[11px] text-[#6b7a8d] block truncate">
-                    {startup.sector} · Floor ₹{Number(startup.base_price).toLocaleString('en-IN')}
+                  <span className="text-[11px] text-[#56695e] block truncate">
+                    {startup.sector} · Floor Reserve: ₹{Number(startup.base_price).toLocaleString('en-IN')}
                   </span>
                 </div>
               </div>

@@ -31,7 +31,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-screen bg-[#f0f5f1] text-[#33404f] font-sans antialiased selection:bg-[#1a5c3e] selection:text-white">
+      <body className="min-h-screen bg-[#dfe7e0] text-[#203126] font-sans antialiased selection:bg-[#1a5c3e] selection:text-white">
         <ThemeProvider>
           {children}
           <Analytics />
