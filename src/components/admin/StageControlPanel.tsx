@@ -48,21 +48,22 @@ export function StageControlPanel({
 
   if (!activeStartup) {
     return (
-      <div className="rounded-xl p-8 text-center flex flex-col items-center justify-center min-h-[320px] bg-[#f9f8f6] border border-[#e2e5ea] shadow-sm">
-        <Radio className="w-10 h-10 text-[#6b7a8d] mb-3 animate-pulse" />
-        <h3 className="text-lg font-semibold text-[#33404f]">No Startup Selected</h3>
-        <p className="text-xs text-[#6b7a8d] mt-1 max-w-sm">
+      <div className="rounded-xl p-8 text-center flex flex-col items-center justify-center min-h-[320px] bg-[#eff4f0] border border-[#cad7cc] shadow-sm">
+        <Radio className="w-10 h-10 text-[#56695e] mb-3 animate-pulse" />
+        <h3 className="text-lg font-semibold text-[#203126]">No Startup Selected</h3>
+        <p className="text-xs text-[#56695e] mt-1 max-w-sm">
           Select a startup from the queue to begin stage driver orchestration.
         </p>
       </div>
     );
   }
 
-  const handleSetStatus = async (status: any) => {
+  const handleSetStatus = async (status: any, targetStartupId?: string) => {
+    const startupId = targetStartupId || activeStartup.id;
     setLoadingAction(`status_${status}`);
     setActionError(null);
     try {
-      const res = await setStageStatusAction(activeStartup.id, status);
+      const res = await setStageStatusAction(startupId, status);
       if (!res.success) setActionError(res.error || 'Failed to update status');
       if (onActionComplete) onActionComplete();
     } catch (e: any) {
@@ -122,10 +123,20 @@ export function StageControlPanel({
   const currentIndex = startups.findIndex((s) => s.id === activeStartup.id);
   const nextStartup = currentIndex >= 0 && currentIndex < startups.length - 1 ? startups[currentIndex + 1] : null;
 
-  const handleAdvanceNext = () => {
+  const handleAdvanceNext = async () => {
     if (nextStartup) {
-      onSelectStartup(nextStartup);
-      handleSetStatus('PRESENTING');
+      setLoadingAction('advance');
+      setActionError(null);
+      try {
+        onSelectStartup(nextStartup);
+        const res = await setStageStatusAction(nextStartup.id, 'PRESENTING');
+        if (!res.success) setActionError(res.error || 'Failed to advance to next lot');
+        if (onActionComplete) onActionComplete();
+      } catch (e: any) {
+        setActionError(e.message);
+      } finally {
+        setLoadingAction(null);
+      }
     }
   };
 
@@ -242,10 +253,16 @@ export function StageControlPanel({
           {/* 1. Set Presenting */}
           <button
             onClick={() => handleSetStatus('PRESENTING')}
-            disabled={Boolean(loadingAction) || activeStartup.status === 'PRESENTING' || activeStartup.status === 'ACTIVE_BIDDING' || activeStartup.status === 'SOLD'}
+            disabled={
+              Boolean(loadingAction) ||
+              activeStartup.status === 'PRESENTING' ||
+              activeStartup.status === 'ACTIVE_BIDDING' ||
+              activeStartup.status === 'PAUSED' ||
+              activeStartup.status === 'SOLD'
+            }
             className={`p-3.5 sm:p-4 rounded-md font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] ${
-              activeStartup.status === 'UPCOMING'
-                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm'
+              ['UPCOMING', 'UNSOLD'].includes(activeStartup.status)
+                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm cursor-pointer'
                 : activeStartup.status === 'PRESENTING'
                 ? 'bg-blue-50 text-blue-800 border border-blue-200 font-bold'
                 : 'bg-[#e5ece6] text-[#56695e] border border-[#cad7cc] opacity-40 cursor-not-allowed'
@@ -264,12 +281,11 @@ export function StageControlPanel({
             onClick={() => handleSetStatus('ACTIVE_BIDDING')}
             disabled={
               Boolean(loadingAction) ||
-              activeStartup.status === 'ACTIVE_BIDDING' ||
-              activeStartup.status === 'SOLD'
+              !['PRESENTING', 'UPCOMING'].includes(activeStartup.status)
             }
             className={`p-3.5 sm:p-4 rounded-md font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] ${
-              activeStartup.status === 'PRESENTING'
-                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm'
+              ['PRESENTING', 'UPCOMING'].includes(activeStartup.status)
+                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm cursor-pointer'
                 : activeStartup.status === 'ACTIVE_BIDDING'
                 ? 'bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold'
                 : 'bg-[#e5ece6] text-[#56695e] border border-[#cad7cc] opacity-40 cursor-not-allowed'
@@ -288,9 +304,13 @@ export function StageControlPanel({
             <button
               onClick={() => handleSetStatus('ACTIVE_BIDDING')}
               disabled={Boolean(loadingAction)}
-              className="p-3.5 sm:p-4 rounded-md bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm animate-pulse"
+              className="p-3.5 sm:p-4 rounded-md bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm animate-pulse cursor-pointer"
             >
-              <Play className="w-4 h-4" strokeWidth={1.75} />
+              {loadingAction === 'status_ACTIVE_BIDDING' ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Play className="w-4 h-4" strokeWidth={1.75} />
+              )}
               <span>Resume Bidding</span>
             </button>
           ) : (
@@ -303,7 +323,11 @@ export function StageControlPanel({
                   : 'bg-[#e5ece6] text-[#56695e] opacity-40 cursor-not-allowed'
               }`}
             >
-              <Pause className="w-4 h-4 text-amber-700" strokeWidth={1.75} />
+              {loadingAction === 'status_PAUSED' ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Pause className="w-4 h-4 text-amber-700" strokeWidth={1.75} />
+              )}
               <span>Pause Bidding</span>
             </button>
           )}
@@ -317,7 +341,7 @@ export function StageControlPanel({
             }
             className={`p-3.5 sm:p-4 rounded-md font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] ${
               ['ACTIVE_BIDDING', 'PAUSED'].includes(activeStartup.status)
-                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm'
+                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm cursor-pointer'
                 : ['SOLD', 'UNSOLD'].includes(activeStartup.status)
                 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                 : 'bg-[#e5ece6] text-[#56695e] border border-[#cad7cc] opacity-40 cursor-not-allowed'
@@ -328,7 +352,7 @@ export function StageControlPanel({
             ) : (
               <Gavel className="w-4 h-4 text-inherit" strokeWidth={1.75} />
             )}
-            <span>{['SOLD', 'UNSOLD'].includes(activeStartup.status) ? '✓ Settled' : '3. Close (Settle)'}</span>
+            <span>{['SOLD', 'UNSOLD'].includes(activeStartup.status) ? (activeStartup.status === 'SOLD' ? '✓ Sold' : '✓ Unsold') : '3. Close (Settle)'}</span>
           </button>
 
           {/* Reopen Auction */}
@@ -355,12 +379,16 @@ export function StageControlPanel({
             disabled={Boolean(loadingAction) || !['SOLD', 'UNSOLD'].includes(activeStartup.status) || !nextStartup}
             className={`p-3.5 sm:p-4 rounded-md font-semibold text-xs sm:text-sm flex flex-col items-center justify-center gap-1.5 transition active:scale-[0.98] ${
               ['SOLD', 'UNSOLD'].includes(activeStartup.status) && nextStartup
-                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm'
+                ? 'bg-[#1a5c3e] hover:bg-[#144931] text-white shadow-sm cursor-pointer'
                 : 'bg-[#e5ece6] text-[#56695e] border border-[#cad7cc] opacity-40 cursor-not-allowed'
             }`}
           >
-            <SkipForward className="w-4 h-4 text-inherit" strokeWidth={1.75} />
-            <span>4. Next Lot</span>
+            {loadingAction === 'advance' ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <SkipForward className="w-4 h-4 text-inherit" strokeWidth={1.75} />
+            )}
+            <span>{nextStartup ? `4. Next (Lot #${nextStartup.display_order})` : 'All Lots Complete'}</span>
           </button>
         </div>
       </div>
@@ -406,9 +434,11 @@ export function StageControlPanel({
                         <span className="font-semibold text-[#203126]">
                           {b.bidder_profile?.team_name || 'Investor Team'}
                         </span>
-                        <span className="text-[10px] text-[#56695e] font-mono">
-                          ({b.bidder_profile?.display_user_id})
-                        </span>
+                        {b.bidder_profile?.display_user_id && (
+                          <span className="text-[10px] text-[#56695e] font-mono">
+                            ({b.bidder_profile.display_user_id})
+                          </span>
+                        )}
                         {isTop && (
                           <span className="text-[10px] text-emerald-800 font-semibold">
                             ★ LEADING
@@ -459,12 +489,12 @@ export function StageControlPanel({
               placeholder="Reason (e.g. misclick, stage dispute, network lag)"
               value={voidReason}
               onChange={(e) => setVoidReason(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-md bg-white border border-red-300 text-xs text-[#33404f] placeholder:text-[#6b7a8d]"
+              className="w-full px-3 py-1.5 rounded-md bg-white border border-red-300 text-xs text-[#203126] placeholder:text-[#56695e]"
             />
             <div className="flex items-center justify-end gap-2">
               <button
                 onClick={() => setTargetVoidBidId(null)}
-                className="px-3 py-1 rounded-md text-xs font-medium text-[#6b7a8d] hover:text-[#33404f]"
+                className="px-3 py-1 rounded-md text-xs font-medium text-[#56695e] hover:text-[#203126]"
               >
                 Cancel
               </button>

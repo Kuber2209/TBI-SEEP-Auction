@@ -11,6 +11,10 @@ import {
   ChevronUp,
   Loader2,
   AlertCircle,
+  AlertTriangle,
+  Sparkles,
+  ShieldCheck,
+  Pause,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -33,6 +37,7 @@ export function BiddingPad({
 }: BiddingPadProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [outbidAlert, setOutbidAlert] = useState<{ amount: number } | null>(null);
   const [passAcknowledged, setPassAcknowledged] = useState(false);
   const [showValuationModal, setShowValuationModal] = useState(false);
   const [srAnnouncement, setSrAnnouncement] = useState<string>('');
@@ -42,9 +47,54 @@ export function BiddingPad({
   const isCurrentlyWinning = Boolean(
     profile && startup?.current_highest_bidder_id === profile.id && isBiddingOpen
   );
+  const isWinner = Boolean(
+    profile && startup?.status === 'SOLD' && (startup?.winner_team_id === profile.id || startup?.current_highest_bidder_id === profile.id)
+  );
   const currentBid = startup?.current_highest_bid || null;
   const basePrice = startup?.base_price || 0;
   const availableBalance = wallet?.available_balance || 0;
+
+  // Reset interaction state on lot transition
+  useEffect(() => {
+    setPassAcknowledged(false);
+    setErrorMessage(null);
+    setOutbidAlert(null);
+  }, [startup?.id]);
+
+  // Track previous leading status for outbid alerts
+  const wasLeadingRef = useRef<boolean>(false);
+  useEffect(() => {
+    if (!profile) return;
+    const isNowLeading = startup?.current_highest_bidder_id === profile.id && isBiddingOpen;
+    if (wasLeadingRef.current && !isNowLeading && isBiddingOpen && startup?.current_highest_bid) {
+      setOutbidAlert({ amount: startup.current_highest_bid });
+      setSrAnnouncement(
+        `Alert: Your team was outbid. Current highest offer is ₹${startup.current_highest_bid.toLocaleString('en-IN')}. Escrow hold released.`
+      );
+    } else if (isNowLeading) {
+      setOutbidAlert(null);
+    }
+    wasLeadingRef.current = isNowLeading;
+  }, [startup?.current_highest_bidder_id, startup?.current_highest_bid, isBiddingOpen, profile]);
+
+  // Victory celebration when lot is won
+  const wonCelebrationRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (isWinner && startup?.id && wonCelebrationRef.current !== startup.id) {
+      wonCelebrationRef.current = startup.id;
+      setSrAnnouncement(
+        `Congratulations! Your syndicate won Lot #${startup.display_order} (${startup.name}) for ₹${Number(startup.winning_bid_amount || currentBid).toLocaleString('en-IN')}!`
+      );
+      try {
+        confetti({
+          particleCount: 65,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#10B981', '#F59E0B', '#3B82F6', '#1a5c3e'],
+        });
+      } catch (e) {}
+    }
+  }, [isWinner, startup, currentBid]);
 
   // Screen reader announcements
   const prevBidRef = useRef<number | null>(currentBid);
@@ -170,6 +220,28 @@ export function BiddingPad({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isBiddingOpen, isCurrentlyWinning, isSubmitting, bidOptions, handlePlaceBid]);
 
+  if (!startup) {
+    return (
+      <div className="rounded-xl p-8 sm:p-12 text-center flex flex-col items-center justify-center min-h-[380px] bg-[#eff4f0] border border-[#cad7cc] shadow-sm">
+        <span className="text-xs font-medium uppercase tracking-widest text-[#56695e] mb-2">
+          Bidding Pad Standby
+        </span>
+        <h3 className="text-lg font-semibold text-[#203126]">
+          Awaiting Live Bidding Round
+        </h3>
+        <p className="text-xs text-[#56695e] max-w-sm mt-1.5 leading-relaxed">
+          The bidding pad and increment buttons will unlock as soon as the stage operator opens bidding for the active lot.
+        </p>
+        <div className="mt-4 px-3 py-1.5 rounded-md bg-[#e5ece6] border border-[#cad7cc] text-xs text-[#56695e] font-medium inline-flex items-center gap-2">
+          <span>Available Purse:</span>
+          <span className="font-semibold text-[#203126] font-mono">
+            ₹{availableBalance.toLocaleString('en-IN')}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-xl p-6 sm:p-8 bg-[#eff4f0] border border-[#cad7cc] shadow-sm flex flex-col justify-between h-full transition-colors duration-150">
       {/* Screen Reader Region */}
@@ -182,9 +254,33 @@ export function BiddingPad({
         <div>
           <div className="flex items-center justify-between gap-2 mb-1">
             <span className="text-xs text-[#56695e] font-medium">
-              {currentBid !== null ? 'Current Highest Offer' : 'Floor Reserve'}
+              {startup?.status === 'SOLD'
+                ? 'Final Winning Offer'
+                : startup?.status === 'UNSOLD'
+                ? 'Floor Reserve (Unsold)'
+                : currentBid !== null
+                ? 'Current Highest Offer'
+                : 'Floor Reserve'}
             </span>
-            {isCurrentlyWinning ? (
+            {isWinner ? (
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                Won by Your Team
+              </span>
+            ) : startup?.status === 'SOLD' ? (
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1a5c3e] bg-[#1a5c3e]/10 px-2.5 py-0.5 rounded-md border border-[#1a5c3e]/20">
+                Round Settled (Sold)
+              </span>
+            ) : startup?.status === 'UNSOLD' ? (
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-red-800 bg-red-50 px-2.5 py-0.5 rounded-md border border-red-200">
+                Round Passed
+              </span>
+            ) : startup?.status === 'PAUSED' ? (
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200">
+                <Pause className="w-3 h-3 text-amber-600" />
+                Bidding Paused
+              </span>
+            ) : isCurrentlyWinning ? (
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
                 Your Team Leading
@@ -203,18 +299,53 @@ export function BiddingPad({
 
           <div className="flex items-baseline gap-2">
             <span className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#203126] tracking-tight font-mono tabular-nums">
-              ₹{Number(currentBid || basePrice).toLocaleString('en-IN')}
+              ₹{Number(startup?.status === 'SOLD' ? (startup?.winning_bid_amount || currentBid || basePrice) : (currentBid || basePrice)).toLocaleString('en-IN')}
             </span>
           </div>
 
           <p className="text-xs text-[#56695e] mt-1">
-            {currentBid !== null
+            {startup?.status === 'SOLD'
+              ? isWinner
+                ? 'Your capital has been deployed from escrow into your equity portfolio.'
+                : 'Lot awarded to competing syndicate. Standing by for next lot.'
+              : startup?.status === 'UNSOLD'
+              ? 'No qualifying bids were submitted above reserve price.'
+              : startup?.status === 'PAUSED'
+              ? 'Bidding is temporarily paused by the stage operator.'
+              : currentBid !== null
               ? isCurrentlyWinning
                 ? 'Your capital is held in escrow until outbid or lot closes.'
                 : 'Offer submitted by competing syndicate.'
               : 'Opening lot valuation. Ready to receive initial bids.'}
           </p>
         </div>
+
+        {/* Outbid Alert Notice */}
+        {outbidAlert && isBiddingOpen && !isCurrentlyWinning && (
+          <div
+            role="alert"
+            className="p-3.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start justify-between gap-3 animate-fade-in"
+          >
+            <div className="flex items-start gap-2.5">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
+              <div>
+                <span className="font-semibold block text-amber-900">
+                  Outbid Alert
+                </span>
+                <p className="text-[11px] text-amber-800 mt-0.5">
+                  Another syndicate placed a bid of ₹{outbidAlert.amount.toLocaleString('en-IN')}. Your previous escrow hold has been released back to your available purse.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setOutbidAlert(null)}
+              className="text-amber-700 hover:text-amber-900 p-1 text-xs"
+              aria-label="Dismiss outbid notice"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* Error Notice */}
         {errorMessage && (
@@ -253,7 +384,7 @@ export function BiddingPad({
                   disabled={isDisabled}
                   aria-keyshortcuts={shortcutKey}
                   aria-label={`Place bid for ₹${optAmount.toLocaleString('en-IN')}`}
-                  className={`group relative p-3 sm:p-3.5 rounded-md border text-left transition-colors duration-150 active:scale-[0.98] outline-none ${
+                  className={`group relative p-3 sm:p-3.5 rounded-md border text-left transition-colors duration-150 active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-gold-400 ${
                     isDisabled
                       ? 'bg-[#e5ece6] border-[#cad7cc] text-[#56695e] cursor-not-allowed opacity-50'
                       : 'bg-[#eff4f0] hover:bg-[#f5f8f5] border-[#cad7cc] hover:border-[#1a5c3e] text-[#203126] shadow-sm'
@@ -334,7 +465,8 @@ export function BiddingPad({
           }}
           disabled={!isBiddingOpen}
           aria-pressed={passAcknowledged}
-          className={`px-3 py-1.5 rounded-md border text-xs font-medium transition-colors active:scale-[0.98] ${
+          aria-keyshortcuts="Space"
+          className={`px-3 py-1.5 rounded-md border text-xs font-medium transition-colors active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-gold-400 ${
             passAcknowledged
               ? 'bg-[#cad7cc] text-[#203126] border-[#b5c4b8]'
               : 'bg-[#e5ece6] hover:bg-[#d8e3da] text-[#56695e] hover:text-[#203126] border-[#cad7cc]'

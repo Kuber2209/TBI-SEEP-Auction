@@ -4,17 +4,49 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { StartupStatus } from '@/lib/supabase/types';
 
+async function ensureAdmin(supabase: any) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'Unauthorized: Authentication required', user: null };
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, is_active')
+    .eq('id', user.id)
+    .single();
+
+  if (!profile || !profile.is_active) {
+    return { ok: false, error: 'Account inactive or revoked', user };
+  }
+
+  if (profile.role !== 'admin') {
+    return { ok: false, error: 'Forbidden: Admin access required', user };
+  }
+
+  return { ok: true, user, profile };
+}
+
 export async function submitBidAction(
   startupId: string,
   amount: number,
-  idempotencyKey: string
+  idempotencyKey?: string
 ) {
+  if (!startupId) {
+    return { success: false, error: 'Target startup ID is required' };
+  }
+  if (!amount || amount <= 0 || !Number.isFinite(amount)) {
+    return { success: false, error: 'A positive numerical bid amount is required' };
+  }
+
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Unauthorized: Authentication required' };
+
+  const validKey = idempotencyKey && idempotencyKey.trim() !== '' ? idempotencyKey : crypto.randomUUID();
 
   const { data, error } = await (supabase.rpc as any)('place_bid', {
     p_startup_id: startupId,
     p_amount: amount,
-    p_idempotency_key: idempotencyKey,
+    p_idempotency_key: validKey,
   });
 
   if (error) {
@@ -32,6 +64,8 @@ export async function setStageStatusAction(
   status: StartupStatus
 ) {
   const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
 
   const { data, error } = await (supabase.rpc as any)('set_startup_status', {
     p_startup_id: startupId,
@@ -50,6 +84,8 @@ export async function setStageStatusAction(
 
 export async function closeAuctionAction(startupId: string) {
   const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
 
   const { data, error } = await (supabase.rpc as any)('close_auction', {
     p_startup_id: startupId,
@@ -67,6 +103,8 @@ export async function closeAuctionAction(startupId: string) {
 
 export async function voidBidAction(bidId: string, reason: string) {
   const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
 
   const { data, error } = await (supabase.rpc as any)('void_bid', {
     p_bid_id: bidId,
@@ -85,6 +123,8 @@ export async function voidBidAction(bidId: string, reason: string) {
 
 export async function reopenAuctionAction(startupId: string) {
   const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
 
   const { data, error } = await (supabase.rpc as any)('reopen_auction', {
     p_startup_id: startupId,
@@ -95,6 +135,22 @@ export async function reopenAuctionAction(startupId: string) {
     return { success: false, error: msg };
   }
 
+  // Ensure session's active_startup_id is updated to reopened startup
+  try {
+    const { data: startup } = await (supabase
+      .from('startups') as any)
+      .select('session_id')
+      .eq('id', startupId)
+      .single();
+    if ((startup as any)?.session_id) {
+      await (supabase.from('auction_sessions') as any)
+        .update({ active_startup_id: startupId, status: 'ACTIVE' })
+        .eq('id', (startup as any).session_id);
+    }
+  } catch (e) {
+    console.error('Failed to update session active startup on reopen:', e);
+  }
+
   revalidatePath('/admin');
   revalidatePath('/bidder');
   return { success: true, data };
@@ -102,6 +158,8 @@ export async function reopenAuctionAction(startupId: string) {
 
 export async function emergencyPauseAction(sessionId: string) {
   const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
 
   const { data, error } = await (supabase.rpc as any)('emergency_pause_session', {
     p_session_id: sessionId,
@@ -119,6 +177,8 @@ export async function emergencyPauseAction(sessionId: string) {
 
 export async function emergencyResumeAction(sessionId: string) {
   const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
 
   const { data, error } = await (supabase.rpc as any)('emergency_resume_session', {
     p_session_id: sessionId,
@@ -136,6 +196,8 @@ export async function emergencyResumeAction(sessionId: string) {
 
 export async function initializeSessionWalletsAction(sessionId: string) {
   const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
 
   const { data, error } = await (supabase.rpc as any)('initialize_session_wallets', {
     p_session_id: sessionId,
@@ -153,6 +215,8 @@ export async function initializeSessionWalletsAction(sessionId: string) {
 
 export async function resetRehearsalSessionAction(sessionId: string) {
   const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
 
   const { data, error } = await (supabase.rpc as any)('reset_rehearsal_session', {
     p_session_id: sessionId,
@@ -170,17 +234,12 @@ export async function resetRehearsalSessionAction(sessionId: string) {
 
 export async function reorderStartupsAction(orderedIds: string[]) {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { success: false, error: 'Unauthorized' };
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
+  const user = authCheck.user!;
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-
-  if (!profile || (profile as any).role !== 'admin') {
-    return { success: false, error: 'Forbidden: Admin access required' };
+  if (!orderedIds || !Array.isArray(orderedIds) || orderedIds.length === 0) {
+    return { success: false, error: 'Valid startup IDs sequence required' };
   }
 
   // To prevent unique constraint collision on (session_id, display_order):
@@ -215,18 +274,12 @@ export async function reorderStartupsAction(orderedIds: string[]) {
 
 export async function setStageToWelcomeLobbyAction(sessionId: string) {
   const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
+  const user = authCheck.user!;
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { success: false, error: 'Unauthorized' };
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-
-  if (!profile || (profile as any).role !== 'admin') {
-    return { success: false, error: 'Forbidden: Admin access required' };
+  if (!sessionId) {
+    return { success: false, error: 'Session ID is required' };
   }
 
   // Clear active_startup_id on session to put room in Welcome / Standby Lobby mode

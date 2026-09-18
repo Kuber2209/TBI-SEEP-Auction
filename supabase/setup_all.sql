@@ -559,6 +559,12 @@ BEGIN
       updated_at = NOW()
   WHERE id = p_startup_id;
 
+  -- Ensure session is ACTIVE and active_startup_id points to reopened lot
+  UPDATE auction_sessions 
+  SET active_startup_id = p_startup_id,
+      status = 'ACTIVE'
+  WHERE id = v_startup.session_id;
+
   INSERT INTO auction_events (session_id, startup_id, event_type, actor_id, payload)
   VALUES (v_startup.session_id, p_startup_id, 'AUCTION_REOPENED', v_admin_id, '{}');
 

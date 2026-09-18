@@ -16,6 +16,7 @@ import {
 interface StartupQueueListProps {
   startups: Startup[];
   activeStartupId?: string | null;
+  stageActiveStartupId?: string | null;
   onSelectStartup: (startup: Startup) => void;
   onReordered?: () => void;
 }
@@ -23,6 +24,7 @@ interface StartupQueueListProps {
 export function StartupQueueList({
   startups,
   activeStartupId,
+  stageActiveStartupId,
   onSelectStartup,
   onReordered,
 }: StartupQueueListProps) {
@@ -241,9 +243,16 @@ export function StartupQueueList({
 
                 {/* Startup Name & Floor */}
                 <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#203126] truncate">
-                    {startup.name}
-                  </h4>
+                  <div className="flex items-center gap-1.5">
+                    <h4 className="text-xs sm:text-sm font-semibold text-[#203126] truncate">
+                      {startup.name}
+                    </h4>
+                    {startup.id === stageActiveStartupId && (
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[9px] font-bold border border-emerald-200 shrink-0">
+                        ON STAGE
+                      </span>
+                    )}
+                  </div>
                   <span className="text-[11px] text-[#56695e] block truncate">
                     {startup.sector} · Floor Reserve: ₹{Number(startup.base_price).toLocaleString('en-IN')}
                   </span>

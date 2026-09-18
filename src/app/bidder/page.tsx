@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuctionSync } from '@/hooks/useAuctionSync';
 import { usePresence } from '@/hooks/usePresence';
 import { Header } from '@/components/layout/Header';
@@ -41,12 +41,21 @@ export default function BidderPage() {
   );
 
   // Automatically transition view based on stage state
+  const prevActiveStartupIdRef = useRef<string | null>(null);
+  const prevIsAuctionLiveRef = useRef<boolean>(false);
+
   useEffect(() => {
     if (!activeStartup) {
       setUserViewOverride('lobby');
-    } else if (isAuctionLive && userViewOverride === 'lobby') {
-      setUserViewOverride('arena');
+    } else {
+      const isNewLot = prevActiveStartupIdRef.current !== activeStartup.id;
+      const justWentLive = !prevIsAuctionLiveRef.current && isAuctionLive;
+      if (isAuctionLive && (isNewLot || justWentLive)) {
+        setUserViewOverride('arena');
+      }
     }
+    prevActiveStartupIdRef.current = activeStartup?.id || null;
+    prevIsAuctionLiveRef.current = isAuctionLive;
   }, [activeStartup, isAuctionLive]);
 
   if (!profile) {

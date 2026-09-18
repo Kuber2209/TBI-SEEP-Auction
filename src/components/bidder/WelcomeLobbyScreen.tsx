@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Profile, Startup, BidderWallet } from '@/lib/supabase/types';
 import {
   Building2,
@@ -31,6 +31,13 @@ export function WelcomeLobbyScreen({
   onEnterArena,
 }: WelcomeLobbyScreenProps) {
   const [selectedStartup, setSelectedStartup] = useState<Startup | null>(startups[0] || null);
+
+  useEffect(() => {
+    if (!selectedStartup && startups.length > 0) {
+      setSelectedStartup(startups[0]);
+    }
+  }, [startups, selectedStartup]);
+
   const startingPurse = Number(wallet?.initial_balance || 50000);
 
   return (

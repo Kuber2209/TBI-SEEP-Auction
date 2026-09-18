@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuctionSync } from '@/hooks/useAuctionSync';
 import { usePresence } from '@/hooks/usePresence';
 import { Header } from '@/components/layout/Header';
@@ -86,11 +86,17 @@ export default function AdminPage() {
     return () => clearInterval(interval);
   }, [fetchAdminData]);
 
+  const prevSyncedActiveStartupId = useRef<string | null>(null);
   useEffect(() => {
-    if (syncedActiveStartup && !selectedStartupId) {
-      setSelectedStartupId(syncedActiveStartup.id);
+    if (syncedActiveStartup?.id) {
+      if (!selectedStartupId || prevSyncedActiveStartupId.current !== syncedActiveStartup.id) {
+        setSelectedStartupId(syncedActiveStartup.id);
+      }
+      prevSyncedActiveStartupId.current = syncedActiveStartup.id;
+    } else {
+      prevSyncedActiveStartupId.current = null;
     }
-  }, [syncedActiveStartup, selectedStartupId]);
+  }, [syncedActiveStartup?.id, selectedStartupId]);
 
   const handleEmergencyToggle = async () => {
     if (!session) return;
@@ -341,6 +347,7 @@ export default function AdminPage() {
                   <StartupQueueList
                     startups={startups}
                     activeStartupId={activeStartup?.id}
+                    stageActiveStartupId={session?.active_startup_id}
                     onSelectStartup={(s) => setSelectedStartupId(s.id)}
                     onReordered={handleFullRefresh}
                   />

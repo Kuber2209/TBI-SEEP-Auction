@@ -50,3 +50,47 @@ Integrity mode: benchmark
 - [ ] `npm run build` succeeds with 0 TypeScript errors and 0 build warnings.
 - [ ] 100% test pass rate across unit, integration, and chaos simulation suites.
 </USER_REQUEST>
+
+## 2026-09-18T10:12:42Z
+
+<USER_REQUEST>
+This is a single self-contained fix; keep it small and focused.
+
+Add administrative management capabilities for bidder teams in the TBI SEEP Auction platform, allowing admins to create new teams (with initial purse allocation and credentials) and edit existing teams (updating User ID, team name, password, and active status) with automated session and auth synchronization.
+
+Working directory: /Users/kuberbhatt/Downloads/Clubs/TBI
+Integrity mode: development
+
+## Requirements
+
+### R1. Administrative Backend Actions for Bidder Management
+Implement secure server actions for creating and updating bidder teams, enforcing admin RBAC:
+- **Creation (`createBidderTeamAction`)**: Authenticate caller as admin. Validate inputs (`displayUserId`, `teamName`, `password`). Check for duplicate `display_user_id`. Create Supabase Auth user via admin client, insert `profiles` record (`role: 'bidder'`, `is_active: true`, `session_version: 1`), initialize wallet in `bidder_wallets` (`locked_balance: 0`, `total_spent: 0`), log audit event in `account_activity_logs`, and revalidate `/admin` cache.
+- **Update (`updateBidderTeamAction`)**: Authenticate caller as admin. Guard against modifying non-bidder accounts. Update `display_user_id` and Supabase Auth email if changed (checking duplicates). Update `team_name`. Update password if provided, and toggle `is_active`. Immediately invalidate active sessions on password change or deactivation.
+
+### R2. Admin Roster Interface & Modals
+Update the admin bidder roster interface in `src/components/admin/BidderRosterTable.tsx`:
+- Add a "+ Add Bidder Team" header button with creation modal (Team Name, User ID with auto-suggestion, Password generator shortcut, Initial Purse).
+- Add row-level Edit action with modal (User ID, Team Name, Password update, Active/Deactivated toggle).
+- Replace hardcoded team count with dynamic `{bidders.length} Teams` and align UI styling with the eye-comfort matte sage palette.
+
+## Verification Resources
+- Build check: `npm run build`
+- Security test suite: `npx tsx tests/security-remediation.ts`
+- Financial simulation check: `npx tsx tests/simulation.ts`
+
+## Acceptance Criteria
+
+### Build & Integrity
+- [ ] `npm run build` completes successfully with zero TypeScript or lint errors.
+- [ ] `npx tsx tests/security-remediation.ts` passes, confirming RBAC and unauthenticated route protections.
+- [ ] `npx tsx tests/simulation.ts` passes, verifying purse initialization adheres to the financial conservation invariant.
+
+### Core Flows
+- [ ] Creating a new bidder team assigns credentials, initializes wallet, and displays properly in the admin roster.
+- [ ] Editing a team's User ID or password synchronizes with Supabase Auth and forces re-authentication where appropriate.
+- [ ] Deactivating a team prevents further bidding and terminates active sessions.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-18T15:42:42+05:30.
+</ADDITIONAL_METADATA>

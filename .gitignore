@@ -30,3 +30,8 @@ yarn-error.log*
 next-env.d.ts
 .vercel
 .env*
+
+# scratch & local data
+/.agents/teamwork_preview_*
+/ORIGINAL_REQUEST.md
+/seep/

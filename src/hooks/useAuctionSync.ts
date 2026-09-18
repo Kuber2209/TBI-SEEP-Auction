@@ -123,14 +123,21 @@ export function useAuctionSync() {
               const updatedStartups = prev.startups.map(s =>
                 s.id === payload.new.id ? { ...s, ...payload.new } : s
               );
-              const active =
-                updatedStartups.find(s => s.id === (prev.activeStartup?.id || payload.new.id)) ||
-                updatedStartups[0] ||
-                null;
+              if (!prev.startups.some(s => s.id === payload.new.id)) {
+                updatedStartups.push(payload.new as Startup);
+              }
+              const activeId = prev.session?.active_startup_id;
+              const active = activeId
+                ? updatedStartups.find(s => s.id === activeId) || null
+                : null;
+              const won = prev.profile?.id
+                ? updatedStartups.filter(s => s.winner_team_id === prev.profile!.id && s.status === 'SOLD')
+                : prev.wonStartups;
               return {
                 ...prev,
                 startups: updatedStartups,
                 activeStartup: active,
+                wonStartups: won,
                 connectionStatus: 'CONNECTED',
                 lastSyncedAt: new Date(),
               };
@@ -143,14 +150,35 @@ export function useAuctionSync() {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'bids' },
         (payload: any) => {
-          // Sub-second bid insertion for real-time bid pad / audit stream
+          // Sub-second bid insertion & status updates for real-time bid pad / audit stream
           if (payload?.new && payload.new.id) {
             setState(prev => {
               const exists = prev.bids.some(b => b.id === payload.new.id);
-              if (!exists) {
+              const updatedBids = exists
+                ? prev.bids.map(b => (b.id === payload.new.id ? { ...b, ...payload.new } : b))
+                : [payload.new as Bid, ...prev.bids];
+              return {
+                ...prev,
+                bids: updatedBids,
+                connectionStatus: 'CONNECTED',
+                lastSyncedAt: new Date(),
+              };
+            });
+          }
+          fetchAuthoritativeState();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'bidder_wallets' },
+        (payload: any) => {
+          // Sub-second wallet adjustment on bid/outbid/settlement
+          if (payload?.new) {
+            setState(prev => {
+              if (prev.profile?.id && payload.new.team_id === prev.profile.id) {
                 return {
                   ...prev,
-                  bids: [payload.new as Bid, ...prev.bids],
+                  wallet: payload.new as BidderWallet,
                   connectionStatus: 'CONNECTED',
                   lastSyncedAt: new Date(),
                 };
@@ -163,20 +191,23 @@ export function useAuctionSync() {
       )
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'bidder_wallets' },
-        () => {
-          fetchAuthoritativeState();
-        }
-      )
-      .on(
-        'postgres_changes',
         { event: '*', schema: 'public', table: 'auction_sessions' },
         (payload: any) => {
+          // Sub-second session & active startup resolution
           if (payload?.new) {
-            setState(prev => ({
-              ...prev,
-              session: { ...prev.session, ...payload.new },
-            }));
+            setState(prev => {
+              const activeStartupId = payload.new.active_startup_id;
+              const active = activeStartupId
+                ? prev.startups.find(s => s.id === activeStartupId) || null
+                : null;
+              return {
+                ...prev,
+                session: { ...prev.session, ...payload.new },
+                activeStartup: active,
+                connectionStatus: 'CONNECTED',
+                lastSyncedAt: new Date(),
+              };
+            });
           }
           fetchAuthoritativeState();
         }

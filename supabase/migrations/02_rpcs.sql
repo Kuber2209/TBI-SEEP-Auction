@@ -297,16 +297,18 @@ BEGIN
   SET status = 'VOID', voided_at = NOW(), voided_by = v_admin_id, void_reason = p_reason 
   WHERE id = p_bid_id;
 
-  -- 2. Release any active hold for this bidder on this lot
-  UPDATE fund_holds 
-  SET status = 'RELEASED', released_at = NOW() 
-  WHERE bid_id = p_bid_id AND status = 'HELD';
+  -- 2. Release active hold and unlock funds ONLY if target was currently WINNING
+  IF v_target_bid.status = 'WINNING' THEN
+    UPDATE fund_holds 
+    SET status = 'RELEASED', released_at = NOW() 
+    WHERE bid_id = p_bid_id AND status = 'HELD';
 
-  UPDATE bidder_wallets 
-  SET locked_balance = locked_balance - v_target_bid.amount,
-      available_balance = available_balance + v_target_bid.amount,
-      updated_at = NOW()
-  WHERE team_id = v_target_bid.bidder_id;
+    UPDATE bidder_wallets 
+    SET locked_balance = locked_balance - v_target_bid.amount,
+        available_balance = available_balance + v_target_bid.amount,
+        updated_at = NOW()
+    WHERE team_id = v_target_bid.bidder_id;
+  END IF;
 
   -- 3. If target was the current WINNING bid, restore the previous highest valid bid
   IF v_target_bid.status = 'WINNING' THEN
@@ -416,6 +418,12 @@ BEGIN
       closed_at = NULL,
       updated_at = NOW()
   WHERE id = p_startup_id;
+
+  -- Ensure session is ACTIVE and active_startup_id points to reopened lot
+  UPDATE auction_sessions 
+  SET active_startup_id = p_startup_id,
+      status = 'ACTIVE'
+  WHERE id = v_startup.session_id;
 
   INSERT INTO auction_events (session_id, startup_id, event_type, actor_id, payload)
   VALUES (v_startup.session_id, p_startup_id, 'AUCTION_REOPENED', v_admin_id, '{}');
