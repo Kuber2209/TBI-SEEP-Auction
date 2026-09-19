@@ -26,26 +26,51 @@ export async function GET() {
     return NextResponse.json({ error: 'No auction session found' }, { status: 404 });
   }
 
-  // ── 2. All bidder profiles (for name resolution + leaderboard) ─────────────
-  const { data: allProfiles } = await supabase
-    .from('profiles')
-    .select('id, team_name, display_user_id')
-    .eq('role', 'bidder')
-    .eq('is_active', true);
+  const activeStartupId = dbSession?.active_startup_id;
+
+  // ── 2. Run all queries in parallel with Promise.all for minimum backend latency ──
+  const [profilesRes, startupsRes, eventsRes, bidsRes] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('id, team_name, display_user_id')
+      .eq('role', 'bidder')
+      .eq('is_active', true),
+
+    supabase
+      .from('startups')
+      .select('*')
+      .eq('session_id', dbSession.id)
+      .order('display_order', { ascending: true }),
+
+    supabase
+      .from('auction_events')
+      .select('*')
+      .eq('session_id', dbSession.id)
+      .order('created_at', { ascending: false })
+      .limit(12),
+
+    activeStartupId
+      ? supabase
+          .from('bids')
+          .select('*, bidder_profile:profiles!bidder_id(display_user_id, team_name)')
+          .eq('startup_id', activeStartupId)
+          .order('server_seq', { ascending: false })
+          .limit(100)
+      : Promise.resolve({ data: [] }),
+  ]);
+
+  const allProfiles = profilesRes.data || [];
+  const rawStartups = startupsRes.data || [];
+  const recentEvents = eventsRes.data || [];
+  const recentBids = (bidsRes as any).data || [];
 
   const profileMap = new Map<string, { team_name: string; display_user_id: string }>();
-  (allProfiles || []).forEach((p: any) => {
+  allProfiles.forEach((p: any) => {
     profileMap.set(p.id, { team_name: p.team_name, display_user_id: p.display_user_id });
   });
 
-  // ── 3. All startups enriched with team names ────────────────────────────────
-  const { data: rawStartups } = await supabase
-    .from('startups')
-    .select('*')
-    .eq('session_id', dbSession.id)
-    .order('display_order', { ascending: true });
-
-  const startups = (rawStartups || []).map((s: any) => ({
+  // ── 3. Startups enriched with team names ────────────────────────────────────
+  const startups = rawStartups.map((s: any) => ({
     ...s,
     highest_bidder_team_name: s.current_highest_bidder_id
       ? profileMap.get(s.current_highest_bidder_id)?.team_name || null
@@ -55,23 +80,13 @@ export async function GET() {
       : null,
   }));
 
-  const activeStartupId = dbSession?.active_startup_id;
   const activeStartup = activeStartupId
     ? startups.find((s) => s.id === activeStartupId) || null
     : null;
 
-  // ── 4. Recent bids & active lot investor standings ─────────────────────────
-  let recentBids: any[] = [];
+  // ── 4. Active lot investor standings ───────────────────────────────────────
   let activeLotLeaderboard: any[] = [];
-  if (activeStartup) {
-    const { data: bids } = await supabase
-      .from('bids')
-      .select('*, bidder_profile:profiles!bidder_id(display_user_id, team_name)')
-      .eq('startup_id', activeStartup.id)
-      .order('server_seq', { ascending: false })
-      .limit(100);
-    recentBids = bids || [];
-
+  if (activeStartup && recentBids.length > 0) {
     const lotMap = new Map<string, {
       teamId: string;
       teamName: string;
@@ -131,7 +146,7 @@ export async function GET() {
   });
 
   // Add teams with 0 wins too so leaderboard shows all active bidders
-  (allProfiles || []).forEach((p: any) => {
+  allProfiles.forEach((p: any) => {
     if (!leaderboardMap.has(p.id)) {
       leaderboardMap.set(p.id, {
         teamId: p.id,
@@ -156,28 +171,29 @@ export async function GET() {
     (s) => s.status === 'SOLD' || s.status === 'UNSOLD'
   ).length;
 
-  // ── 7. Recent auction events for ticker ────────────────────────────────────
-  const { data: recentEvents } = await supabase
-    .from('auction_events')
-    .select('*')
-    .eq('session_id', dbSession.id)
-    .order('created_at', { ascending: false })
-    .limit(10);
-
-  return NextResponse.json({
-    session: dbSession,
-    startups,
-    activeStartup,
-    recentBids,
-    activeLotLeaderboard,
-    leaderboard,
-    stats: {
-      totalLots: startups.length,
-      closedLots,
-      totalCapitalDeployed,
-      activeTeams: (allProfiles || []).length,
+  return NextResponse.json(
+    {
+      session: dbSession,
+      startups,
+      activeStartup,
+      recentBids,
+      activeLotLeaderboard,
+      leaderboard,
+      profiles: allProfiles,
+      stats: {
+        totalLots: startups.length,
+        closedLots,
+        totalCapitalDeployed,
+        activeTeams: allProfiles.length,
+      },
+      recentEvents,
+      serverTime: new Date().toISOString(),
     },
-    recentEvents: recentEvents || [],
-    serverTime: new Date().toISOString(),
-  });
+    {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'X-Accel-Buffering': 'no',
+      },
+    }
+  );
 }
