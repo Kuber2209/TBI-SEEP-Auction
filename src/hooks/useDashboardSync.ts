@@ -25,11 +25,20 @@ export interface TickerEvent {
   created_at: string;
 }
 
+export interface LotLeaderboardEntry {
+  teamId: string;
+  teamName: string;
+  highestBid: number;
+  bidCount: number;
+  latestBidAt: string;
+}
+
 export interface DashboardState {
   session: AuctionSession | null;
   startups: Startup[];
   activeStartup: Startup | null;
   recentBids: any[];
+  activeLotLeaderboard: LotLeaderboardEntry[];
   leaderboard: LeaderboardEntry[];
   stats: DashboardStats;
   recentEvents: TickerEvent[];
@@ -50,6 +59,7 @@ export function useDashboardSync() {
     startups: [],
     activeStartup: null,
     recentBids: [],
+    activeLotLeaderboard: [],
     leaderboard: [],
     stats: DEFAULT_STATS,
     recentEvents: [],
@@ -80,6 +90,7 @@ export function useDashboardSync() {
         startups: data.startups || [],
         activeStartup: data.activeStartup,
         recentBids: data.recentBids || [],
+        activeLotLeaderboard: data.activeLotLeaderboard || [],
         leaderboard: data.leaderboard || [],
         stats: data.stats || DEFAULT_STATS,
         recentEvents: data.recentEvents || [],

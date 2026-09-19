@@ -60,6 +60,7 @@ export default function DashboardPage() {
     startups,
     activeStartup,
     recentBids,
+    activeLotLeaderboard,
     leaderboard,
     stats,
     recentEvents,
@@ -149,7 +150,12 @@ export default function DashboardPage() {
         <div className="col-span-12 lg:col-span-5 flex flex-col gap-3 overflow-hidden">
           {/* Leaderboard */}
           <section className="flex-1 min-h-0 p-5 rounded-xl bg-white border border-[#cad7cc] shadow-sm overflow-hidden flex flex-col">
-            <DashboardLeaderboard leaderboard={leaderboard} />
+            <DashboardLeaderboard
+              activeStartup={activeStartup}
+              activeLotLeaderboard={activeLotLeaderboard}
+              recentBids={recentBids}
+              overallLeaderboard={leaderboard}
+            />
           </section>
 
           {/* Progress Rail */}

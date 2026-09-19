@@ -60,16 +60,49 @@ export async function GET() {
     ? startups.find((s) => s.id === activeStartupId) || null
     : null;
 
-  // ── 4. Recent bids on the active startup ───────────────────────────────────
+  // ── 4. Recent bids & active lot investor standings ─────────────────────────
   let recentBids: any[] = [];
+  let activeLotLeaderboard: any[] = [];
   if (activeStartup) {
     const { data: bids } = await supabase
       .from('bids')
       .select('*, bidder_profile:profiles!bidder_id(display_user_id, team_name)')
       .eq('startup_id', activeStartup.id)
       .order('server_seq', { ascending: false })
-      .limit(20);
+      .limit(100);
     recentBids = bids || [];
+
+    const lotMap = new Map<string, {
+      teamId: string;
+      teamName: string;
+      highestBid: number;
+      bidCount: number;
+      latestBidAt: string;
+    }>();
+
+    recentBids.forEach((b: any) => {
+      const tid = b.bidder_id;
+      const teamName = b.bidder_profile?.team_name || profileMap.get(tid)?.team_name || 'Team';
+      const amt = Number(b.amount || 0);
+      const existing = lotMap.get(tid);
+      if (existing) {
+        existing.bidCount += 1;
+        if (amt > existing.highestBid) {
+          existing.highestBid = amt;
+          existing.latestBidAt = b.created_at;
+        }
+      } else {
+        lotMap.set(tid, {
+          teamId: tid,
+          teamName,
+          highestBid: amt,
+          bidCount: 1,
+          latestBidAt: b.created_at,
+        });
+      }
+    });
+
+    activeLotLeaderboard = Array.from(lotMap.values()).sort((a, b) => b.highestBid - a.highestBid);
   }
 
   // ── 5. Leaderboard — capital spent + lots won per team (no wallet balances) ─
@@ -136,6 +169,7 @@ export async function GET() {
     startups,
     activeStartup,
     recentBids,
+    activeLotLeaderboard,
     leaderboard,
     stats: {
       totalLots: startups.length,
