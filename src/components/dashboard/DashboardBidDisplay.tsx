@@ -96,11 +96,11 @@ export function DashboardBidDisplay({ startup, recentBids }: Props) {
 
       {/* Leading team */}
       {currentBid !== null && leadingTeam ? (
-        <div className="flex flex-col items-center gap-1 mt-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-[#56695e] font-semibold">
-            Highest Bidder
+        <div className="flex items-center gap-2.5 mt-1 px-5 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 shadow-2xs">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-800 font-bold">
+            Leading Bidder:
           </span>
-          <span className="text-xl sm:text-2xl font-black text-[#203126] tracking-tight bg-[#eff4f0] px-4 py-1 rounded-lg border border-[#cad7cc]">
+          <span className="text-xl sm:text-2xl font-black text-[#1a5c3e] tracking-tight">
             {leadingTeam}
           </span>
         </div>

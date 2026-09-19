@@ -78,7 +78,7 @@ export default function DashboardPage() {
       )}
 
       {/* ── HEADER ───────────────────────────────────────────────────────────── */}
-      <header className="flex items-center justify-between px-6 py-2.5 bg-[#eff4f0] border-b border-[#cad7cc] shrink-0 shadow-[0_1px_3px_rgba(32,49,38,0.05)]">
+      <header className="flex items-center justify-between px-6 py-2.5 bg-white border-b border-[#cad7cc] shrink-0 shadow-[0_1px_3px_rgba(32,49,38,0.05)]">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-[#1a5c3e] flex items-center justify-center shrink-0 shadow-xs">
             <span className="text-white font-black text-xs tracking-tight">TBI</span>

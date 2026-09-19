@@ -46,7 +46,7 @@ export function SoldOverlay({ startup, onDismiss }: Props) {
       className={`fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-500 backdrop-blur-md ${
         visible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
-      style={{ background: 'rgba(240, 245, 241, 0.95)' }}
+      style={{ background: 'rgba(255, 255, 255, 0.96)' }}
     >
       {/* Confetti particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>

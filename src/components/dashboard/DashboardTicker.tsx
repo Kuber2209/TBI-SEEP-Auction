@@ -103,7 +103,7 @@ export function DashboardTicker({ events, recentBids, activeStartupName }: Props
 
   if (items.length === 0) {
     return (
-      <div className="flex items-center gap-2 px-6 py-2 bg-[#eff4f0] border-t border-[#cad7cc]">
+      <div className="flex items-center gap-2 px-6 py-2 bg-white border-t border-[#cad7cc]">
         <span className="text-xs font-mono text-[#8a9a8f] uppercase tracking-wider font-semibold">
           Live Feed · Waiting for auction activity…
         </span>
@@ -112,7 +112,7 @@ export function DashboardTicker({ events, recentBids, activeStartupName }: Props
   }
 
   return (
-    <div className="flex items-center gap-3 px-6 py-2 bg-[#eff4f0] border-t border-[#cad7cc] overflow-hidden">
+    <div className="flex items-center gap-3 px-6 py-2 bg-white border-t border-[#cad7cc] overflow-hidden">
       <span className="text-[10px] font-mono font-bold text-white bg-[#1a5c3e] px-2 py-0.5 rounded uppercase tracking-wider shrink-0 shadow-2xs">
         LIVE FEED
       </span>
