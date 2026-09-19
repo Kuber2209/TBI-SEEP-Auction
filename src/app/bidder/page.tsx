@@ -9,8 +9,6 @@ import { StartupHero } from '@/components/bidder/StartupHero';
 import { BiddingPad } from '@/components/bidder/BiddingPad';
 import { BidHistoryList } from '@/components/bidder/BidHistoryList';
 import { WalletSummaryBar } from '@/components/bidder/WalletSummaryBar';
-import { PortfolioDrawer } from '@/components/bidder/PortfolioDrawer';
-import { PortfolioAnalytics } from '@/components/bidder/PortfolioAnalytics';
 import { WelcomeLobbyScreen } from '@/components/bidder/WelcomeLobbyScreen';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { Loader2, LayoutGrid, Radio } from 'lucide-react';
@@ -29,7 +27,6 @@ export default function BidderPage() {
   } = useAuctionSync();
 
   const { bidderCount } = usePresence(profile);
-  const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
   // Default start is 'lobby' as requested
   const [userViewOverride, setUserViewOverride] = useState<'lobby' | 'arena'>('lobby');
 
@@ -86,7 +83,6 @@ export default function BidderPage() {
             sessionStatus={session?.status}
             isRehearsal={session?.is_rehearsal}
             onlineCount={bidderCount}
-            onOpenPortfolio={() => setIsPortfolioOpen(true)}
             wonCount={wonStartups.length}
           />
 
@@ -172,19 +168,35 @@ export default function BidderPage() {
                 </div>
               </div>
 
-              {/* Supporting Information: Bid Ledger + Portfolio Overview */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                <div className="lg:col-span-7">
-                  <BidHistoryList bids={bids} currentProfile={profile} />
-                </div>
+              {/* Supporting Information: Bid Ledger & Acquired Lots */}
+              <div className="space-y-6">
+                <BidHistoryList bids={bids} currentProfile={profile} />
 
-                <div className="lg:col-span-5">
-                  <PortfolioAnalytics
-                    wonStartups={wonStartups}
-                    wallet={wallet}
-                    onOpenDrawer={() => setIsPortfolioOpen(true)}
-                  />
-                </div>
+                {wonStartups.length > 0 && (
+                  <div className="rounded-xl p-5 sm:p-6 bg-[#eff4f0] border border-[#cad7cc] shadow-sm">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#cad7cc] mb-3">
+                      <h3 className="text-sm font-semibold text-[#203126]">
+                        Acquired Lots ({wonStartups.length})
+                      </h3>
+                      <span className="text-xs text-[#56695e]">
+                        Total Spent: <strong className="text-[#1a5c3e] font-mono">₹{Number(wallet?.total_spent || 0).toLocaleString('en-IN')}</strong>
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2.5">
+                      {wonStartups.map((s) => (
+                        <div
+                          key={s.id}
+                          className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg bg-[#e5ece6] border border-[#cad7cc] text-xs font-semibold text-[#203126]"
+                        >
+                          <span>{s.name}</span>
+                          <span className="text-[#1a5c3e] font-mono">
+                            ₹{Number(s.winning_bid_amount || 0).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </main>
           )}
@@ -192,21 +204,8 @@ export default function BidderPage() {
 
         {/* Integrated Bottom Financial Bar */}
         <div className="sticky bottom-0 z-30">
-          <WalletSummaryBar
-            wallet={wallet}
-            onOpenDrawer={() => setIsPortfolioOpen(true)}
-          />
+          <WalletSummaryBar wallet={wallet} />
         </div>
-
-        {/* Portfolio Drawer */}
-        <PortfolioDrawer
-          isOpen={isPortfolioOpen}
-          onClose={() => setIsPortfolioOpen(false)}
-          wonStartups={wonStartups}
-          wallet={wallet}
-          teamName={profile.team_name}
-          totalLots={startups.length}
-        />
       </div>
     </ErrorBoundary>
   );

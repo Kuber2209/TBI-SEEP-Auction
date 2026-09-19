@@ -101,19 +101,10 @@ export function Header({
             </div>
           )}
 
-          {profile?.role === 'bidder' && onOpenPortfolio && (
-            <button
-              onClick={onOpenPortfolio}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-[#1a5c3e] hover:bg-[#144931] border border-[#1a5c3e] text-xs font-semibold text-white transition-colors duration-150 shadow-sm active:scale-[0.98]"
-            >
-              <Briefcase className="w-3.5 h-3.5" strokeWidth={1.5} />
-              <span>Portfolio</span>
-              {wonCount > 0 && (
-                <span className="w-4 h-4 rounded-full bg-white text-[#1a5c3e] text-[10px] font-bold flex items-center justify-center">
-                  {wonCount}
-                </span>
-              )}
-            </button>
+          {profile?.role === 'bidder' && wonCount > 0 && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 shadow-sm">
+              <span>{wonCount} {wonCount === 1 ? 'Lot' : 'Lots'} Won</span>
+            </div>
           )}
 
           {profile && (

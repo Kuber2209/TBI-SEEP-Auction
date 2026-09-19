@@ -68,17 +68,6 @@ export function WalletSummaryBar({
               <span className="font-mono tabular-nums text-[#203126] font-semibold">₹{initial.toLocaleString('en-IN')}</span>
             </div>
           </div>
-
-          {/* Trigger to view detailed portfolio analytics */}
-          {handleOpen && (
-            <button
-              onClick={handleOpen}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] border border-[#cad7cc] text-xs font-semibold text-[#203126] transition active:scale-[0.98]"
-            >
-              <span>Portfolio & Analytics</span>
-              <ArrowRight className="w-3.5 h-3.5 text-[#1a5c3e]" />
-            </button>
-          )}
         </div>
 
         {/* Linear Deployment Track */}
