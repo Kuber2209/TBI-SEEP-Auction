@@ -96,56 +96,6 @@ export function WelcomeLobbyScreen({
         </div>
       </div>
 
-      {/* 4 Core Auction Rules */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-xl bg-[#eff4f0] border border-[#cad7cc] shadow-sm space-y-1.5">
-          <div className="w-8 h-8 rounded-md bg-[#e5ece6] text-[#1a5c3e] border border-[#cad7cc] flex items-center justify-center font-bold text-xs mb-2">
-            1
-          </div>
-          <h3 className="text-sm font-semibold text-[#203126]">
-            Ascending English Auction
-          </h3>
-          <p className="text-xs text-[#56695e] leading-relaxed">
-            Each lot opens at its base reserve. Bids advance in increments of ₹1,000, ₹2,500, ₹5,000, or ₹10,000.
-          </p>
-        </div>
-
-        <div className="p-5 rounded-xl bg-[#eff4f0] border border-[#cad7cc] shadow-sm space-y-1.5">
-          <div className="w-8 h-8 rounded-md bg-[#e5ece6] text-[#1a5c3e] border border-[#cad7cc] flex items-center justify-center font-bold text-xs mb-2">
-            2
-          </div>
-          <h3 className="text-sm font-semibold text-[#203126]">
-            Guaranteed Escrow Safety
-          </h3>
-          <p className="text-xs text-[#56695e] leading-relaxed">
-            Your purse is locked in escrow while holding the lead. If another team outbids you, your funds are released instantly.
-          </p>
-        </div>
-
-        <div className="p-5 rounded-xl bg-[#eff4f0] border border-[#cad7cc] shadow-sm space-y-1.5">
-          <div className="w-8 h-8 rounded-md bg-[#e5ece6] text-[#1a5c3e] border border-[#cad7cc] flex items-center justify-center font-bold text-xs mb-2">
-            3
-          </div>
-          <h3 className="text-sm font-semibold text-[#203126]">
-            Rapid Hotkey Bidding
-          </h3>
-          <p className="text-xs text-[#56695e] leading-relaxed">
-            Use keyboard numbers <strong className="font-mono text-[#203126]">[1]</strong> to <strong className="font-mono text-[#203126]">[4]</strong> to place bids instantly. Hit <strong className="font-mono text-[#203126]">[Space]</strong> to pass.
-          </p>
-        </div>
-
-        <div className="p-5 rounded-xl bg-[#eff4f0] border border-[#cad7cc] shadow-sm space-y-1.5">
-          <div className="w-8 h-8 rounded-md bg-[#e5ece6] text-[#1a5c3e] border border-[#cad7cc] flex items-center justify-center font-bold text-xs mb-2">
-            4
-          </div>
-          <h3 className="text-sm font-semibold text-[#203126]">
-            Portfolio Diversification
-          </h3>
-          <p className="text-xs text-[#56695e] leading-relaxed">
-            Acquire multiple ventures across CleanTech, MedTech, AgriTech, FinTech, and DeepTech until your purse is deployed.
-          </p>
-        </div>
-      </div>
 
       {/* 12 Scheduled Startups Deal Sheet Preview */}
       <div className="rounded-xl p-6 sm:p-7 bg-[#eff4f0] border border-[#cad7cc] shadow-sm space-y-5">

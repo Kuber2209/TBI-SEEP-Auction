@@ -151,7 +151,7 @@ export function useAuctionSync() {
               };
             });
           }
-          fetchAuthoritativeState();
+          debouncedFetch();
         }
       )
       .on(
@@ -173,7 +173,7 @@ export function useAuctionSync() {
               };
             });
           }
-          fetchAuthoritativeState();
+          debouncedFetch();
         }
       )
       .on(
@@ -194,7 +194,7 @@ export function useAuctionSync() {
               return prev;
             });
           }
-          fetchAuthoritativeState();
+          debouncedFetch();
         }
       )
       .on(
@@ -217,7 +217,7 @@ export function useAuctionSync() {
               };
             });
           }
-          fetchAuthoritativeState();
+          debouncedFetch();
         }
       )
       .subscribe((status) => {
