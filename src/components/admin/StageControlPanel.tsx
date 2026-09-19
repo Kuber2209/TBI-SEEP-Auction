@@ -47,6 +47,42 @@ export function StageControlPanel({
   const [voidReason, setVoidReason] = useState('');
   const [targetVoidBidId, setTargetVoidBidId] = useState<string | null>(null);
 
+  // Live Toast & Pulse Alert on Higher Bid
+  const [leadBidAlert, setLeadBidAlert] = useState<{ amount: number; teamName: string } | null>(null);
+  const [isPulseActive, setIsPulseActive] = useState(false);
+  const prevBidRef = useRef<number | null>(activeStartup?.current_highest_bid || null);
+
+  const topBid = (recentBids || []).find((b) => b.status === 'WINNING' || b.status === 'SETTLED') || (recentBids || [])[0];
+  const leadingTeamName =
+    activeStartup?.highest_bidder_team_name ||
+    topBid?.bidder_profile?.team_name ||
+    null;
+
+  // Trigger temporary toast/pulse alert on new higher bid
+  useEffect(() => {
+    const cur = activeStartup?.current_highest_bid || null;
+    if (cur !== null && prevBidRef.current !== null && cur > prevBidRef.current) {
+      const bidderName = leadingTeamName || 'Competing Team';
+      setLeadBidAlert({ amount: cur, teamName: bidderName });
+      setIsPulseActive(true);
+
+      const t1 = setTimeout(() => setIsPulseActive(false), 2000);
+      const t2 = setTimeout(() => setLeadBidAlert(null), 4500);
+
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+    prevBidRef.current = cur;
+  }, [activeStartup?.current_highest_bid, leadingTeamName]);
+
+  useEffect(() => {
+    setLeadBidAlert(null);
+    setIsPulseActive(false);
+    prevBidRef.current = activeStartup?.current_highest_bid || null;
+  }, [activeStartup?.id]);
+
   const broadcastChannelRef = useRef<any>(null);
 
   useEffect(() => {
@@ -172,7 +208,6 @@ export function StageControlPanel({
 
   const currentBid = activeStartup.current_highest_bid;
   const basePrice = activeStartup.base_price;
-  const topBid = recentBids.find((b) => b.status === 'WINNING' || b.status === 'SETTLED');
 
   return (
     <div className="rounded-xl p-5 sm:p-6 lg:p-7 bg-[#eff4f0] border border-[#cad7cc] shadow-sm space-y-6 transition-colors duration-150">
@@ -218,6 +253,24 @@ export function StageControlPanel({
         </div>
       )}
 
+      {/* Real-time New Higher Bid Flash Toast */}
+      {leadBidAlert && (
+        <div className="p-3.5 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs sm:text-sm font-semibold flex items-center justify-between gap-3 shadow-sm animate-fade-in">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping shrink-0" />
+            <span>
+              🔔 New Leading Bid: <strong className="font-mono text-[#203126]">₹{leadBidAlert.amount.toLocaleString('en-IN')}</strong> placed by <strong className="text-[#1a5c3e] underline underline-offset-2">{leadBidAlert.teamName}</strong>
+            </span>
+          </div>
+          <button
+            onClick={() => setLeadBidAlert(null)}
+            className="text-emerald-700 hover:text-emerald-950 text-xs px-2 py-0.5 rounded hover:bg-emerald-100"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* 🔴 OPERATOR TELEPROMPTER: High-Visibility Current Bid Display (For admin facing laptop) */}
       <div className="p-5 rounded-xl bg-[#e5ece6] border border-[#cad7cc] shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
@@ -231,14 +284,35 @@ export function StageControlPanel({
         </div>
 
         <div className="flex flex-wrap items-baseline justify-between gap-4">
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#203126] font-mono tabular-nums tracking-tight">
-              ₹{Number(currentBid || basePrice).toLocaleString('en-IN')}
-            </span>
-            {currentBid === null && (
-              <span className="text-xs text-[#56695e] font-medium">
-                (Floor Reserve)
+          <div className="flex flex-col gap-1">
+            <div className="flex items-baseline gap-2">
+              <span
+                className={`text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#203126] font-mono tabular-nums tracking-tight transition-all duration-300 ${
+                  isPulseActive ? 'text-[#1a5c3e] scale-[1.03]' : ''
+                }`}
+              >
+                ₹{Number(currentBid || basePrice).toLocaleString('en-IN')}
               </span>
+              {currentBid === null && (
+                <span className="text-xs text-[#56695e] font-medium">
+                  (Floor Reserve)
+                </span>
+              )}
+            </div>
+
+            {/* Dedicated high-visibility badge directly beneath the large bid amount */}
+            {currentBid !== null && leadingTeamName ? (
+              <div className="mt-2 flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs sm:text-sm font-semibold bg-[#1a5c3e]/15 text-[#1a5c3e] border border-[#1a5c3e]/30 shadow-sm">
+                  <Gavel className="w-4 h-4 text-[#1a5c3e] shrink-0" />
+                  <span>Leading Bidder:</span>
+                  <strong className="text-[#203126] font-bold text-sm sm:text-base">
+                    {leadingTeamName}
+                  </strong>
+                </span>
+              </div>
+            ) : (
+              <span className="text-xs text-[#56695e] italic mt-1 block">Awaiting opening offer</span>
             )}
           </div>
 
@@ -246,7 +320,7 @@ export function StageControlPanel({
             {topBid ? (
               <div>
                 <span className="text-xs font-semibold text-emerald-800 block">
-                  Leading: {topBid.bidder_profile?.team_name || 'Team'}
+                  Leading: {leadingTeamName || 'Team'}
                 </span>
                 <span className="text-[11px] text-[#56695e] font-mono">
                   {topBid.bidder_profile?.display_user_id} · Escrow Locked

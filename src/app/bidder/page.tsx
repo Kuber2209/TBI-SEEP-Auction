@@ -164,6 +164,7 @@ export default function BidderPage() {
                     increments={increments}
                     connectionStatus={connectionStatus}
                     onBidSuccess={refresh}
+                    recentBids={bids}
                   />
                 </div>
               </div>

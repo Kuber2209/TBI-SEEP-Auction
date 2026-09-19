@@ -274,9 +274,19 @@ export function StartupQueueList({
                       : 'text-[#6b7a8d] border-transparent'
                   }`}
                 >
-                  {startup.status === 'SOLD' && startup.winning_bid_amount
-                    ? `SOLD ₹${Number(startup.winning_bid_amount).toLocaleString('en-IN')}`
-                    : startup.status.replace('_', ' ')}
+                  {startup.status === 'SOLD' && startup.winning_bid_amount ? (
+                    <span>
+                      SOLD ₹{Number(startup.winning_bid_amount).toLocaleString('en-IN')}
+                      {startup.winner_team_name ? ` · ${startup.winner_team_name}` : ''}
+                    </span>
+                  ) : startup.status === 'ACTIVE_BIDDING' && startup.current_highest_bid ? (
+                    <span>
+                      LIVE ₹{Number(startup.current_highest_bid).toLocaleString('en-IN')}
+                      {startup.highest_bidder_team_name ? ` · ${startup.highest_bidder_team_name}` : ''}
+                    </span>
+                  ) : (
+                    startup.status.replace('_', ' ')
+                  )}
                 </span>
               </div>
             </div>

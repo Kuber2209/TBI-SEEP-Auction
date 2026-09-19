@@ -54,7 +54,9 @@ export interface Startup {
   status: StartupStatus;
   current_highest_bid: number | null;
   current_highest_bidder_id: string | null;
+  highest_bidder_team_name?: string | null;
   winner_team_id: string | null;
+  winner_team_name?: string | null;
   winning_bid_amount: number | null;
   started_presenting_at?: string;
   bidding_started_at?: string;

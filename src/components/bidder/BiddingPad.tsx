@@ -15,8 +15,11 @@ import {
   Sparkles,
   ShieldCheck,
   Pause,
+  Gavel,
+  Trophy,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { Bid } from '@/lib/supabase/types';
 
 interface BiddingPadProps {
   startup: Startup | null;
@@ -25,6 +28,7 @@ interface BiddingPadProps {
   increments: number[];
   connectionStatus: ConnectionStatus;
   onBidSuccess?: () => void;
+  recentBids?: Bid[];
 }
 
 export function BiddingPad({
@@ -34,6 +38,7 @@ export function BiddingPad({
   increments = [1000, 2500, 5000, 10000],
   connectionStatus,
   onBidSuccess,
+  recentBids = [],
 }: BiddingPadProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -41,6 +46,10 @@ export function BiddingPad({
   const [showValuationModal, setShowValuationModal] = useState(false);
   const [srAnnouncement, setSrAnnouncement] = useState<string>('');
   const [rivalBidding, setRivalBidding] = useState(false);
+
+  // Live Toast & Pulse Alert on Higher Bid
+  const [leadBidAlert, setLeadBidAlert] = useState<{ amount: number; teamName: string } | null>(null);
+  const [isPricePulsing, setIsPricePulsing] = useState(false);
 
   const broadcastChannelRef = useRef<any>(null);
 
@@ -88,11 +97,60 @@ export function BiddingPad({
   const basePrice = startup?.base_price || 0;
   const availableBalance = wallet?.available_balance || 0;
 
+  // Resolve leading bidder team name & winner team name
+  const topBid =
+    (recentBids || []).find((b) => b.status === 'WINNING' || b.status === 'SETTLED') ||
+    (recentBids || [])[0];
+
+  const leadingTeamName =
+    isCurrentlyWinning && profile?.team_name
+      ? profile.team_name
+      : startup?.highest_bidder_team_name ||
+        topBid?.bidder_profile?.team_name ||
+        null;
+
+  const winningTeamName =
+    isWinner && profile?.team_name
+      ? profile.team_name
+      : startup?.winner_team_name ||
+        startup?.highest_bidder_team_name ||
+        topBid?.bidder_profile?.team_name ||
+        null;
+
+  const prevBidAmountRef = useRef<number | null>(currentBid);
+
   // Reset interaction state on lot transition
   useEffect(() => {
     setPassAcknowledged(false);
     setErrorMessage(null);
+    setLeadBidAlert(null);
+    setIsPricePulsing(false);
+    prevBidAmountRef.current = startup?.current_highest_bid || null;
   }, [startup?.id]);
+
+  // Real-time flash alert when a higher bid arrives
+  useEffect(() => {
+    if (
+      currentBid !== null &&
+      prevBidAmountRef.current !== null &&
+      currentBid > prevBidAmountRef.current
+    ) {
+      const bidderName = leadingTeamName || (isCurrentlyWinning ? profile?.team_name : 'Competing Team');
+      if (bidderName) {
+        setLeadBidAlert({ amount: currentBid, teamName: bidderName });
+        setIsPricePulsing(true);
+
+        const pulseTimer = setTimeout(() => setIsPricePulsing(false), 2000);
+        const alertTimer = setTimeout(() => setLeadBidAlert(null), 4500);
+
+        return () => {
+          clearTimeout(pulseTimer);
+          clearTimeout(alertTimer);
+        };
+      }
+    }
+    prevBidAmountRef.current = currentBid;
+  }, [currentBid, leadingTeamName, isCurrentlyWinning, profile?.team_name]);
 
   // Track previous leading status for screen reader announcement
   const wasLeadingRef = useRef<boolean>(false);
@@ -337,15 +395,52 @@ export function BiddingPad({
           </div>
 
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#203126] tracking-tight font-mono tabular-nums">
+            <span
+              className={`text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#203126] tracking-tight font-mono tabular-nums transition-all duration-300 ${
+                isPricePulsing ? 'text-[#1a5c3e] scale-[1.03]' : ''
+              }`}
+            >
               ₹{Number(startup?.status === 'SOLD' ? (startup?.winning_bid_amount || currentBid || basePrice) : (currentBid || basePrice)).toLocaleString('en-IN')}
             </span>
           </div>
 
-          <p className="text-xs text-[#56695e] mt-1">
+          {/* Dedicated high-visibility badge directly beneath the large bid amount */}
+          {startup?.status === 'SOLD' ? (
+            winningTeamName && (
+              <div className="mt-2.5 flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs sm:text-sm font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-sm">
+                  <Trophy className="w-4 h-4 shrink-0 text-emerald-600" />
+                  <span>Won by:</span>
+                  <strong className="font-bold text-emerald-950">
+                    {isWinner ? `${profile?.team_name} (Your Team)` : winningTeamName}
+                  </strong>
+                </span>
+              </div>
+            )
+          ) : currentBid !== null && leadingTeamName ? (
+            <div className="mt-2.5 flex items-center gap-2">
+              <span
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs sm:text-sm font-semibold border shadow-sm transition-all duration-200 ${
+                  isCurrentlyWinning
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                    : 'bg-[#1a5c3e]/10 text-[#1a5c3e] border-[#1a5c3e]/25'
+                }`}
+              >
+                <Gavel className="w-4 h-4 shrink-0 text-inherit" />
+                <span>Leading Bidder:</span>
+                <strong className="font-bold text-[#203126]">
+                  {isCurrentlyWinning ? `${profile?.team_name} (Your Team)` : leadingTeamName}
+                </strong>
+              </span>
+            </div>
+          ) : null}
+
+          <p className="text-xs text-[#56695e] mt-2">
             {startup?.status === 'SOLD'
               ? isWinner
                 ? 'Your capital has been deployed from escrow into your equity portfolio.'
+                : winningTeamName
+                ? `Lot awarded to ${winningTeamName}. Standing by for next lot.`
                 : 'Lot awarded to competing syndicate. Standing by for next lot.'
               : startup?.status === 'UNSOLD'
               ? 'No qualifying bids were submitted above reserve price.'
@@ -354,10 +449,31 @@ export function BiddingPad({
               : currentBid !== null
               ? isCurrentlyWinning
                 ? 'Your capital is held in escrow until outbid or lot closes.'
+                : leadingTeamName
+                ? `Current highest bid placed by ${leadingTeamName}.`
                 : 'Offer submitted by competing syndicate.'
               : 'Opening lot valuation. Ready to receive initial bids.'}
           </p>
         </div>
+
+        {/* Temporary Toast / Flash Alert when higher bid arrives */}
+        {leadBidAlert && (
+          <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs sm:text-sm font-semibold flex items-center justify-between gap-2 shadow-sm animate-fade-in">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping shrink-0" />
+              <span>
+                New Leading Bid: <strong className="font-mono text-[#203126]">₹{leadBidAlert.amount.toLocaleString('en-IN')}</strong> placed by <strong className="text-[#1a5c3e]">{leadBidAlert.teamName}</strong>
+              </span>
+            </div>
+            <button
+              onClick={() => setLeadBidAlert(null)}
+              className="text-emerald-700 hover:text-emerald-950 text-xs px-1.5 py-0.5 rounded hover:bg-emerald-100"
+              aria-label="Dismiss alert"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {rivalBidding && !isSubmitting && isBiddingOpen && !isCurrentlyWinning && (
           <div className="p-2.5 rounded-md bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold flex items-center gap-2">
