@@ -62,12 +62,15 @@ export function DashboardLotSpotlight({ startup, totalLots }: Props) {
       </div>
 
       {/* Startup primary details */}
-      <div className="space-y-3">
-        <h2 className="text-4xl xl:text-5xl font-black text-[#203126] leading-tight tracking-tight">
+      <div className="space-y-3.5 my-auto">
+        <h2
+          className="font-black text-[#203126] leading-[1.08] tracking-tight"
+          style={{ fontSize: 'clamp(2.75rem, 5vw, 4.5rem)' }}
+        >
           {startup.name}
         </h2>
         {startup.tagline && (
-          <p className="text-base sm:text-lg text-[#56695e] leading-relaxed font-normal">
+          <p className="text-lg sm:text-xl text-[#56695e] leading-relaxed font-normal max-w-2xl">
             {startup.tagline}
           </p>
         )}

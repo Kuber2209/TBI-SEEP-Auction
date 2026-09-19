@@ -5,7 +5,6 @@ import { useDashboardSync } from '@/hooks/useDashboardSync';
 import { DashboardLotSpotlight } from '@/components/dashboard/DashboardLotSpotlight';
 import { DashboardBidDisplay } from '@/components/dashboard/DashboardBidDisplay';
 import { DashboardLeaderboard } from '@/components/dashboard/DashboardLeaderboard';
-import { DashboardProgressRail } from '@/components/dashboard/DashboardProgressRail';
 import { DashboardStatBar } from '@/components/dashboard/DashboardStatBar';
 import { DashboardTicker } from '@/components/dashboard/DashboardTicker';
 import { SoldOverlay } from '@/components/dashboard/SoldOverlay';
@@ -146,23 +145,14 @@ export default function DashboardPage() {
           </section>
         </div>
 
-        {/* RIGHT COLUMN — Leaderboard + Progress Rail (5 cols) */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col gap-3 overflow-hidden">
-          {/* Leaderboard */}
-          <section className="flex-1 min-h-0 p-5 rounded-xl bg-white border border-[#cad7cc] shadow-sm overflow-hidden flex flex-col">
+        {/* RIGHT COLUMN — Active Startup Investor Leaderboard (5 cols) */}
+        <div className="col-span-12 lg:col-span-5 flex flex-col overflow-hidden">
+          <section className="h-full min-h-0 p-5 sm:p-6 rounded-xl bg-white border border-[#cad7cc] shadow-sm overflow-hidden flex flex-col">
             <DashboardLeaderboard
               activeStartup={activeStartup}
               activeLotLeaderboard={activeLotLeaderboard}
               recentBids={recentBids}
               overallLeaderboard={leaderboard}
-            />
-          </section>
-
-          {/* Progress Rail */}
-          <section className="flex-1 min-h-0 p-5 rounded-xl bg-white border border-[#cad7cc] shadow-sm overflow-hidden flex flex-col">
-            <DashboardProgressRail
-              startups={startups}
-              activeStartupId={session?.active_startup_id}
             />
           </section>
         </div>
