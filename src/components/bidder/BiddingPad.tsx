@@ -11,7 +11,6 @@ import {
   ChevronUp,
   Loader2,
   AlertCircle,
-  AlertTriangle,
   Sparkles,
   ShieldCheck,
   Pause,
@@ -37,7 +36,6 @@ export function BiddingPad({
 }: BiddingPadProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [outbidAlert, setOutbidAlert] = useState<{ amount: number } | null>(null);
   const [passAcknowledged, setPassAcknowledged] = useState(false);
   const [showValuationModal, setShowValuationModal] = useState(false);
   const [srAnnouncement, setSrAnnouncement] = useState<string>('');
@@ -58,21 +56,17 @@ export function BiddingPad({
   useEffect(() => {
     setPassAcknowledged(false);
     setErrorMessage(null);
-    setOutbidAlert(null);
   }, [startup?.id]);
 
-  // Track previous leading status for outbid alerts
+  // Track previous leading status for screen reader announcement
   const wasLeadingRef = useRef<boolean>(false);
   useEffect(() => {
     if (!profile) return;
     const isNowLeading = startup?.current_highest_bidder_id === profile.id && isBiddingOpen;
     if (wasLeadingRef.current && !isNowLeading && isBiddingOpen && startup?.current_highest_bid) {
-      setOutbidAlert({ amount: startup.current_highest_bid });
       setSrAnnouncement(
         `Alert: Your team was outbid. Current highest offer is ₹${startup.current_highest_bid.toLocaleString('en-IN')}. Escrow hold released.`
       );
-    } else if (isNowLeading) {
-      setOutbidAlert(null);
     }
     wasLeadingRef.current = isNowLeading;
   }, [startup?.current_highest_bidder_id, startup?.current_highest_bid, isBiddingOpen, profile]);
@@ -319,33 +313,6 @@ export function BiddingPad({
               : 'Opening lot valuation. Ready to receive initial bids.'}
           </p>
         </div>
-
-        {/* Outbid Alert Notice */}
-        {outbidAlert && isBiddingOpen && !isCurrentlyWinning && (
-          <div
-            role="alert"
-            className="p-3.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start justify-between gap-3 animate-fade-in"
-          >
-            <div className="flex items-start gap-2.5">
-              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
-              <div>
-                <span className="font-semibold block text-amber-900">
-                  Outbid Alert
-                </span>
-                <p className="text-[11px] text-amber-800 mt-0.5">
-                  Another syndicate placed a bid of ₹{outbidAlert.amount.toLocaleString('en-IN')}. Your previous escrow hold has been released back to your available purse.
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => setOutbidAlert(null)}
-              className="text-amber-700 hover:text-amber-900 p-1 text-xs"
-              aria-label="Dismiss outbid notice"
-            >
-              ✕
-            </button>
-          </div>
-        )}
 
         {/* Error Notice */}
         {errorMessage && (
