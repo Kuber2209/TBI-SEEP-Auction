@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { createClient } from '@/lib/supabase/client';
 import {
   setStageStatusAction,
   closeAuctionAction,
@@ -46,6 +47,21 @@ export function StageControlPanel({
   const [voidReason, setVoidReason] = useState('');
   const [targetVoidBidId, setTargetVoidBidId] = useState<string | null>(null);
 
+  const broadcastChannelRef = useRef<any>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    broadcastChannelRef.current = supabase.channel('auction:stage_signals', {
+      config: { broadcast: { self: false } },
+    });
+    broadcastChannelRef.current.subscribe();
+    return () => {
+      if (broadcastChannelRef.current) {
+        supabase.removeChannel(broadcastChannelRef.current);
+      }
+    };
+  }, []);
+
   if (!activeStartup) {
     return (
       <div className="rounded-xl p-8 text-center flex flex-col items-center justify-center min-h-[320px] bg-[#eff4f0] border border-[#cad7cc] shadow-sm">
@@ -66,6 +82,13 @@ export function StageControlPanel({
       const res = await setStageStatusAction(startupId, status);
       if (!res.success) setActionError(res.error || 'Failed to update status');
       if (onActionComplete) onActionComplete();
+      try {
+        await broadcastChannelRef.current?.send({
+          type: 'broadcast',
+          event: 'STAGE_CHANGED',
+          payload: { startup_id: startupId, new_status: status, ts: Date.now() },
+        });
+      } catch (_) {}
     } catch (e: any) {
       setActionError(e.message);
     } finally {
@@ -80,6 +103,13 @@ export function StageControlPanel({
       const res = await closeAuctionAction(activeStartup.id);
       if (!res.success) setActionError(res.error || 'Failed to close auction');
       if (onActionComplete) onActionComplete();
+      try {
+        await broadcastChannelRef.current?.send({
+          type: 'broadcast',
+          event: 'STAGE_CHANGED',
+          payload: { startup_id: activeStartup.id, new_status: 'SOLD_OR_UNSOLD', ts: Date.now() },
+        });
+      } catch (_) {}
     } catch (e: any) {
       setActionError(e.message);
     } finally {

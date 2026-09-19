@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { createClient } from '@/lib/supabase/client';
 import { submitBidAction } from '@/lib/auction/actions';
 import { BidderWallet, Profile, Startup } from '@/lib/supabase/types';
 import { ConnectionStatus } from '@/hooks/useAuctionSync';
@@ -39,6 +40,41 @@ export function BiddingPad({
   const [passAcknowledged, setPassAcknowledged] = useState(false);
   const [showValuationModal, setShowValuationModal] = useState(false);
   const [srAnnouncement, setSrAnnouncement] = useState<string>('');
+  const [rivalBidding, setRivalBidding] = useState(false);
+
+  const broadcastChannelRef = useRef<any>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    broadcastChannelRef.current = supabase.channel('auction:bid_signals', {
+      config: { broadcast: { self: false } }, // don't echo back to sender
+    });
+    broadcastChannelRef.current.subscribe();
+    return () => {
+      if (broadcastChannelRef.current) {
+        supabase.removeChannel(broadcastChannelRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!startup?.id) return;
+    const supabase = createClient();
+    const listenChannel = supabase.channel('auction:bid_signals_listen', {
+      config: { broadcast: { self: false } },
+    });
+    listenChannel
+      .on('broadcast', { event: 'BID_SUBMITTING' }, (msg: any) => {
+        if (msg.payload?.startup_id === startup.id) {
+          setRivalBidding(true);
+          setTimeout(() => setRivalBidding(false), 2500); // auto-clear after 2.5s
+        }
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(listenChannel);
+    };
+  }, [startup?.id]);
 
   const isBiddingOpen = startup?.status === 'ACTIVE_BIDDING';
   const isConnected = connectionStatus === 'CONNECTED';
@@ -138,6 +174,15 @@ export function BiddingPad({
         setSrAnnouncement(errorText);
         return;
       }
+
+      // Broadcast to other bidders that a submission is in flight
+      try {
+        await broadcastChannelRef.current?.send({
+          type: 'broadcast',
+          event: 'BID_SUBMITTING',
+          payload: { startup_id: startup.id, ts: Date.now() },
+        });
+      } catch (_) {}
 
       setIsSubmitting(true);
       setErrorMessage(null);
@@ -313,6 +358,13 @@ export function BiddingPad({
               : 'Opening lot valuation. Ready to receive initial bids.'}
           </p>
         </div>
+
+        {rivalBidding && !isSubmitting && isBiddingOpen && !isCurrentlyWinning && (
+          <div className="p-2.5 rounded-md bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0" />
+            <span>Another team is placing a bid — result arriving shortly</span>
+          </div>
+        )}
 
         {/* Error Notice */}
         {errorMessage && (
