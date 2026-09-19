@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 
 /**
@@ -10,7 +10,7 @@ import { NextResponse } from 'next/server';
  * - leaderboard (teams, lots won, capital spent) — wallet balances intentionally omitted
  */
 export async function GET() {
-  const supabase = createClient();
+  const supabase = createAdminClient();
 
   // ── 1. Session ──────────────────────────────────────────────────────────────
   const { data: session } = await supabase

@@ -79,19 +79,28 @@ export default function DashboardPage() {
 
       {/* ── HEADER ───────────────────────────────────────────────────────────── */}
       <header className="flex items-center justify-between px-6 py-2.5 bg-white border-b border-[#cad7cc] shrink-0 shadow-[0_1px_3px_rgba(32,49,38,0.05)]">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#1a5c3e] flex items-center justify-center shrink-0 shadow-xs">
-            <span className="text-white font-black text-xs tracking-tight">TBI</span>
+        <div className="flex items-center gap-3.5">
+          {/* Official TBI BITS Pilani Logo Badge */}
+          <div className="h-10 px-2.5 py-1 rounded-lg bg-white border border-[#cad7cc] flex items-center justify-center shrink-0 shadow-xs">
+            <img
+              src="/images/tbi-bits-logo.png"
+              alt="Technology Business Incubator - BITS Pilani Hyderabad Campus"
+              className="h-8 w-auto object-contain"
+            />
           </div>
+
           <div>
-            <span className="text-[#203126] font-bold text-sm tracking-tight">BITS TBI</span>
-            <span className="text-[#cad7cc] text-sm font-light mx-2">·</span>
-            <span className="text-[#1a5c3e] font-black text-sm tracking-tight">
-              SEEP 4.0
-            </span>
-            <span className="text-[#56695e] text-xs font-mono ml-2 hidden sm:inline font-medium">
-              Live Startup Auction
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-bold tracking-tight text-[#203126] text-base sm:text-lg leading-none">
+                SEEP <span className="text-[#1a5c3e]">4.0</span>
+              </span>
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
+                Live Stage
+              </span>
+            </div>
+            <p className="text-[11px] text-[#56695e] font-medium tracking-normal mt-0.5">
+              BITS Pilani Hyderabad · Live Startup Auction
+            </p>
           </div>
         </div>
 
