@@ -13,7 +13,7 @@ export interface ValuationCalculatorProps {
 export function ValuationCalculator({
   currentBidAmount,
   activeAmount,
-  basePrice = 10000,
+  basePrice = 5000,
   bidOptions = [],
   currentHighestBid,
 }: ValuationCalculatorProps) {
@@ -30,7 +30,7 @@ export function ValuationCalculator({
       ? currentHighestBid
       : basePrice > 0
       ? basePrice
-      : 10000;
+      : 5000;
 
   // Resolve dynamic bid options for matrix
   const resolvedBidOptions: number[] =

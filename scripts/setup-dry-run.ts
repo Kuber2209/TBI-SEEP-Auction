@@ -34,7 +34,7 @@ async function run() {
       tagline: 'AI-powered computational efficiency & infrastructure optimization.',
       description: 'Core Opti delivers algorithmic resource orchestration and computational runtime optimization for high-throughput enterprise architectures.',
       founder_names: ['Core Opti Founders'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -44,7 +44,7 @@ async function run() {
       tagline: 'AI-Based Energy Orchestration for Data Centers.',
       description: 'Intelligent energy-management system designed to reduce energy consumption, operational costs, and carbon footprints for data centers and compute clusters.',
       founder_names: ['Sattwik Das', 'Chinnam Hitesh Chandra', 'Agnibh Karmakar'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -54,7 +54,7 @@ async function run() {
       tagline: 'AI co-pilot app for gig economy drivers across India.',
       description: 'Real-time multi-platform income optimization and intelligent trip arbitration co-pilot for on-demand rideshare and delivery drivers.',
       founder_names: ['Kurelli Abhiram Reddy', 'Hari Hara Prasad Goud'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -64,7 +64,7 @@ async function run() {
       tagline: 'AI-powered role-specific interview simulation platform.',
       description: 'Simulates real-world, high-pressure candidate interviews with dynamic adaptive questioning, granular behavioral feedback, and competency rubrics.',
       founder_names: ['Harshal Anand Shah'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -74,7 +74,7 @@ async function run() {
       tagline: 'Matsya — Autonomous marine systems for inland water drowning prevention.',
       description: 'Autonomous rapid-deployment life-saving watercraft and sensor telemetry protecting inland waterways, reservoirs, and public water bodies.',
       founder_names: ['Rudra Joshi'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -84,7 +84,7 @@ async function run() {
       tagline: 'Tactical communication and battlefield intelligence layer for defence.',
       description: 'Indigenous resilient battlefield communications, secure mesh networks, and situational awareness layers engineered for tactical edge deployment.',
       founder_names: ['Samarth Alok Srivastava'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -94,7 +94,7 @@ async function run() {
       tagline: 'Leno — 100% natural and sugar-free chewing gum for the Indian market.',
       description: 'Pioneering clean-label, biodegradable, plastic-free natural gum formulations crafted for healthy mastication and oral wellness.',
       founder_names: ['Kaushal Chetlapalli'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -104,7 +104,7 @@ async function run() {
       tagline: 'Re-engineering controlled-release plant nutrient delivery.',
       description: 'Next-generation bio-carrier agricultural inputs delivering micronutrients and soil revitalization to boost crop yields with reduced fertilizer runoff.',
       founder_names: ['Pranjal Agarwal'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -114,7 +114,7 @@ async function run() {
       tagline: 'Physics-native autonomous discovery & research copilot for experimental science.',
       description: 'Autonomous laboratory copilot accelerating material discovery and experimental chemistry through physics-informed machine learning models.',
       founder_names: ['Arnav Kulshrestha', 'Sattwik Das'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -124,7 +124,7 @@ async function run() {
       tagline: 'Build Your Own Washroom — Real-time interactive 3D configurator.',
       description: 'Web-based photorealistic 3D interior configurator enabling sanitaryware retail customers and architects to design, fit, and cost washroom layouts instantly.',
       founder_names: ['Tejas Ajmera'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -134,7 +134,7 @@ async function run() {
       tagline: 'AI litigation workflow & research copilot for Indian advocates.',
       description: 'Purpose-built legal intelligence platform streamlining case research, draft preparation, and court procedure navigation for law students and advocates.',
       founder_names: ['Preena Sengupta', 'Aniket Gupta'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -144,7 +144,7 @@ async function run() {
       tagline: 'Curated intelligence and executive briefings on artificial intelligence.',
       description: 'High-signal executive synthesis and technical intelligence filtering through the frontier AI ecosystem for researchers, operators, and technologists.',
       founder_names: ['Bhoovan Dhona'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -154,7 +154,7 @@ async function run() {
       tagline: 'Sustainable modular temporary housing for construction ecosystems.',
       description: 'Rapidly assembleable, thermally insulated, dignified modular habitat units revolutionizing on-site workforce accommodation for major infrastructure projects.',
       founder_names: ['Prathik Tuniguntla', 'Nikhilesh Kosagi'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
     {
@@ -164,7 +164,7 @@ async function run() {
       tagline: 'Evidence-based digital neurodevelopmental autism therapy.',
       description: 'Structured clinical methodologies and caregiver-assisted neurodivergent developmental support interventions for early childhood autism spectrum management.',
       founder_names: ['Parth', 'Chaitrali Dharmadhikari'],
-      base_price: 10000.0,
+      base_price: 5000.0,
       status: 'UPCOMING',
     },
   ];

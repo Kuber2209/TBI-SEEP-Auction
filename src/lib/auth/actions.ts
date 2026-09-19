@@ -254,7 +254,7 @@ export async function createBidderTeamAction(
     return { success: false, error: 'Password must be at least 6 characters long.' };
   }
 
-  const parsedPurse = rawPurse !== undefined ? Number(rawPurse) : 50000;
+  const parsedPurse = rawPurse !== undefined ? Number(rawPurse) : 100000;
   if (!Number.isFinite(parsedPurse) || parsedPurse < 0) {
     return { success: false, error: 'Initial purse must be a valid non-negative number.' };
   }

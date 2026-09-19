@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS auction_sessions (
   name                  TEXT NOT NULL DEFAULT 'SEEP 4.0 Grand Finale',
   is_rehearsal          BOOLEAN NOT NULL DEFAULT false,
   status                session_status NOT NULL DEFAULT 'DRAFT',
-  initial_purse_amount  NUMERIC(14,2) NOT NULL DEFAULT 50000.00,
+  initial_purse_amount  NUMERIC(14,2) NOT NULL DEFAULT 100000.00,
   bid_increments        NUMERIC(14,2)[] NOT NULL DEFAULT '{1000, 2500, 5000, 10000}',
   wallets_initialized   BOOLEAN NOT NULL DEFAULT false,
   active_startup_id     UUID,
@@ -77,18 +77,18 @@ CREATE TABLE IF NOT EXISTS auction_sessions (
   completed_at          TIMESTAMPTZ
 );
 
--- 4. Startups
+-- 4. Startups (Lots)
 CREATE TABLE IF NOT EXISTS startups (
   id                        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   session_id                UUID NOT NULL REFERENCES auction_sessions(id) ON DELETE CASCADE,
-  display_order             INTEGER NOT NULL,
+  display_order             INTEGER NOT NULL,        -- Fixed sequence 1..N
   name                      TEXT NOT NULL,
   founder_names             TEXT[] NOT NULL DEFAULT '{}',
-  sector                    TEXT NOT NULL,
+  sector                    TEXT NOT NULL,           -- e.g. "FinTech", "HealthTech", "CleanTech"
   tagline                   TEXT NOT NULL,
   description               TEXT,
   logo_url                  TEXT,
-  base_price                NUMERIC(14,2) NOT NULL DEFAULT 10000.00,
+  base_price                NUMERIC(14,2) NOT NULL DEFAULT 5000.00,
   status                    startup_status NOT NULL DEFAULT 'UPCOMING',
   current_highest_bid       NUMERIC(14,2),
   current_highest_bidder_id UUID REFERENCES profiles(id),
@@ -869,7 +869,7 @@ VALUES (
   'SEEP 4.0 Grand Finale',
   true,
   'DRAFT',
-  50000.00,
+  100000.00,
   ARRAY[1000, 2500, 5000, 10000],
   false
 )

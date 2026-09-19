@@ -15,7 +15,7 @@ export function WalletSummaryBar({
   onOpenDrawer,
   onOpenPortfolio,
 }: WalletSummaryBarProps) {
-  const initial = Number(wallet?.initial_balance || 50000);
+  const initial = Number(wallet?.initial_balance || 100000);
   const available = Number(wallet?.available_balance || 0);
   const locked = Number(wallet?.locked_balance || 0);
   const spent = Number(wallet?.total_spent || 0);

@@ -150,7 +150,7 @@ export function BidderRosterTable({
   const [createDisplayUserId, setCreateDisplayUserId] = useState('');
   const [createPassword, setCreatePassword] = useState('');
   const [showCreatePassword, setShowCreatePassword] = useState(false);
-  const [createInitialPurse, setCreateInitialPurse] = useState<number>(50000);
+  const [createInitialPurse, setCreateInitialPurse] = useState<number>(100000);
   const [createError, setCreateError] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -327,7 +327,7 @@ export function BidderRosterTable({
     setCreateTeamName('');
     setCreatePassword(generateRandomPassword());
     setShowCreatePassword(false);
-    setCreateInitialPurse(50000);
+    setCreateInitialPurse(100000);
     setCreateError(null);
     setIsCreateModalOpen(true);
   };
@@ -746,7 +746,7 @@ export function BidderRosterTable({
               processedBidders.map((b) => {
                 const online = isUserOnline(b.id);
                 const wallet = b.wallet;
-                const initial = Number(wallet?.initial_balance || 50000);
+                const initial = Number(wallet?.initial_balance || 100000);
                 const available = Number(wallet?.available_balance || 0);
                 const locked = Number(wallet?.locked_balance || 0);
                 const spent = Number(wallet?.total_spent || 0);
@@ -1118,7 +1118,7 @@ export function BidderRosterTable({
                   </label>
                   <div className="flex items-center gap-1 text-[10px]">
                     <span className="text-[#56695e]">Presets:</span>
-                    {[25000, 50000, 100000].map((amt) => (
+                    {[50000, 100000, 150000].map((amt) => (
                       <button
                         key={amt}
                         type="button"

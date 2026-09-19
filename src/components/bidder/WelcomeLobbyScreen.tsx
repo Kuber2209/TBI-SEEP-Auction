@@ -38,7 +38,7 @@ export function WelcomeLobbyScreen({
     }
   }, [startups, selectedStartup]);
 
-  const startingPurse = Number(wallet?.initial_balance || 50000);
+  const startingPurse = Number(wallet?.initial_balance || 100000);
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8 animate-fade-in">

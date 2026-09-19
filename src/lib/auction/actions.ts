@@ -258,10 +258,10 @@ export async function resetRehearsalSessionAction(sessionId: string) {
     // 3. Clear auction events for this session
     await admin.from('auction_events').delete().eq('session_id', sessionId);
 
-    // 4. Reset all bidder wallets to full initial balance (₹50,000)
+    // 4. Reset all bidder wallets to full initial balance (₹100,000)
     await (admin.from('bidder_wallets') as any).update({
-      available_balance: 50000.0,
-      initial_balance: 50000.0,
+      available_balance: 100000.0,
+      initial_balance: 100000.0,
       locked_balance: 0.0,
       total_spent: 0.0,
       updated_at: new Date().toISOString(),

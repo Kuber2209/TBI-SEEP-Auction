@@ -144,7 +144,7 @@ export function RoomTelemetryDashboard({
   const packetDropRate = packetsSent > 0 ? ((packetsDropped / packetsSent) * 100).toFixed(1) : '0.0';
 
   // Global Ledger Financial Conservation Calculation
-  const totalPurse = bidders.reduce((sum, b) => sum + Number(b.wallet?.initial_balance || 50000), 0);
+  const totalPurse = bidders.reduce((sum, b) => sum + Number(b.wallet?.initial_balance || 100000), 0);
   const totalAvailable = bidders.reduce((sum, b) => sum + Number(b.wallet?.available_balance || 0), 0);
   const totalDeployed = bidders.reduce((sum, b) => sum + Number(b.wallet?.total_spent || 0), 0);
   const totalLocked = bidders.reduce((sum, b) => sum + Number(b.wallet?.locked_balance || 0), 0);
@@ -152,7 +152,7 @@ export function RoomTelemetryDashboard({
 
   const isGlobalConserved =
     bidders.every((b) => {
-      const init = Number(b.wallet?.initial_balance || 50000);
+      const init = Number(b.wallet?.initial_balance || 100000);
       const avail = Number(b.wallet?.available_balance || 0);
       const lock = Number(b.wallet?.locked_balance || 0);
       const spent = Number(b.wallet?.total_spent || 0);
@@ -652,7 +652,7 @@ export function RoomTelemetryDashboard({
             </div>
           ) : (
             filteredBidders.map((b) => {
-              const initial = Number(b.wallet?.initial_balance || 50000);
+              const initial = Number(b.wallet?.initial_balance || 100000);
               const available = Number(b.wallet?.available_balance || 0);
               const spent = Number(b.wallet?.total_spent || 0);
               const locked = Number(b.wallet?.locked_balance || 0);

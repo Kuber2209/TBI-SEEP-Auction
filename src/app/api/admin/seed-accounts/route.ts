@@ -99,8 +99,8 @@ export async function POST() {
         // Create default wallet
         await (admin.from('bidder_wallets') as any).upsert({
           team_id: bidderUser.user.id,
-          initial_balance: 50000.0,
-          available_balance: 50000.0,
+          initial_balance: 100000.0,
+          available_balance: 100000.0,
           locked_balance: 0.0,
           total_spent: 0.0,
         });
