@@ -304,23 +304,25 @@ export function useDashboardSync() {
     const stageSignalChannel = supabase
       .channel('auction:stage_signals')
       .on('broadcast', { event: 'STAGE_CHANGED' }, (msg: any) => {
-        if (msg?.payload?.startup_id && msg?.payload?.new_status) {
+        if (msg?.payload?.new_status === 'WELCOME_LOBBY' || msg?.payload?.startup_id === null) {
+          setState((prev) => ({
+            ...prev,
+            activeStartup: null,
+            session: prev.session ? { ...prev.session, active_startup_id: null } : null,
+          }));
+        } else if (msg?.payload?.startup_id) {
           const sid = msg.payload.startup_id;
           const st = msg.payload.new_status;
           setState((prev) => {
             const updatedStartups = prev.startups.map((s) =>
-              s.id === sid ? { ...s, status: st } : s
+              s.id === sid ? { ...s, ...(st ? { status: st } : {}) } : s
             );
-            const isTarget = Boolean(prev.activeStartup && prev.activeStartup.id === sid);
-            const updatedActive =
-              isTarget && prev.activeStartup
-                ? { ...prev.activeStartup, status: st }
-                : prev.activeStartup;
-
+            const foundActive = updatedStartups.find((s) => s.id === sid) || null;
             return {
               ...prev,
               startups: updatedStartups,
-              activeStartup: updatedActive,
+              activeStartup: foundActive,
+              session: prev.session ? { ...prev.session, active_startup_id: sid } : null,
             };
           });
         }

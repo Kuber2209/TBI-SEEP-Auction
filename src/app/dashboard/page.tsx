@@ -73,13 +73,21 @@ export default function DashboardPage() {
 
   const [userViewOverride, setUserViewOverride] = useState<'welcome' | 'arena' | null>(null);
 
-  // Auto-switch to arena if stage operator activates a lot
+  // Automatically transition dashboard view in sync with admin stage operations (both ways)
   const prevActiveStartupId = useRef<string | null>(null);
   useEffect(() => {
-    if (activeStartup?.id && !prevActiveStartupId.current) {
+    const curActiveId = activeStartup?.id || null;
+    const prevActiveId = prevActiveStartupId.current;
+
+    if (!curActiveId) {
+      // Admin cleared active lot / broadcasted Welcome Screen -> Auto-switch to Welcome Page!
+      setUserViewOverride('welcome');
+    } else if (curActiveId !== prevActiveId) {
+      // Admin called, presented, or advanced a lot -> Auto-switch to Live Stage Arena!
       setUserViewOverride('arena');
     }
-    prevActiveStartupId.current = activeStartup?.id || null;
+
+    prevActiveStartupId.current = curActiveId;
   }, [activeStartup?.id]);
 
   // Default to welcome screen if no active startup, otherwise live arena

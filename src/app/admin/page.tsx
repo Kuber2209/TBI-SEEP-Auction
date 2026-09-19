@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { createClient } from '@/lib/supabase/client';
 import { useAuctionSync } from '@/hooks/useAuctionSync';
 import { usePresence } from '@/hooks/usePresence';
 import { Header } from '@/components/layout/Header';
@@ -53,6 +54,21 @@ export default function AdminPage() {
   const [events, setEvents] = useState<AuctionEvent[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [opMessage, setOpMessage] = useState<string | null>(null);
+
+  const broadcastChannelRef = useRef<any>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    broadcastChannelRef.current = supabase.channel('auction:stage_signals', {
+      config: { broadcast: { self: false } },
+    });
+    broadcastChannelRef.current.subscribe();
+    return () => {
+      if (broadcastChannelRef.current) {
+        supabase.removeChannel(broadcastChannelRef.current);
+      }
+    };
+  }, []);
 
   // Dynamically resolve active startup from live startups array to ensure status transitions update immediately
   const activeStartup =
@@ -161,9 +177,19 @@ export default function AdminPage() {
     setIsProcessing(true);
     setOpMessage(null);
     try {
+      // 1. Instant peer-to-peer stage broadcast to immediately flip auditorium dashboard & bidder consoles
+      try {
+        await broadcastChannelRef.current?.send({
+          type: 'broadcast',
+          event: 'STAGE_CHANGED',
+          payload: { startup_id: null, new_status: 'WELCOME_LOBBY', ts: Date.now() },
+        });
+      } catch (_) {}
+
+      // 2. Authoritative database transaction
       const res = await setStageToWelcomeLobbyAction(session.id);
       if (res.success) {
-        setOpMessage('Welcome Screen broadcasted. All connected bidders are now in the Welcome Lobby.');
+        setOpMessage('Welcome Screen broadcasted. Auditorium dashboard and connected bidders are now on the Welcome Screen.');
         handleFullRefresh();
       } else {
         alert(res.error || 'Failed to broadcast welcome screen');
@@ -379,7 +405,7 @@ export default function AdminPage() {
                       <span>Institutional Welcome & Rules Lobby</span>
                       {!session?.active_startup_id ? (
                         <span className="px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 text-[10px] font-mono font-bold border border-emerald-200">
-                          CURRENTLY BROADCASTING TO ALL BIDDERS
+                          CURRENTLY BROADCASTING TO AUDITORIUM & BIDDERS
                         </span>
                       ) : (
                         <span className="px-2.5 py-0.5 rounded-md bg-[#e5ece6] text-[#56695e] text-[10px] font-mono font-bold border border-[#cad7cc]">
@@ -388,7 +414,7 @@ export default function AdminPage() {
                       )}
                     </h3>
                     <p className="text-xs text-[#56695e] mt-0.5">
-                      This is the official onboarding presentation, rules briefing, and venture lots deal sheet shown to bidders.
+                      This is the official onboarding presentation, rules briefing, and venture lots deal sheet shown on stage and to bidders.
                     </p>
                   </div>
 
@@ -399,7 +425,7 @@ export default function AdminPage() {
                       className="px-4 py-2 rounded-md bg-[#1a5c3e] hover:bg-[#144931] text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition active:scale-[0.98]"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
-                      <span>Broadcast Welcome Screen to Bidders</span>
+                      <span>Broadcast Welcome Screen to Auditorium & Bidders</span>
                     </button>
                     <button
                       onClick={() => setActiveTab('stage')}
