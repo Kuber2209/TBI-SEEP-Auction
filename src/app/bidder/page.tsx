@@ -168,35 +168,9 @@ export default function BidderPage() {
                 </div>
               </div>
 
-              {/* Supporting Information: Bid Ledger & Acquired Lots */}
+              {/* Supporting Information: Bid Ledger */}
               <div className="space-y-6">
                 <BidHistoryList bids={bids} currentProfile={profile} />
-
-                {wonStartups.length > 0 && (
-                  <div className="rounded-xl p-5 sm:p-6 bg-[#eff4f0] border border-[#cad7cc] shadow-sm">
-                    <div className="flex items-center justify-between pb-3 border-b border-[#cad7cc] mb-3">
-                      <h3 className="text-sm font-semibold text-[#203126]">
-                        Acquired Lots ({wonStartups.length})
-                      </h3>
-                      <span className="text-xs text-[#56695e]">
-                        Total Spent: <strong className="text-[#1a5c3e] font-mono">₹{Number(wallet?.total_spent || 0).toLocaleString('en-IN')}</strong>
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-2.5">
-                      {wonStartups.map((s) => (
-                        <div
-                          key={s.id}
-                          className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg bg-[#e5ece6] border border-[#cad7cc] text-xs font-semibold text-[#203126]"
-                        >
-                          <span>{s.name}</span>
-                          <span className="text-[#1a5c3e] font-mono">
-                            ₹{Number(s.winning_bid_amount || 0).toLocaleString('en-IN')}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </main>
           )}
