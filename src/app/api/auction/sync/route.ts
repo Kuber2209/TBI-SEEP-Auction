@@ -9,7 +9,20 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // 1. Fetch Profile
+  // 1. Try atomic single-RPC get_auction_state first
+  try {
+    const { data: rpcData, error: rpcError } = await (supabase.rpc as any)('get_auction_state', {
+      p_team_id: user.id,
+    });
+
+    if (!rpcError && rpcData) {
+      return NextResponse.json(rpcData);
+    }
+  } catch (err) {
+    // If RPC is missing or fails, gracefully fall back to multi-query sync below
+  }
+
+  // 2. Fallback: Direct authoritative multi-query sync
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
@@ -22,7 +35,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Account inactive or revoked' }, { status: 403 });
   }
 
-  // 2. Fetch Session (Grand Finale)
+  // Fetch Session (Grand Finale)
   const { data: session } = await supabase
     .from('auction_sessions')
     .select('*')
@@ -30,7 +43,7 @@ export async function GET() {
     .limit(1)
     .single();
 
-  // 3. Fetch all Profiles for fast in-memory team name lookup
+  // Fetch all Profiles for in-memory team name lookup
   const { data: allProfiles } = await supabase
     .from('profiles')
     .select('id, team_name, display_user_id');
@@ -40,7 +53,7 @@ export async function GET() {
     profileMap.set(p.id, { team_name: p.team_name, display_user_id: p.display_user_id });
   });
 
-  // 4. Fetch All Startups & Enrich with Team Names
+  // Fetch All Startups & Enrich with Team Names
   const { data: rawStartups } = await supabase
     .from('startups')
     .select('*')
@@ -61,7 +74,7 @@ export async function GET() {
     ? (startups as any[])?.find((s) => s.id === activeStartupId) || null
     : null;
 
-  // 5. Fetch Recent Bids for Active Startup
+  // Fetch Recent Bids for Active Startup
   let recentBids: any[] = [];
   if (activeStartup) {
     const { data: bids } = await supabase
@@ -74,7 +87,7 @@ export async function GET() {
     recentBids = bids || [];
   }
 
-  // 6. Fetch Wallet
+  // Fetch Wallet
   let wallet = null;
   if (userProfile.role === 'bidder') {
     const { data: userWallet } = await supabase
@@ -85,7 +98,7 @@ export async function GET() {
     wallet = userWallet;
   }
 
-  // 7. Fetch Won Items (Portfolio)
+  // Fetch Won Items (Portfolio)
   let wonStartups: any[] = [];
   if (userProfile.role === 'bidder') {
     wonStartups = (startups || []).filter(
