@@ -137,14 +137,17 @@ export default function AdminPage() {
 
   const handleResetRehearsal = async () => {
     if (!session) return;
-    if (!confirm('Reset rehearsal session? This will wipe test bids and restore initial balances.')) return;
+    if (!confirm('Reset rehearsal session? This will wipe all test bids, restore all team purses to ₹50k, and go back to Lot #1.')) return;
 
     setIsProcessing(true);
     try {
       const res = await resetRehearsalSessionAction(session.id);
       if (res.success) {
-        setOpMessage('Rehearsal data successfully reset.');
-        handleFullRefresh();
+        setOpMessage('Rehearsal data reset. Returned to Lot #1 with all purses restored to ₹50k.');
+        if ((res as any).firstStartupId) {
+          setSelectedStartupId((res as any).firstStartupId);
+        }
+        await handleFullRefresh();
       } else {
         alert(res.error);
       }

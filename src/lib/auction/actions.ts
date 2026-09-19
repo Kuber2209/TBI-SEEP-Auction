@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { revalidatePath } from 'next/cache';
 import { StartupStatus } from '@/lib/supabase/types';
 
@@ -218,18 +219,82 @@ export async function resetRehearsalSessionAction(sessionId: string) {
   const authCheck = await ensureAdmin(supabase);
   if (!authCheck.ok) return { success: false, error: authCheck.error };
 
-  const { data, error } = await (supabase.rpc as any)('reset_rehearsal_session', {
-    p_session_id: sessionId,
-  });
+  try {
+    const admin = createAdminClient();
 
-  if (error) {
-    const msg = error.message.replace(/^ERR_[A-Z_]+:\s*/, '');
-    return { success: false, error: msg };
+    // 1. Fetch startups for this session to get all IDs and identify Lot #1
+    const { data: startups, error: startupsErr } = await admin
+      .from('startups')
+      .select('id, display_order')
+      .eq('session_id', sessionId)
+      .order('display_order', { ascending: true });
+
+    if (startupsErr) throw startupsErr;
+
+    const startupIds = (startups || []).map((s: any) => s.id);
+    const firstStartupId = startups && startups.length > 0 ? (startups[0] as any).id : null;
+
+    if (startupIds.length > 0) {
+      // 2. Wipe in strict foreign-key order:
+      // A. startup_accounts references bids(id) via winning_bid_id
+      await admin.from('startup_accounts').delete().in('startup_id', startupIds);
+      // B. fund_holds references bids(id) via bid_id
+      await admin.from('fund_holds').delete().in('startup_id', startupIds);
+      // C. bids
+      await admin.from('bids').delete().in('startup_id', startupIds);
+      // D. reset startups back to UPCOMING
+      await (admin.from('startups') as any).update({
+        status: 'UPCOMING',
+        current_highest_bid: null,
+        current_highest_bidder_id: null,
+        winner_team_id: null,
+        winning_bid_amount: null,
+        started_presenting_at: null,
+        bidding_started_at: null,
+        paused_at: null,
+        closed_at: null,
+        updated_at: new Date().toISOString(),
+      }).in('id', startupIds);
+    }
+
+    // 3. Clear auction events for this session
+    await admin.from('auction_events').delete().eq('session_id', sessionId);
+
+    // 4. Reset all bidder wallets to full initial balance (₹50,000)
+    await (admin.from('bidder_wallets') as any).update({
+      available_balance: 50000.0,
+      initial_balance: 50000.0,
+      locked_balance: 0.0,
+      total_spent: 0.0,
+      updated_at: new Date().toISOString(),
+    }).neq('id', '00000000-0000-0000-0000-000000000000');
+
+    // 5. Reset auction session: set ACTIVE status and active_startup_id to first startup (Lot #1)
+    await (admin.from('auction_sessions') as any).update({
+      status: 'ACTIVE',
+      active_startup_id: firstStartupId,
+      wallets_initialized: true,
+      is_rehearsal: true,
+    }).eq('id', sessionId);
+
+    // 6. Log audit event
+    try {
+      await (admin.from('auction_events') as any).insert({
+        session_id: sessionId,
+        startup_id: firstStartupId,
+        event_type: 'REHEARSAL_RESET',
+        actor_id: authCheck.user?.id,
+        payload: { firstStartupId, timestamp: new Date().toISOString() },
+      });
+    } catch (e) {}
+
+    revalidatePath('/admin');
+    revalidatePath('/bidder');
+    return { success: true, firstStartupId };
+  } catch (err: any) {
+    console.error('Failed to reset rehearsal session:', err);
+    return { success: false, error: err.message || 'Failed to reset rehearsal session' };
   }
-
-  revalidatePath('/admin');
-  revalidatePath('/bidder');
-  return { success: true, data };
 }
 
 export async function reorderStartupsAction(orderedIds: string[]) {

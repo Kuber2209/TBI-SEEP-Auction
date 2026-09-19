@@ -35,6 +35,7 @@ export function useAuctionSync() {
 
   const isFetching = useRef(false);
   const queuedRefetch = useRef(false);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Authoritative State Fetch from /api/auction/sync
   const fetchAuthoritativeState = useCallback(async () => {
@@ -102,6 +103,13 @@ export function useAuctionSync() {
       }
     }
   }, []);
+
+  const debouncedFetch = useCallback(() => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => {
+      fetchAuthoritativeState();
+    }, 80);
+  }, [fetchAuthoritativeState]);
 
   // Set up real-time multiplexed WebSocket channel & high-speed backup polling
   useEffect(() => {

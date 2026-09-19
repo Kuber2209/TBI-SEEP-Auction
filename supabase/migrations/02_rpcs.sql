@@ -596,10 +596,14 @@ BEGIN
     RAISE EXCEPTION 'ERR_SESSION_NOT_FOUND: Invalid session ID';
   END IF;
 
-  -- Wipe bids, holds, startup accounts, events for this session
-  DELETE FROM bids WHERE startup_id IN (SELECT id FROM startups WHERE session_id = p_session_id);
-  DELETE FROM fund_holds WHERE startup_id IN (SELECT id FROM startups WHERE session_id = p_session_id);
+  -- Wipe in strict foreign-key order:
+  -- 1. Startup accounts reference bids(id)
   DELETE FROM startup_accounts WHERE startup_id IN (SELECT id FROM startups WHERE session_id = p_session_id);
+  -- 2. Fund holds reference bids(id)
+  DELETE FROM fund_holds WHERE startup_id IN (SELECT id FROM startups WHERE session_id = p_session_id);
+  -- 3. Bids
+  DELETE FROM bids WHERE startup_id IN (SELECT id FROM startups WHERE session_id = p_session_id);
+  -- 4. Auction events
   DELETE FROM auction_events WHERE session_id = p_session_id;
 
   -- Reset startups
@@ -616,19 +620,21 @@ BEGIN
       updated_at = NOW()
   WHERE session_id = p_session_id;
 
-  -- Reset wallets
+  -- Reset wallets to initial balance
   UPDATE bidder_wallets 
   SET available_balance = initial_balance,
       locked_balance = 0,
       total_spent = 0,
       updated_at = NOW();
 
-  -- Reset session
+  -- Reset session: return to Lot #1
   UPDATE auction_sessions 
-  SET status = 'DRAFT', 
-      active_startup_id = NULL 
+  SET status = 'ACTIVE', 
+      active_startup_id = (SELECT id FROM startups WHERE session_id = p_session_id ORDER BY display_order ASC LIMIT 1),
+      wallets_initialized = true,
+      is_rehearsal = true
   WHERE id = p_session_id;
 
-  RETURN jsonb_build_object('success', true, 'message', 'Rehearsal session wiped clean');
+  RETURN jsonb_build_object('success', true, 'message', 'Rehearsal session wiped clean and reset to Lot #1');
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
