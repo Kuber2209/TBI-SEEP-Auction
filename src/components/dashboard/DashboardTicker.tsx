@@ -103,29 +103,29 @@ export function DashboardTicker({ events, recentBids, activeStartupName }: Props
 
   if (items.length === 0) {
     return (
-      <div className="flex items-center gap-2 px-6 py-2 bg-black/40 border-t border-white/8">
-        <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">
-          Live Feed · Waiting for activity…
+      <div className="flex items-center gap-2 px-6 py-2 bg-[#eff4f0] border-t border-[#cad7cc]">
+        <span className="text-xs font-mono text-[#8a9a8f] uppercase tracking-wider font-semibold">
+          Live Feed · Waiting for auction activity…
         </span>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center gap-3 px-6 py-2 bg-black/40 border-t border-white/8 overflow-hidden">
-      <span className="text-[10px] font-mono font-bold text-[#00ff88]/60 uppercase tracking-widest shrink-0">
-        LIVE
+    <div className="flex items-center gap-3 px-6 py-2 bg-[#eff4f0] border-t border-[#cad7cc] overflow-hidden">
+      <span className="text-[10px] font-mono font-bold text-white bg-[#1a5c3e] px-2 py-0.5 rounded uppercase tracking-wider shrink-0 shadow-2xs">
+        LIVE FEED
       </span>
-      <span className="w-px h-3 bg-white/15 shrink-0" />
+      <span className="w-px h-3.5 bg-[#cad7cc] shrink-0" />
       <div className="overflow-hidden flex-1">
         <div
-            className="flex items-center gap-6 animate-marquee whitespace-nowrap"
-            style={{ willChange: 'transform' }}
-          >
+          className="flex items-center gap-6 animate-marquee whitespace-nowrap"
+          style={{ willChange: 'transform' }}
+        >
           {[...items, ...items].map((item, i) => (
-            <span key={`${item.id}-${i}`} className="text-xs text-white/60 font-mono shrink-0">
+            <span key={`${item.id}-${i}`} className="text-xs text-[#203126] font-mono font-medium shrink-0">
               {item.text}
-              <span className="mx-4 text-white/15">·</span>
+              <span className="mx-4 text-[#8a9a8f]">·</span>
             </span>
           ))}
         </div>

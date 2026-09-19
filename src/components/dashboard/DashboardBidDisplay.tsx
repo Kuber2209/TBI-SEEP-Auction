@@ -51,28 +51,30 @@ export function DashboardBidDisplay({ startup, recentBids }: Props) {
 
   if (!startup) {
     return (
-      <div className="flex flex-col items-center justify-center h-full min-h-[180px] gap-2">
-        <span className="text-6xl font-black text-white/10 font-mono tabular-nums">₹ —</span>
-        <span className="text-white/25 text-xs font-mono uppercase tracking-widest">No active lot</span>
+      <div className="flex flex-col items-center justify-center h-full min-h-[160px] gap-2">
+        <span className="text-5xl font-black text-[#cad7cc] font-mono tabular-nums">₹ —</span>
+        <span className="text-[#8a9a8f] text-xs font-mono uppercase tracking-widest font-semibold">
+          No Active Bidding Round
+        </span>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
+    <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
       {/* Live / floor label */}
       <div className="flex items-center gap-2">
         {currentBid !== null ? (
-          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#00ff88]/80">
-            Current Highest Bid
+          <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#1a5c3e]">
+            Current Highest Offer
           </span>
         ) : (
-          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-white/30">
-            Floor Reserve Price
+          <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#56695e]">
+            Floor Reserve Floor
           </span>
         )}
         {currentBid !== null && (
-          <span className="text-[10px] font-mono text-white/30">
+          <span className="text-xs font-mono text-[#8a9a8f] font-medium">
             · {bidCount} bid{bidCount !== 1 ? 's' : ''}
           </span>
         )}
@@ -80,31 +82,31 @@ export function DashboardBidDisplay({ startup, recentBids }: Props) {
 
       {/* Big ₹ amount */}
       <div
-        className={`font-black font-mono tabular-nums leading-none tracking-tight transition-all duration-300 ${
+        className={`font-black font-mono tabular-nums leading-none tracking-tight transition-all duration-200 ${
           bump
-            ? 'text-[#00ff88] scale-110 drop-shadow-[0_0_32px_rgba(0,255,136,0.6)]'
+            ? 'text-[#1a5c3e] scale-105 drop-shadow-[0_4px_24px_rgba(26,92,62,0.22)]'
             : currentBid !== null
-            ? 'text-white scale-100'
-            : 'text-white/30 scale-100'
+            ? 'text-[#1a5c3e] scale-100'
+            : 'text-[#203126] scale-100'
         }`}
-        style={{ fontSize: 'clamp(3rem, 8vw, 7rem)' }}
+        style={{ fontSize: 'clamp(2.75rem, 6vw, 5.5rem)' }}
       >
         ₹{Number(displayAmount).toLocaleString('en-IN')}
       </div>
 
       {/* Leading team */}
       {currentBid !== null && leadingTeam ? (
-        <div className="flex flex-col items-center gap-1">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-white/30">
-            Leading Bidder
+        <div className="flex flex-col items-center gap-1 mt-1">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-[#56695e] font-semibold">
+            Highest Bidder
           </span>
-          <span className="text-2xl font-black text-[#00ff88] tracking-tight">
+          <span className="text-xl sm:text-2xl font-black text-[#203126] tracking-tight bg-[#eff4f0] px-4 py-1 rounded-lg border border-[#cad7cc]">
             {leadingTeam}
           </span>
         </div>
       ) : currentBid === null ? (
-        <span className="text-white/30 text-sm font-mono italic">
-          Awaiting opening offer…
+        <span className="text-[#8a9a8f] text-xs font-mono italic">
+          Awaiting opening offer from investor teams…
         </span>
       ) : null}
     </div>

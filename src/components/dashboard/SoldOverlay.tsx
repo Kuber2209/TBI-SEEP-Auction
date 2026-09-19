@@ -16,10 +16,10 @@ export function SoldOverlay({ startup, onDismiss }: Props) {
   // Memoize confetti positions — computed once per overlay mount, not on every render
   const confettiParticles = useMemo(
     () =>
-      Array.from({ length: 40 }, (_, i) => ({
+      Array.from({ length: 45 }, (_, i) => ({
         left: `${Math.random() * 100}%`,
         top: `-${Math.random() * 20 + 5}%`,
-        color: ['#00ff88', '#00cc6a', '#ffffff', '#4ade80', '#86efac', '#fbbf24'][i % 6],
+        color: ['#1a5c3e', '#22704b', '#059669', '#10b981', '#ca8a04', '#cad7cc'][i % 6],
         delay: `${Math.random() * 1.5}s`,
         duration: `${2 + Math.random() * 2}s`,
         rotate: `rotate(${Math.random() * 360}deg)`,
@@ -43,17 +43,17 @@ export function SoldOverlay({ startup, onDismiss }: Props) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-500 ${
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-500 backdrop-blur-md ${
         visible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
-      style={{ background: 'radial-gradient(ellipse at center, #001a0a 0%, #000e06 100%)' }}
+      style={{ background: 'rgba(240, 245, 241, 0.95)' }}
     >
       {/* Confetti particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
         {confettiParticles.map((p, i) => (
           <span
             key={i}
-            className="absolute w-2 h-2 rounded-sm animate-confetti opacity-80"
+            className="absolute w-2.5 h-2.5 rounded-xs animate-confetti opacity-90 shadow-2xs"
             style={{
               left: p.left,
               top: p.top,
@@ -66,53 +66,45 @@ export function SoldOverlay({ startup, onDismiss }: Props) {
         ))}
       </div>
 
-      {/* Glow ring */}
-      <div
-        className="absolute w-[600px] h-[600px] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(0,255,136,0.08) 0%, transparent 70%)',
-        }}
-      />
+      {/* Central Prestigious Card */}
+      <div className="relative z-10 flex flex-col items-center gap-5 text-center px-10 py-10 rounded-2xl bg-white border-2 border-[#1a5c3e]/30 shadow-2xl max-w-xl mx-4">
+        <div className="text-6xl sm:text-7xl animate-bounce-once drop-shadow-sm">🏆</div>
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-6 text-center px-8">
-        <div className="text-7xl animate-bounce-once">🏆</div>
-
-        <div>
-          <p className="text-[#00ff88] text-sm font-mono font-bold uppercase tracking-[0.3em] mb-3">
-            Lot Sold — {startup.sector}
+        <div className="space-y-1">
+          <p className="text-[#1a5c3e] text-xs sm:text-sm font-mono font-black uppercase tracking-[0.25em]">
+            Lot Acquired · {startup.sector}
           </p>
-          <h1 className="text-6xl sm:text-7xl font-black text-white tracking-tight leading-tight">
+          <h1 className="text-4xl sm:text-5xl font-black text-[#203126] tracking-tight leading-tight">
             {startup.name}
           </h1>
         </div>
 
         {startup.winner_team_name && (
-          <div className="flex flex-col items-center gap-2">
-            <span className="text-white/40 text-xs font-mono uppercase tracking-widest">
+          <div className="flex flex-col items-center gap-1.5 py-3 px-6 rounded-xl bg-[#eff4f0] border border-[#cad7cc] w-full">
+            <span className="text-[#56695e] text-xs font-mono uppercase tracking-wider font-semibold">
               Acquired by
             </span>
-            <span className="text-4xl sm:text-5xl font-black text-[#00ff88] tracking-tight">
+            <span className="text-2xl sm:text-3xl font-black text-[#1a5c3e] tracking-tight">
               {startup.winner_team_name}
             </span>
           </div>
         )}
 
         {startup.winning_bid_amount && (
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-white/30 text-[10px] font-mono uppercase tracking-widest">
-              Winning Bid
+          <div className="flex items-baseline gap-2 pt-1">
+            <span className="text-[#56695e] text-xs font-mono uppercase tracking-wider font-semibold">
+              Winning Valuation:
             </span>
-            <span className="text-4xl font-black font-mono tabular-nums text-white">
+            <span className="text-2xl sm:text-3xl font-black font-mono tabular-nums text-[#203126]">
               ₹{Number(startup.winning_bid_amount).toLocaleString('en-IN')}
             </span>
           </div>
         )}
 
-        {/* Auto-dismiss bar */}
-        <div className="w-64 h-0.5 bg-white/10 rounded-full overflow-hidden mt-4">
+        {/* Auto-dismiss progress bar */}
+        <div className="w-48 h-1 bg-[#eff4f0] rounded-full overflow-hidden border border-[#cad7cc] mt-2">
           <div
-            className="h-full bg-[#00ff88] rounded-full"
+            className="h-full bg-[#1a5c3e] rounded-full"
             style={{ animation: 'shrink-bar 6s linear forwards' }}
           />
         </div>
