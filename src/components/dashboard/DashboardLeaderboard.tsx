@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Startup } from '@/lib/supabase/types';
 import { LotLeaderboardEntry, LeaderboardEntry } from '@/hooks/useDashboardSync';
-import { Gavel, Trophy, ShieldCheck } from 'lucide-react';
+import { Gavel, Trophy, History, Users } from 'lucide-react';
 
 interface Props {
   activeStartup: Startup | null;
@@ -12,19 +12,48 @@ interface Props {
   overallLeaderboard?: LeaderboardEntry[];
 }
 
+function formatBidTime(isoString?: string) {
+  if (!isoString) return '';
+  try {
+    const d = new Date(isoString);
+    return d.toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    });
+  } catch (_) {
+    return '';
+  }
+}
+
 export function DashboardLeaderboard({
   activeStartup,
   activeLotLeaderboard = [],
   recentBids = [],
   overallLeaderboard = [],
 }: Props) {
-  // Derive current startup leaderboard if activeLotLeaderboard is empty but recentBids exist
+  // Default to 'bids' to display the full chronological stream of all past bids
+  const [viewMode, setViewMode] = useState<'bids' | 'teams'>('bids');
+
+  // Filter and sort all bids placed on this specific active lot (newest first)
+  const lotBids = useMemo(() => {
+    if (!activeStartup) return [];
+    return (recentBids || [])
+      .filter((b: any) => b.startup_id === activeStartup.id)
+      .sort((a: any, b: any) => {
+        if (b.server_seq && a.server_seq) return b.server_seq - a.server_seq;
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+  }, [recentBids, activeStartup?.id]);
+
+  // Derive investor team rankings
   const lotRankings = useMemo(() => {
     if (activeLotLeaderboard && activeLotLeaderboard.length > 0) {
       return activeLotLeaderboard;
     }
 
-    if (!activeStartup || recentBids.length === 0) return [];
+    if (!activeStartup || lotBids.length === 0) return [];
 
     const map = new Map<
       string,
@@ -37,7 +66,7 @@ export function DashboardLeaderboard({
       }
     >();
 
-    recentBids.forEach((b: any) => {
+    lotBids.forEach((b: any) => {
       const tid = b.bidder_id;
       const teamName =
         b.bidder_profile?.team_name ||
@@ -64,37 +93,54 @@ export function DashboardLeaderboard({
     });
 
     return Array.from(map.values()).sort((a, b) => b.highestBid - a.highestBid);
-  }, [activeLotLeaderboard, recentBids, activeStartup]);
+  }, [activeLotLeaderboard, lotBids, activeStartup]);
 
   const isSold = activeStartup?.status === 'SOLD';
   const isActiveBidding = activeStartup?.status === 'ACTIVE_BIDDING';
 
   return (
-    <div className="flex flex-col h-full gap-3">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 min-w-0">
-          <Gavel className="w-4 h-4 text-[#1a5c3e] shrink-0" strokeWidth={2} />
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#1a5c3e] truncate">
+    <div className="flex flex-col h-full gap-3 overflow-hidden">
+      {/* ── HEADER ─────────────────────────────────────────────────────────── */}
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#cad7cc] shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <Gavel className="w-4 h-4 text-[#1a5c3e] shrink-0" strokeWidth={2.2} />
+          <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-[#1a5c3e] truncate">
             {activeStartup
-              ? `Lot ${activeStartup.display_order} · ${activeStartup.name}`
-              : 'Current Lot Investor Board'}
+              ? `LOT ${activeStartup.display_order} · ${activeStartup.name}`
+              : 'Active Lot Bids'}
           </span>
         </div>
 
-        <span className="text-xs font-mono text-[#56695e] shrink-0 font-medium">
-          {lotRankings.length > 0 ? (
-            <span>
-              <strong className="text-[#1a5c3e]">{lotRankings.length}</strong>{' '}
-              investor{lotRankings.length !== 1 ? 's' : ''}
-            </span>
-          ) : (
-            <span>Floor: ₹{Number(activeStartup?.base_price || 5000).toLocaleString('en-IN')}</span>
-          )}
-        </span>
+        {/* View Toggle: All Past Bids vs Grouped by Investor */}
+        {activeStartup && lotBids.length > 0 && (
+          <div className="flex items-center gap-1 p-0.5 rounded-lg bg-[#eff4f0] border border-[#cad7cc] shrink-0">
+            <button
+              onClick={() => setViewMode('bids')}
+              className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                viewMode === 'bids'
+                  ? 'bg-[#1a5c3e] text-white shadow-2xs'
+                  : 'text-[#56695e] hover:text-[#203126]'
+              }`}
+            >
+              <History className="w-3 h-3" />
+              <span>All Past Bids ({lotBids.length})</span>
+            </button>
+            <button
+              onClick={() => setViewMode('teams')}
+              className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                viewMode === 'teams'
+                  ? 'bg-[#1a5c3e] text-white shadow-2xs'
+                  : 'text-[#56695e] hover:text-[#203126]'
+              }`}
+            >
+              <Users className="w-3 h-3" />
+              <span>Investors ({lotRankings.length})</span>
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Content */}
+      {/* ── MAIN CONTENT ────────────────────────────────────────────────────── */}
       {!activeStartup ? (
         <div className="flex flex-col items-center justify-center h-full min-h-[160px] gap-2 text-center p-4 text-[#56695e]">
           <Trophy className="w-8 h-8 text-[#cad7cc]" />
@@ -102,7 +148,7 @@ export function DashboardLeaderboard({
             Awaiting Next Lot Selection
           </p>
         </div>
-      ) : lotRankings.length === 0 ? (
+      ) : lotBids.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full min-h-[160px] gap-2 text-center p-4">
           <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-[#1a5c3e]">
             <Gavel className="w-5 h-5" strokeWidth={1.75} />
@@ -119,24 +165,140 @@ export function DashboardLeaderboard({
             Floor Reserve: ₹{Number(activeStartup.base_price || 5000).toLocaleString('en-IN')}
           </div>
         </div>
+      ) : viewMode === 'bids' ? (
+        /* ── VIEW 1: FULL LIST OF ALL PAST BIDS ─────────────────────────────── */
+        <div className="flex flex-col gap-2 overflow-y-auto pr-1 flex-1 min-h-0">
+          {lotBids.map((bid: any, idx: number) => {
+            const isLeading = idx === 0;
+            const teamName =
+              bid.bidder_profile?.team_name ||
+              bid.bidder_profile?.display_user_id ||
+              'Investor Team';
+
+            const bidAmount = Number(bid.amount || 0);
+            const nextBid = lotBids[idx + 1];
+            const increment = nextBid ? bidAmount - Number(nextBid.amount || 0) : null;
+            const bidSeqNumber = lotBids.length - idx;
+            const timeStr = formatBidTime(bid.created_at);
+
+            return (
+              <div
+                key={bid.id || `bid-${idx}`}
+                className={`flex items-center justify-between p-3 sm:p-3.5 rounded-xl transition-all ${
+                  isLeading
+                    ? 'bg-emerald-50/95 border-2 border-[#1a5c3e]/40 shadow-xs'
+                    : 'bg-white border border-[#cad7cc] shadow-2xs hover:border-[#1a5c3e]/30'
+                }`}
+              >
+                {/* Left: Sequence Rank & Team Name */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <span
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold shrink-0 ${
+                      isLeading
+                        ? 'bg-[#1a5c3e] text-white shadow-xs'
+                        : 'bg-[#eff4f0] text-[#56695e] border border-[#cad7cc]'
+                    }`}
+                  >
+                    {idx + 1}
+                  </span>
+
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-sm sm:text-base truncate ${
+                          isLeading
+                            ? 'font-black text-[#1a5c3e]'
+                            : 'font-bold text-[#203126]'
+                        }`}
+                      >
+                        {teamName}
+                      </span>
+
+                      {/* Status Badge */}
+                      {isLeading ? (
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider ${
+                            isSold
+                              ? 'bg-[#1a5c3e] text-white'
+                              : isActiveBidding
+                              ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                              : 'bg-emerald-100 text-emerald-800'
+                          }`}
+                        >
+                          {isActiveBidding && !isSold && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                          )}
+                          {isSold ? 'ACQUIRED' : 'LEADER'}
+                        </span>
+                      ) : (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-amber-50 text-amber-800 border border-amber-200 uppercase">
+                          OUTBID
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 text-[11px] font-mono text-[#56695e] mt-0.5">
+                      <span className="font-semibold text-[#203126]">
+                        Bid #{bidSeqNumber}
+                      </span>
+                      {timeStr && (
+                        <>
+                          <span className="text-[#cad7cc]">·</span>
+                          <span>{timeStr}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Amount & Step Increment */}
+                <div className="text-right shrink-0 ml-3">
+                  <div className="flex items-baseline justify-end gap-1.5">
+                    <span
+                      className={`font-mono font-black tabular-nums block ${
+                        isLeading
+                          ? 'text-lg sm:text-xl text-[#1a5c3e]'
+                          : 'text-base sm:text-lg text-[#203126]'
+                      }`}
+                    >
+                      ₹{bidAmount.toLocaleString('en-IN')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-1.5 mt-0.5">
+                    {increment !== null && increment > 0 && (
+                      <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1 rounded border border-emerald-200">
+                        +₹{increment.toLocaleString('en-IN')}
+                      </span>
+                    )}
+                    <span className="text-[10px] font-mono text-[#8a9a8f] uppercase">
+                      {isLeading ? (isSold ? 'Winning Bid' : 'Highest Offer') : 'Prior Offer'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       ) : (
-        <div className="flex flex-col gap-1.5 overflow-y-auto pr-0.5 flex-1">
+        /* ── VIEW 2: GROUPED BY INVESTOR TEAM ────────────────────────────────── */
+        <div className="flex flex-col gap-2 overflow-y-auto pr-1 flex-1 min-h-0">
           {lotRankings.map((entry, idx) => {
             const isLeading = idx === 0;
 
             return (
               <div
                 key={entry.teamId}
-                className={`flex items-center justify-between px-3 py-2 rounded-lg transition-all ${
+                className={`flex items-center justify-between p-3 sm:p-3.5 rounded-xl transition-all ${
                   isLeading
-                    ? 'bg-emerald-50/90 border-2 border-[#1a5c3e]/40 shadow-xs'
+                    ? 'bg-emerald-50/95 border-2 border-[#1a5c3e]/40 shadow-xs'
                     : 'bg-white border border-[#cad7cc] shadow-2xs'
                 }`}
               >
                 {/* Rank & Team Name */}
-                <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex items-center gap-3 min-w-0">
                   <span
-                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono font-bold shrink-0 ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold shrink-0 ${
                       isLeading
                         ? 'bg-[#1a5c3e] text-white shadow-xs'
                         : 'bg-[#eff4f0] text-[#203126] border border-[#cad7cc]'
@@ -148,10 +310,10 @@ export function DashboardLeaderboard({
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`text-sm truncate ${
+                        className={`text-sm sm:text-base truncate ${
                           isLeading
-                            ? 'font-bold text-[#1a5c3e]'
-                            : 'font-semibold text-[#203126]'
+                            ? 'font-black text-[#1a5c3e]'
+                            : 'font-bold text-[#203126]'
                         }`}
                       >
                         {entry.teamName}
@@ -174,13 +336,13 @@ export function DashboardLeaderboard({
                           {isSold ? 'ACQUIRED' : 'LEADER'}
                         </span>
                       ) : (
-                        <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-semibold bg-amber-50 text-amber-800 border border-amber-200 uppercase">
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-amber-50 text-amber-800 border border-amber-200 uppercase">
                           OUTBID
                         </span>
                       )}
                     </div>
 
-                    <span className="text-[10px] font-mono text-[#8a9a8f] block">
+                    <span className="text-[11px] font-mono text-[#8a9a8f] block mt-0.5">
                       {entry.bidCount} bid{entry.bidCount !== 1 ? 's' : ''} submitted
                     </span>
                   </div>
@@ -189,13 +351,15 @@ export function DashboardLeaderboard({
                 {/* Offer Valuation */}
                 <div className="text-right shrink-0 ml-3">
                   <span
-                    className={`font-mono font-bold tabular-nums block ${
-                      isLeading ? 'text-base sm:text-lg text-[#1a5c3e]' : 'text-sm text-[#203126]'
+                    className={`font-mono font-black tabular-nums block ${
+                      isLeading
+                        ? 'text-lg sm:text-xl text-[#1a5c3e]'
+                        : 'text-base sm:text-lg text-[#203126]'
                     }`}
                   >
                     ₹{Number(entry.highestBid).toLocaleString('en-IN')}
                   </span>
-                  <span className="text-[10px] font-mono text-[#8a9a8f] block">
+                  <span className="text-[10px] font-mono text-[#8a9a8f] block uppercase font-medium mt-0.5">
                     {isLeading ? 'Highest Offer' : 'Prior Offer'}
                   </span>
                 </div>
