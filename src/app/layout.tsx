@@ -11,12 +11,8 @@ export const metadata: Metadata = {
 const themeInitScript = `
 (function() {
   try {
-    var saved = localStorage.getItem('seep-theme');
-    if (saved === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    localStorage.removeItem('seep-theme');
+    document.documentElement.classList.remove('dark');
   } catch (e) {}
 })();
 `;
