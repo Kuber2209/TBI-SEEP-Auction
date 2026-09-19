@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { loginWithUserId } from '@/lib/auth/actions';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
-import { Lock, User, ArrowRight, ShieldCheck, AlertCircle, KeyRound, Building2 } from 'lucide-react';
+import { Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
@@ -23,11 +23,6 @@ export default function LoginPage() {
       setError(result.error);
       setLoading(false);
     }
-  };
-
-  const fillQuickCredentials = (id: string, pass: string) => {
-    setUserIdVal(id);
-    setPasswordVal(pass);
   };
 
   return (
@@ -127,37 +122,6 @@ export default function LoginPage() {
                 )}
               </button>
             </form>
-
-            {/* Quick Rehearsal Credentials Helper */}
-            <div className="mt-6 pt-5 border-t border-[#cad7cc]">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#56695e] block mb-2 text-center">
-                Rehearsal Quick Credentials
-              </span>
-              <div className="grid grid-cols-2 gap-2 text-[11px]">
-                <button
-                  type="button"
-                  onClick={() => fillQuickCredentials('ADMIN01', 'AdminPassword123!')}
-                  className="p-2 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] border border-[#cad7cc] text-[#203126] font-medium text-center transition-colors duration-150 flex items-center justify-center gap-1.5 active:scale-[0.98]"
-                >
-                  <KeyRound className="w-3.5 h-3.5 text-[#1a5c3e]" />
-                  Admin
-                </button>
-                <button
-                  type="button"
-                  onClick={() => fillQuickCredentials('TEAM01', 'PassTEAM01#2026')}
-                  className="p-2 rounded-md bg-[#e5ece6] hover:bg-[#d8e3da] border border-[#cad7cc] text-[#203126] font-medium text-center transition-colors duration-150 flex items-center justify-center gap-1.5 active:scale-[0.98]"
-                >
-                  <Building2 className="w-3.5 h-3.5 text-[#1a5c3e]" />
-                  Team 01
-                </button>
-              </div>
-            </div>
-
-            {/* Security Guarantee Note */}
-            <div className="mt-5 pt-4 border-t border-[#cad7cc] flex items-center justify-center gap-2 text-[11px] text-[#56695e] font-medium">
-              <ShieldCheck className="w-4 h-4 text-emerald-700" />
-              <span>Single-Device Session Encryption Active</span>
-            </div>
           </div>
         </div>
       </div>
