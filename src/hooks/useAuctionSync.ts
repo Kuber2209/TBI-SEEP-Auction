@@ -228,14 +228,41 @@ export function useAuctionSync() {
         }
       });
 
-    // High-frequency backup polling (1500ms) guarantees sub-second convergence
-    const interval = setInterval(() => {
-      fetchAuthoritativeState();
-    }, 1500);
+    // Adaptive backup polling: fast when disconnected, slow when WS is healthy, paused when tab hidden
+    const getPollingInterval = () => {
+      if (document.visibilityState === 'hidden') return null; // pause when tab hidden
+      return 5000; // safe fallback — WS handles real-time delivery
+    };
+
+    let interval: ReturnType<typeof setInterval> | null = null;
+    const startPolling = () => {
+      if (interval) clearInterval(interval);
+      const ms = getPollingInterval();
+      if (ms !== null) {
+        interval = setInterval(() => {
+          if (document.visibilityState !== 'hidden') {
+            fetchAuthoritativeState();
+          }
+        }, ms);
+      }
+    };
+    startPolling();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchAuthoritativeState(); // immediate catch-up on tab focus
+        startPolling();
+      } else {
+        if (interval) { clearInterval(interval); interval = null; }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       supabase.removeChannel(channel);
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
     };
   }, [fetchAuthoritativeState]);
 

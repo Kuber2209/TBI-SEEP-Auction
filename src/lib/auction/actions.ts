@@ -55,8 +55,6 @@ export async function submitBidAction(
     return { success: false, error: msg };
   }
 
-  revalidatePath('/bidder');
-  revalidatePath('/admin');
   return { success: true, data };
 }
 
