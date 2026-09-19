@@ -34,7 +34,10 @@ export async function middleware(request: NextRequest) {
   // 1. API Route Guards: Authenticated-by-default with RBAC
   if (pathname.startsWith('/api/')) {
     // Explicitly allowlisted public API routes (health checks, webhooks, public telemetry)
-    const isPublicApi = pathname === '/api/health' || pathname.startsWith('/api/public/');
+    const isPublicApi =
+      pathname === '/api/health' ||
+      pathname.startsWith('/api/public/') ||
+      pathname.startsWith('/api/dashboard/'); // big-screen display — intentionally public
     if (isPublicApi) {
       return response;
     }
@@ -65,6 +68,11 @@ export async function middleware(request: NextRequest) {
   }
 
   // 2. Browser Page Route Guards: Unauthenticated redirect to /login
+  // /dashboard is intentionally public — read-only big-screen display, no auth needed.
+  if (pathname.startsWith('/dashboard')) {
+    return response;
+  }
+
   if (!user && (pathname.startsWith('/admin') || pathname.startsWith('/bidder'))) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/login';
@@ -121,5 +129,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/login', '/bidder/:path*', '/admin/:path*', '/api/:path*'],
+  matcher: ['/', '/login', '/bidder/:path*', '/admin/:path*', '/api/:path*', '/dashboard/:path*', '/dashboard'],
 };

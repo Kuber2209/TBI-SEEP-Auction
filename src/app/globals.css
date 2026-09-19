@@ -149,3 +149,48 @@ p {
 ::-webkit-scrollbar-thumb:hover {
   background: #8e9f91;
 }
+
+/* ── Dashboard Big Screen Animations ──────────────────────────────────────── */
+
+/* Scrolling ticker marquee */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* Confetti particle fall */
+@keyframes confetti-fall {
+  0%   { transform: translateY(-10px) rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+.animate-confetti {
+  animation: confetti-fall 3s ease-in forwards;
+}
+
+/* Single bounce (SOLD overlay trophy) */
+@keyframes bounce-once {
+  0%, 100% { transform: translateY(0); }
+  40%       { transform: translateY(-24px); }
+  60%       { transform: translateY(-12px); }
+}
+.animate-bounce-once {
+  animation: bounce-once 0.8s ease-out 0.2s both;
+}
+
+/* Auto-dismiss progress bar shrink */
+@keyframes shrink-bar {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+/* Fade in for dashboard panels */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out both;
+}
