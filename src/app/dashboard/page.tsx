@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useDashboardSync } from '@/hooks/useDashboardSync';
+import { DashboardWelcomeScreen } from '@/components/dashboard/DashboardWelcomeScreen';
 import { DashboardLotSpotlight } from '@/components/dashboard/DashboardLotSpotlight';
 import { DashboardBidDisplay } from '@/components/dashboard/DashboardBidDisplay';
 import { DashboardLeaderboard } from '@/components/dashboard/DashboardLeaderboard';
@@ -70,6 +71,20 @@ export default function DashboardPage() {
   const { soldStartup, clearSoldStartup } = useSoldOverlay(activeStartup, startups);
   const clock = useClock();
 
+  const [userViewOverride, setUserViewOverride] = useState<'welcome' | 'arena' | null>(null);
+
+  // Auto-switch to arena if stage operator activates a lot
+  const prevActiveStartupId = useRef<string | null>(null);
+  useEffect(() => {
+    if (activeStartup?.id && !prevActiveStartupId.current) {
+      setUserViewOverride('arena');
+    }
+    prevActiveStartupId.current = activeStartup?.id || null;
+  }, [activeStartup?.id]);
+
+  // Default to welcome screen if no active startup, otherwise live arena
+  const viewMode = userViewOverride ?? (activeStartup ? 'arena' : 'welcome');
+
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden select-none bg-[#f0f5f1] text-[#203126]">
       {/* ── SOLD OVERLAY ─────────────────────────────────────────────────────── */}
@@ -95,13 +110,40 @@ export default function DashboardPage() {
                 SEEP <span className="text-[#1a5c3e]">4.0</span>
               </span>
               <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
-                Live Stage
+                {viewMode === 'welcome' ? 'Welcome Stage' : 'Live Stage'}
               </span>
             </div>
             <p className="text-[11px] text-[#56695e] font-medium tracking-normal mt-0.5">
               BITS Pilani Hyderabad · Live Startup Auction
             </p>
           </div>
+        </div>
+
+        {/* Center Mode Switcher */}
+        <div className="flex items-center gap-1.5 p-1 rounded-lg bg-[#eff4f0] border border-[#cad7cc]">
+          <button
+            onClick={() => setUserViewOverride('welcome')}
+            className={`px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              viewMode === 'welcome'
+                ? 'bg-[#1a5c3e] text-white shadow-xs'
+                : 'text-[#56695e] hover:text-[#203126]'
+            }`}
+          >
+            <span>Welcome Stage</span>
+          </button>
+          <button
+            onClick={() => setUserViewOverride('arena')}
+            className={`px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              viewMode === 'arena'
+                ? 'bg-[#1a5c3e] text-white shadow-xs'
+                : 'text-[#56695e] hover:text-[#203126]'
+            }`}
+          >
+            <span>Live Stage Arena</span>
+            {activeStartup && (
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            )}
+          </button>
         </div>
 
         <div className="flex items-center gap-4">
@@ -121,42 +163,53 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* ── MAIN GRID ────────────────────────────────────────────────────────── */}
-      <main className="flex-1 grid grid-cols-12 gap-3 p-3 overflow-hidden min-h-0 bg-[#f0f5f1]">
-        {/* LEFT COLUMN — Lot Spotlight + Big Bid (7 cols) */}
-        <div className="col-span-12 lg:col-span-7 flex flex-col gap-3 overflow-hidden">
-          {/* Lot Spotlight */}
-          <section className="flex-1 min-h-0 p-6 lg:p-7 rounded-xl bg-white border border-[#cad7cc] shadow-sm flex flex-col justify-between overflow-hidden">
-            <DashboardLotSpotlight
-              startup={activeStartup}
-              totalLots={stats.totalLots}
-            />
-          </section>
+      {/* ── MAIN CONTENT: WELCOME STAGE OR LIVE ARENA ─────────────────────────── */}
+      {viewMode === 'welcome' ? (
+        <DashboardWelcomeScreen
+          startups={startups}
+          session={session}
+          stats={stats}
+          activeStartup={activeStartup}
+          onEnterArena={() => setUserViewOverride('arena')}
+        />
+      ) : (
+        /* ── MAIN GRID ────────────────────────────────────────────────────────── */
+        <main className="flex-1 grid grid-cols-12 gap-3 p-3 overflow-hidden min-h-0 bg-[#f0f5f1]">
+          {/* LEFT COLUMN — Lot Spotlight + Big Bid (7 cols) */}
+          <div className="col-span-12 lg:col-span-7 flex flex-col gap-3 overflow-hidden">
+            {/* Lot Spotlight */}
+            <section className="flex-1 min-h-0 p-6 lg:p-7 rounded-xl bg-white border border-[#cad7cc] shadow-sm flex flex-col justify-between overflow-hidden">
+              <DashboardLotSpotlight
+                startup={activeStartup}
+                totalLots={stats.totalLots}
+              />
+            </section>
 
-          {/* Big Bid Display */}
-          <section
-            className="shrink-0 p-6 rounded-xl bg-white border border-[#cad7cc] shadow-sm flex flex-col items-center justify-center"
-            style={{ minHeight: '220px', maxHeight: '250px' }}
-          >
-            <DashboardBidDisplay
-              startup={activeStartup}
-              recentBids={recentBids}
-            />
-          </section>
-        </div>
+            {/* Big Bid Display */}
+            <section
+              className="shrink-0 p-6 rounded-xl bg-white border border-[#cad7cc] shadow-sm flex flex-col items-center justify-center"
+              style={{ minHeight: '220px', maxHeight: '250px' }}
+            >
+              <DashboardBidDisplay
+                startup={activeStartup}
+                recentBids={recentBids}
+              />
+            </section>
+          </div>
 
-        {/* RIGHT COLUMN — Active Startup Investor Leaderboard (5 cols) */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col overflow-hidden">
-          <section className="h-full min-h-0 p-5 sm:p-6 rounded-xl bg-white border border-[#cad7cc] shadow-sm overflow-hidden flex flex-col">
-            <DashboardLeaderboard
-              activeStartup={activeStartup}
-              activeLotLeaderboard={activeLotLeaderboard}
-              recentBids={recentBids}
-              overallLeaderboard={leaderboard}
-            />
-          </section>
-        </div>
-      </main>
+          {/* RIGHT COLUMN — Active Startup Investor Leaderboard (5 cols) */}
+          <div className="col-span-12 lg:col-span-5 flex flex-col overflow-hidden">
+            <section className="h-full min-h-0 p-5 sm:p-6 rounded-xl bg-white border border-[#cad7cc] shadow-sm overflow-hidden flex flex-col">
+              <DashboardLeaderboard
+                activeStartup={activeStartup}
+                activeLotLeaderboard={activeLotLeaderboard}
+                recentBids={recentBids}
+                overallLeaderboard={leaderboard}
+              />
+            </section>
+          </div>
+        </main>
+      )}
 
       {/* ── STAT BAR ─────────────────────────────────────────────────────────── */}
       <DashboardStatBar
