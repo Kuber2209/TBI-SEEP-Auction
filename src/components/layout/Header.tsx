@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { logoutAction } from '@/lib/auth/actions';
 import { Profile, SessionStatus } from '@/lib/supabase/types';
-import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { LogOut, Radio, Shield, Users, Briefcase, Menu, X } from 'lucide-react';
 
 interface HeaderProps {
@@ -117,9 +116,6 @@ export function Header({
             </button>
           )}
 
-          {/* Theme Switcher */}
-          <ThemeToggle />
-
           {profile && (
             <div className="flex items-center gap-3 pl-3 border-l border-[#cad7cc]">
               <div className="text-right">
@@ -152,7 +148,6 @@ export function Header({
 
         {/* Mobile Menu Toggle */}
         <div className="flex items-center gap-2 md:hidden">
-          <ThemeToggle />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 rounded-md bg-[#e5ece6] border border-[#cad7cc] text-[#203126]"

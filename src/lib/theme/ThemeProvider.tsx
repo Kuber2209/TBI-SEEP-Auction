@@ -17,15 +17,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Read saved preference or system default
-    const saved = localStorage.getItem('seep-theme') as Theme | null;
-    if (saved === 'dark') {
-      setThemeState('dark');
-      document.documentElement.classList.add('dark');
-    } else {
-      setThemeState('light');
-      document.documentElement.classList.remove('dark');
-    }
+    // Lock in the official matte sage theme and remove any legacy dark classes
+    setThemeState('light');
+    document.documentElement.classList.remove('dark');
+    localStorage.removeItem('seep-theme');
     setMounted(true);
   }, []);
 

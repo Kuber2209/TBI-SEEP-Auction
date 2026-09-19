@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { loginWithUserId } from '@/lib/auth/actions';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
-import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { Lock, User, ArrowRight, ShieldCheck, AlertCircle, KeyRound, Building2 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -34,11 +33,6 @@ export default function LoginPage() {
   return (
     <ErrorBoundary fallbackTitle="Authentication Interface Error">
       <div className="min-h-screen bg-[#dfe7e0] text-[#203126] flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden transition-colors duration-150">
-        {/* Top-Right Theme Toggle */}
-        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
-          <ThemeToggle />
-        </div>
-
         {/* Main Container */}
         <div className="w-full max-w-md z-10 space-y-6">
           {/* Official TBI BITS Pilani Logo Banner */}
