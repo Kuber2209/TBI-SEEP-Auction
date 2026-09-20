@@ -41,6 +41,10 @@ export const REAL_TEAMS: TeamSeedConfig[] = [
   { name: 'Prestige', id: 'prestige', pass: 'summit' },
   { name: 'Pearson Spectre', id: 'pearson-spectre', pass: 'beacon' },
   { name: 'Bid-cell', id: 'bid-cell', pass: 'zenith' },
+  { name: 'pheonix', id: 'pheonix', pass: 'flames' },
+  { name: 'Tender Titans', id: 'tender-titans', pass: 'titans' },
+  { name: 'Bidatorz', id: 'bidatorz', pass: 'pulsar' },
+  { name: 'kbtest', id: 'kbtest', pass: 'rocket' },
 ];
 
 async function main() {

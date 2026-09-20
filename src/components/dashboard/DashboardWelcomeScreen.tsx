@@ -9,7 +9,6 @@ import {
   Gavel,
   ShieldCheck,
   Users,
-  ArrowRight,
   Sparkles,
   Info,
   CheckCircle2,
@@ -78,31 +77,21 @@ export function DashboardWelcomeScreen({
               take the live gavel stage to raise strategic seed deployment from authorized syndicates.
             </p>
 
-            {/* Live Arena Callout / Action button */}
+            {/* Live Stage Status Indicator */}
             <div className="pt-2 flex flex-wrap items-center gap-4">
-              {activeStartup ? (
-                <button
-                  onClick={onEnterArena}
-                  className="px-6 py-3 rounded-lg bg-[#1a5c3e] hover:bg-[#144931] active:scale-[0.98] text-white font-bold text-sm flex items-center gap-2.5 shadow-md transition cursor-pointer"
-                >
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping" />
-                  <span>Go to Bidding Page · Lot #{activeStartup.display_order}: {activeStartup.name}</span>
-                  <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
-                </button>
-              ) : (
-                <button
-                  onClick={onEnterArena}
-                  className="px-6 py-3 rounded-lg bg-[#1a5c3e] hover:bg-[#144931] active:scale-[0.98] text-white font-bold text-sm flex items-center gap-2 shadow-md transition cursor-pointer"
-                >
-                  <span>Go to Bidding Page</span>
-                  <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
-                </button>
-              )}
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-lg bg-[#eff4f0] border border-[#cad7cc] text-xs font-semibold text-[#203126]">
+                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                <span>
+                  {activeStartup
+                    ? `Live Stage Active · Lot #${activeStartup.display_order}: ${activeStartup.name}`
+                    : 'Stage Operator Standby · Live Bidding Starts Shortly'}
+                </span>
+              </div>
 
               <span className="text-xs font-mono text-[#56695e]">
                 {activeStartup
                   ? `Stage status: ${activeStartup.status.replace(/_/g, ' ')}`
-                  : 'Stage operator preparing Lot #01'}
+                  : 'Stage operator preparing next lot'}
               </span>
             </div>
           </div>
