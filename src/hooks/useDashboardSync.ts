@@ -255,6 +255,9 @@ export function useDashboardSync() {
         (payload: any) => {
           if (payload?.new) {
             setState((prev) => {
+              if (prev.session && payload.new.id !== prev.session.id && payload.new.status !== 'ACTIVE') {
+                return prev;
+              }
               const activeId = payload.new.active_startup_id;
               const active = activeId
                 ? prev.startups.find((s) => s.id === activeId) || null

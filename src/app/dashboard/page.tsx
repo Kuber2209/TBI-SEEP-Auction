@@ -71,27 +71,39 @@ export default function DashboardPage() {
   const { soldStartup, clearSoldStartup } = useSoldOverlay(activeStartup, startups);
   const clock = useClock();
 
-  const [userViewOverride, setUserViewOverride] = useState<'welcome' | 'arena' | null>(null);
+  // Mode: 'auto' (default: strictly follows admin), 'welcome' (manual override), or 'bidding' (manual override)
+  const [selectedMode, setSelectedMode] = useState<'auto' | 'welcome' | 'bidding'>('auto');
 
-  // Automatically transition dashboard view in sync with admin stage operations (both ways)
-  const prevActiveStartupId = useRef<string | null>(null);
+  // Automatic determination strictly based on admin operator state:
+  // - Admin broadcasting Welcome Lobby or no active lot => 'welcome'
+  // - Admin called lot to stage or bidding live => 'bidding'
+  const adminMode = activeStartup ? 'bidding' : 'welcome';
+
+  // Effective view rendered on screen
+  const currentView = selectedMode === 'auto' ? adminMode : selectedMode;
+
+  // Track admin stage changes: whenever the active lot or status changes, automatically re-engage auto mode!
+  const prevActiveStartupIdRef = useRef<string | null | undefined>(undefined);
+  const prevStartupStatusRef = useRef<string | null | undefined>(undefined);
+
   useEffect(() => {
     const curActiveId = activeStartup?.id || null;
-    const prevActiveId = prevActiveStartupId.current;
+    const curStatus = activeStartup?.status || null;
 
-    if (!curActiveId) {
-      // Admin cleared active lot / broadcasted Welcome Screen -> Auto-switch to Welcome Page!
-      setUserViewOverride('welcome');
-    } else if (curActiveId !== prevActiveId) {
-      // Admin called, presented, or advanced a lot -> Auto-switch to Live Stage Arena!
-      setUserViewOverride('arena');
+    if (prevActiveStartupIdRef.current !== undefined) {
+      const lotChanged = curActiveId !== prevActiveStartupIdRef.current;
+      const statusChanged = curStatus !== prevStartupStatusRef.current;
+
+      if (lotChanged || statusChanged) {
+        // Any admin operation (advancing lot, changing status, or broadcasting welcome)
+        // automatically restores auto control
+        setSelectedMode('auto');
+      }
     }
 
-    prevActiveStartupId.current = curActiveId;
-  }, [activeStartup?.id]);
-
-  // Default to welcome screen if no active startup, otherwise live arena
-  const viewMode = userViewOverride ?? (activeStartup ? 'arena' : 'welcome');
+    prevActiveStartupIdRef.current = curActiveId;
+    prevStartupStatusRef.current = curStatus;
+  }, [activeStartup?.id, activeStartup?.status]);
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden select-none bg-[#f0f5f1] text-[#203126]">
@@ -117,8 +129,10 @@ export default function DashboardPage() {
               <span className="font-bold tracking-tight text-[#203126] text-base sm:text-lg leading-none">
                 SEEP <span className="text-[#1a5c3e]">4.0</span>
               </span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
-                {viewMode === 'welcome' ? 'Welcome Stage' : 'Live Stage'}
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                {currentView === 'welcome' ? 'Welcome Page' : 'Bidding Page'}
+                {selectedMode === 'auto' ? ' · Auto' : ' · Manual'}
               </span>
             </div>
             <p className="text-[11px] text-[#56695e] font-medium tracking-normal mt-0.5">
@@ -127,29 +141,53 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Center Mode Switcher */}
+        {/* Center Mode Switcher: Auto (Admin) | Welcome Page | Bidding Page */}
         <div className="flex items-center gap-1.5 p-1 rounded-lg bg-[#eff4f0] border border-[#cad7cc]">
           <button
-            onClick={() => setUserViewOverride('welcome')}
+            onClick={() => setSelectedMode('auto')}
+            title="Automatically follows the admin stage operator in real-time"
             className={`px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              viewMode === 'welcome'
+              selectedMode === 'auto'
                 ? 'bg-[#1a5c3e] text-white shadow-xs'
                 : 'text-[#56695e] hover:text-[#203126]'
             }`}
           >
-            <span>Welcome Stage</span>
+            <span
+              className={`w-2 h-2 rounded-full ${
+                selectedMode === 'auto' ? 'bg-emerald-300 animate-pulse' : 'bg-[#cad7cc]'
+              }`}
+            />
+            <span>Auto (Admin)</span>
           </button>
+
           <button
-            onClick={() => setUserViewOverride('arena')}
+            onClick={() => setSelectedMode('welcome')}
+            title="Switch display to Welcome Page"
             className={`px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              viewMode === 'arena'
+              currentView === 'welcome' && selectedMode !== 'auto'
                 ? 'bg-[#1a5c3e] text-white shadow-xs'
+                : selectedMode === 'auto' && currentView === 'welcome'
+                ? 'bg-[#cad7cc]/40 text-[#1a5c3e] font-extrabold'
                 : 'text-[#56695e] hover:text-[#203126]'
             }`}
           >
-            <span>Live Stage Arena</span>
+            <span>Welcome Page</span>
+          </button>
+
+          <button
+            onClick={() => setSelectedMode('bidding')}
+            title="Switch display to Bidding Page"
+            className={`px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              currentView === 'bidding' && selectedMode !== 'auto'
+                ? 'bg-[#1a5c3e] text-white shadow-xs'
+                : selectedMode === 'auto' && currentView === 'bidding'
+                ? 'bg-[#cad7cc]/40 text-[#1a5c3e] font-extrabold'
+                : 'text-[#56695e] hover:text-[#203126]'
+            }`}
+          >
+            <span>Bidding Page</span>
             {activeStartup && (
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
             )}
           </button>
         </div>
@@ -171,14 +209,14 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* ── MAIN CONTENT: WELCOME STAGE OR LIVE ARENA ─────────────────────────── */}
-      {viewMode === 'welcome' ? (
+      {/* ── MAIN CONTENT: WELCOME PAGE OR BIDDING PAGE ─────────────────────────── */}
+      {currentView === 'welcome' ? (
         <DashboardWelcomeScreen
           startups={startups}
           session={session}
           stats={stats}
           activeStartup={activeStartup}
-          onEnterArena={() => setUserViewOverride('arena')}
+          onEnterArena={() => setSelectedMode('bidding')}
         />
       ) : (
         /* ── MAIN GRID ────────────────────────────────────────────────────────── */

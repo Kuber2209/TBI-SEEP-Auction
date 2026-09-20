@@ -9,18 +9,28 @@ import { NextResponse } from 'next/server';
  * - active startup details + recent bids on it
  * - leaderboard (teams, lots won, capital spent) — wallet balances intentionally omitted
  */
-export async function GET() {
+export async function GET(request: Request) {
   const supabase = createAdminClient();
 
+  const { searchParams } = new URL(request.url);
+  const requestedSessionId = searchParams.get('session_id');
+
   // ── 1. Session ──────────────────────────────────────────────────────────────
-  const { data: session } = await supabase
+  // Fetch all sessions ordered by created_at DESC
+  const { data: allSessionsRaw } = await supabase
     .from('auction_sessions')
     .select('*')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
+    .order('created_at', { ascending: false });
 
-  const dbSession = session as any;
+  const allSessions = allSessionsRaw || [];
+
+  let dbSession: any = null;
+  if (requestedSessionId) {
+    dbSession = allSessions.find((s: any) => s.id === requestedSessionId) || null;
+  }
+  if (!dbSession) {
+    dbSession = allSessions.find((s: any) => s.status === 'ACTIVE') || allSessions[0] || null;
+  }
 
   if (!dbSession) {
     return NextResponse.json({ error: 'No auction session found' }, { status: 404 });
@@ -174,6 +184,7 @@ export async function GET() {
   return NextResponse.json(
     {
       session: dbSession,
+      allSessions,
       startups,
       activeStartup,
       recentBids,

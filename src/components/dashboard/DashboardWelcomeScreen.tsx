@@ -86,7 +86,7 @@ export function DashboardWelcomeScreen({
                   className="px-6 py-3 rounded-lg bg-[#1a5c3e] hover:bg-[#144931] active:scale-[0.98] text-white font-bold text-sm flex items-center gap-2.5 shadow-md transition cursor-pointer"
                 >
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping" />
-                  <span>View Live Lot #{activeStartup.display_order}: {activeStartup.name}</span>
+                  <span>Go to Bidding Page · Lot #{activeStartup.display_order}: {activeStartup.name}</span>
                   <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
                 </button>
               ) : (
@@ -94,7 +94,7 @@ export function DashboardWelcomeScreen({
                   onClick={onEnterArena}
                   className="px-6 py-3 rounded-lg bg-[#1a5c3e] hover:bg-[#144931] active:scale-[0.98] text-white font-bold text-sm flex items-center gap-2 shadow-md transition cursor-pointer"
                 >
-                  <span>Open Live Stage Arena</span>
+                  <span>Go to Bidding Page</span>
                   <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
                 </button>
               )}
