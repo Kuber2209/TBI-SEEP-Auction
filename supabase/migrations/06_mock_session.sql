@@ -18,7 +18,7 @@ VALUES (
   'SEEP 4.0 Mock Round',
   true,
   'DRAFT',
-  500000.00,
+  100000.00,
   ARRAY[1000, 2500, 5000, 10000],
   false
 )

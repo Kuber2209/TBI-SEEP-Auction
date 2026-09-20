@@ -24,12 +24,18 @@ export async function GET() {
     if (!rpcError && rpcData) {
       // Augment the RPC response with allSessions so the session switcher is populated.
       // Also recompute the primary session using the same ACTIVE-first logic.
-      const activeSession = allSessionsForRpc.find((s: any) => s.status === 'ACTIVE') || allSessionsForRpc[0] || rpcData.session;
-      return NextResponse.json({
-        ...rpcData,
-        session: activeSession,
-        allSessions: allSessionsForRpc,
-      });
+      const activeSession: any = allSessionsForRpc.find((s: any) => s.status === 'ACTIVE') || allSessionsForRpc[0] || rpcData.session;
+
+      // Only use rpcData if its session matches the active session.
+      // If the RPC returned startups from a different session (e.g. mock session),
+      // fall through to multi-query sync to fetch the true active session's startups.
+      if (rpcData.session?.id === activeSession?.id) {
+        return NextResponse.json({
+          ...rpcData,
+          session: activeSession,
+          allSessions: allSessionsForRpc,
+        });
+      }
     }
   } catch (err) {
     // If RPC is missing or fails, gracefully fall back to multi-query sync below
