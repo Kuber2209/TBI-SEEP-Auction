@@ -9,6 +9,7 @@ export type ConnectionStatus = 'CONNECTED' | 'CONNECTING' | 'DISCONNECTED';
 interface SyncState {
   profile: Profile | null;
   session: AuctionSession | null;
+  allSessions: AuctionSession[];
   startups: Startup[];
   activeStartup: Startup | null;
   bids: Bid[];
@@ -23,6 +24,7 @@ export function useAuctionSync() {
   const [state, setState] = useState<SyncState>({
     profile: null,
     session: null,
+    allSessions: [],
     startups: [],
     activeStartup: null,
     bids: [],
@@ -78,6 +80,7 @@ export function useAuctionSync() {
           ...prev,
           profile: data.profile,
           session: data.session,
+          allSessions: data.allSessions || [],
           startups: data.startups || [],
           activeStartup: data.activeStartup,
           bids: data.recentBids || [],
@@ -201,9 +204,18 @@ export function useAuctionSync() {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'auction_sessions' },
         (payload: any) => {
-          // Sub-second session & active startup resolution
+          // Sub-second session & active startup resolution.
+          // IMPORTANT: Only optimistically merge if the payload is for the same session
+          // currently in state. If a session switch occurred (different id), skip the
+          // merge entirely — the debounced fetch will pull the correct new session.
           if (payload?.new) {
             setState(prev => {
+              const isSameSession = prev.session?.id === payload.new.id;
+              if (!isSameSession) {
+                // Session switched — don't corrupt state with a cross-session merge.
+                // The debouncedFetch below will load the correct active session.
+                return prev;
+              }
               const activeStartupId = payload.new.active_startup_id;
               const active = activeStartupId
                 ? prev.startups.find(s => s.id === activeStartupId) || null

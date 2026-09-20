@@ -19,7 +19,10 @@ import {
   initializeSessionWalletsAction,
   resetRehearsalSessionAction,
   setStageToWelcomeLobbyAction,
+  switchActiveSessionAction,
+  resetMockSessionAction,
 } from '@/lib/auction/actions';
+import { SessionSwitcher } from '@/components/admin/SessionSwitcher';
 import { WelcomeLobbyScreen } from '@/components/bidder/WelcomeLobbyScreen';
 import { Startup, Profile, BidderWallet, AuctionEvent } from '@/lib/supabase/types';
 import {
@@ -40,6 +43,7 @@ export default function AdminPage() {
   const {
     profile,
     session,
+    allSessions,
     startups,
     activeStartup: syncedActiveStartup,
     bids,
@@ -201,6 +205,42 @@ export default function AdminPage() {
     }
   };
 
+  const handleSwitchSession = async (sessionId: string) => {
+    setIsProcessing(true);
+    setOpMessage(null);
+    try {
+      const res = await switchActiveSessionAction(sessionId);
+      if (res.success) {
+        setOpMessage('Session switched. All bidders now see the selected session.');
+        handleFullRefresh();
+      } else {
+        alert(res.error || 'Failed to switch session');
+      }
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleResetMock = async (sessionId: string) => {
+    setIsProcessing(true);
+    setOpMessage(null);
+    try {
+      const res = await resetMockSessionAction(sessionId);
+      if (res.success) {
+        setOpMessage('Mock session reset. Demo purses restored, all test bids wiped.');
+        handleFullRefresh();
+      } else {
+        alert((res as any).error || 'Failed to reset mock session');
+      }
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   if (!profile) {
     return (
       <div className="min-h-screen bg-[#f0f5f1] flex items-center justify-center text-[#33404f]">
@@ -293,6 +333,14 @@ export default function AdminPage() {
                   <Sparkles className="w-3.5 h-3.5 text-inherit" strokeWidth={1.75} />
                   <span>{!session?.active_startup_id ? 'Welcome Screen (Live)' : 'Show Welcome Screen'}</span>
                 </button>
+
+                <SessionSwitcher
+                  currentSession={session}
+                  allSessions={allSessions}
+                  onSwitch={handleSwitchSession}
+                  onResetMock={handleResetMock}
+                  isProcessing={isProcessing}
+                />
 
                 <ExportCsvButton />
               </div>

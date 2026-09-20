@@ -32,12 +32,27 @@ export async function GET() {
     wallet: Array.isArray(p.wallet) ? p.wallet[0] : p.wallet,
   }));
 
-  // 2. Fetch latest audit events
-  const { data: events } = await supabase
+  // 2. Fetch active session ID to scope audit events
+  const { data: activeSession } = await supabase
+    .from('auction_sessions')
+    .select('id')
+    .eq('status', 'ACTIVE')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  // 3. Fetch latest audit events scoped to the active session
+  let eventsQuery = supabase
     .from('auction_events')
     .select('*')
     .order('created_at', { ascending: false })
     .limit(100);
+
+  if ((activeSession as any)?.id) {
+    eventsQuery = (eventsQuery as any).eq('session_id', (activeSession as any).id);
+  }
+
+  const { data: events } = await eventsQuery;
 
   return NextResponse.json({
     bidders,

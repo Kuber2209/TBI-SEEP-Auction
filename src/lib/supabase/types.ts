@@ -239,6 +239,15 @@ export interface Database {
         };
         Returns: Record<string, any>;
       };
+      switch_active_session: {
+        Args: { p_session_id: string };
+        Returns: Record<string, any>;
+      };
+      reset_mock_session: {
+        Args: { p_session_id: string };
+        Returns: Record<string, any>;
+      };
     };
   };
 }
+

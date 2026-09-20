@@ -11,6 +11,7 @@ import { BidHistoryList } from '@/components/bidder/BidHistoryList';
 import { WalletSummaryBar } from '@/components/bidder/WalletSummaryBar';
 import { WelcomeLobbyScreen } from '@/components/bidder/WelcomeLobbyScreen';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
+import { MockRoundBanner } from '@/components/common/MockRoundBanner';
 import { Loader2, LayoutGrid, Radio } from 'lucide-react';
 
 export default function BidderPage() {
@@ -76,6 +77,9 @@ export default function BidderPage() {
       <div className="min-h-screen bg-[#dfe7e0] flex flex-col justify-between text-[#203126] transition-colors duration-150">
         {/* Top Section */}
         <div>
+          {session?.is_rehearsal && (
+            <MockRoundBanner purseAmount={session.initial_purse_amount} />
+          )}
           <ConnectionBanner status={connectionStatus} onRetry={refresh} />
 
           <Header

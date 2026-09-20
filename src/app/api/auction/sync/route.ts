@@ -10,13 +10,26 @@ export async function GET() {
   }
 
   // 1. Try atomic single-RPC get_auction_state first
+  // Note: we still need allSessions for the session switcher, so we fetch them separately
+  // and merge into the RPC response when it succeeds.
   try {
-    const { data: rpcData, error: rpcError } = await (supabase.rpc as any)('get_auction_state', {
-      p_team_id: user.id,
-    });
+    const [rpcResult, sessionsResult] = await Promise.all([
+      (supabase.rpc as any)('get_auction_state', { p_team_id: user.id }),
+      supabase.from('auction_sessions').select('*').order('created_at', { ascending: false }),
+    ]);
+
+    const { data: rpcData, error: rpcError } = rpcResult;
+    const allSessionsForRpc = sessionsResult.data || [];
 
     if (!rpcError && rpcData) {
-      return NextResponse.json(rpcData);
+      // Augment the RPC response with allSessions so the session switcher is populated.
+      // Also recompute the primary session using the same ACTIVE-first logic.
+      const activeSession = allSessionsForRpc.find((s: any) => s.status === 'ACTIVE') || allSessionsForRpc[0] || rpcData.session;
+      return NextResponse.json({
+        ...rpcData,
+        session: activeSession,
+        allSessions: allSessionsForRpc,
+      });
     }
   } catch (err) {
     // If RPC is missing or fails, gracefully fall back to multi-query sync below
@@ -35,13 +48,16 @@ export async function GET() {
     return NextResponse.json({ error: 'Account inactive or revoked' }, { status: 403 });
   }
 
-  // Fetch Session (Grand Finale)
-  const { data: session } = await supabase
+  // Fetch all sessions to support session switcher (mock + real)
+  const { data: allSessionsRaw } = await supabase
     .from('auction_sessions')
     .select('*')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
+    .order('created_at', { ascending: false });
+
+  const allSessions = allSessionsRaw || [];
+
+  // Active session = first ACTIVE one, else the most recently created
+  const session = allSessions.find((s: any) => s.status === 'ACTIVE') || allSessions[0] || null;
 
   // Fetch all Profiles for in-memory team name lookup
   const { data: allProfiles } = await supabase
@@ -53,11 +69,18 @@ export async function GET() {
     profileMap.set(p.id, { team_name: p.team_name, display_user_id: p.display_user_id });
   });
 
-  // Fetch All Startups & Enrich with Team Names
-  const { data: rawStartups } = await supabase
+  // Fetch Startups for the ACTIVE session only (prevents mock + real lots mixing)
+  const sessionId = (session as any)?.id;
+  let rawStartupsQuery = supabase
     .from('startups')
     .select('*')
     .order('display_order', { ascending: true });
+
+  if (sessionId) {
+    rawStartupsQuery = (rawStartupsQuery as any).eq('session_id', sessionId);
+  }
+
+  const { data: rawStartups } = await rawStartupsQuery;
 
   const startups = (rawStartups || []).map((s: any) => ({
     ...s,
@@ -109,6 +132,7 @@ export async function GET() {
   return NextResponse.json({
     profile: userProfile,
     session,
+    allSessions,
     startups: startups || [],
     activeStartup,
     recentBids,

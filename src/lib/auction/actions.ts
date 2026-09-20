@@ -367,3 +367,107 @@ export async function setStageToWelcomeLobbyAction(sessionId: string) {
   return { success: true };
 }
 
+
+// ---------------------------------------------------------------------------
+// Mock Round — Session Switching
+// ---------------------------------------------------------------------------
+
+export async function switchActiveSessionAction(sessionId: string) {
+  if (!sessionId) return { success: false, error: 'Session ID is required' };
+
+  const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
+
+  const { data, error } = await (supabase.rpc as any)('switch_active_session', {
+    p_session_id: sessionId,
+  });
+
+  if (error) {
+    const msg = error.message.replace(/^ERR_[A-Z_]+:\s*/, '');
+    return { success: false, error: msg };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/bidder');
+  return { success: true, data };
+}
+
+// ---------------------------------------------------------------------------
+// Mock Round — Full Reset
+// ---------------------------------------------------------------------------
+
+export async function resetMockSessionAction(sessionId: string) {
+  if (!sessionId) return { success: false, error: 'Session ID is required' };
+
+  const supabase = createClient();
+  const authCheck = await ensureAdmin(supabase);
+  if (!authCheck.ok) return { success: false, error: authCheck.error };
+
+  try {
+    const admin = createAdminClient();
+
+    // 1. Fetch startups for this session
+    const { data: startups, error: startupsErr } = await admin
+      .from('startups')
+      .select('id')
+      .eq('session_id', sessionId);
+
+    if (startupsErr) throw startupsErr;
+
+    const startupIds = (startups || []).map((s: any) => s.id);
+
+    if (startupIds.length > 0) {
+      // 2. Wipe dependent rows in FK order
+      // A. startup_accounts (references bids via winning_bid_id)
+      await admin.from('startup_accounts').delete().in('startup_id', startupIds);
+      // B. fund_holds (references bids via bid_id)
+      await admin.from('fund_holds').delete().in('startup_id', startupIds);
+      // C. bids
+      await admin.from('bids').delete().in('startup_id', startupIds);
+
+      // D. Reset startups to UPCOMING
+      await (admin.from('startups') as any).update({
+        status: 'UPCOMING',
+        current_highest_bid: null,
+        current_highest_bidder_id: null,
+        winner_team_id: null,
+        winning_bid_amount: null,
+        started_presenting_at: null,
+        bidding_started_at: null,
+        paused_at: null,
+        closed_at: null,
+        updated_at: new Date().toISOString(),
+      }).in('id', startupIds);
+    }
+
+    // 3. Delete auction events for this session
+    await admin.from('auction_events').delete().eq('session_id', sessionId);
+
+    // 4. Reset all bidder_wallets via DB RPC (JS can't do `available_balance = initial_balance`
+    //    since Supabase JS .update() cannot reference other columns).
+    //    The RPC also re-resets startups and the session atomically — that's fine,
+    //    the JS pre-step already cleared them so the RPC operations are idempotent.
+    const { error: rpcError } = await (supabase.rpc as any)('reset_mock_session', {
+      p_session_id: sessionId,
+    });
+    if (rpcError) throw rpcError;
+
+    // 5. Log audit event
+    try {
+      await (admin.from('auction_events') as any).insert({
+        session_id: sessionId,
+        event_type: 'MOCK_RESET',
+        actor_id: authCheck.user?.id,
+        payload: { timestamp: new Date().toISOString() },
+      });
+    } catch (e) {}
+
+    revalidatePath('/admin');
+    revalidatePath('/bidder');
+    return { success: true };
+  } catch (err: any) {
+    console.error('Failed to reset mock session:', err);
+    return { success: false, error: err.message || 'Failed to reset mock session' };
+  }
+}

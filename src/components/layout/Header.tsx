@@ -75,8 +75,8 @@ export function Header({
                   SEEP <span className="text-[#1a5c3e]">4.0</span>
                 </span>
                 {isRehearsal && (
-                  <span className="px-2 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-purple-50 text-purple-800 border border-purple-200 rounded-md">
-                    Rehearsal
+                  <span className="px-2 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300 rounded-md">
+                    🎭 Mock Round
                   </span>
                 )}
               </div>
