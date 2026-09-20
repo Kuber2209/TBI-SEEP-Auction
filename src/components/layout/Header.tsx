@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { logoutAction } from '@/lib/auth/actions';
 import { Profile, SessionStatus } from '@/lib/supabase/types';
-import { LogOut, Radio, Shield, Users, Briefcase, Menu, X } from 'lucide-react';
+import { LogOut, Radio, Shield, Users, Briefcase, Menu, X, FlaskConical } from 'lucide-react';
 
 interface HeaderProps {
   profile: Profile | null;
@@ -75,8 +75,9 @@ export function Header({
                   SEEP <span className="text-[#1a5c3e]">4.0</span>
                 </span>
                 {isRehearsal && (
-                  <span className="px-2 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300 rounded-md">
-                    🎭 Mock Round
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-[#1a5c3e]/10 text-[#1a5c3e] border border-[#1a5c3e]/25 rounded-md">
+                    <FlaskConical className="w-3 h-3 text-[#1a5c3e]" strokeWidth={2} />
+                    Mock Round
                   </span>
                 )}
               </div>

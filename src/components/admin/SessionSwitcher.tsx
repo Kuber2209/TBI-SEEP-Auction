@@ -28,10 +28,18 @@ export function SessionSwitcher({
 
   if (allSessions.length <= 1) return null;
 
-  const mockSession = allSessions.find((s) => s.is_rehearsal);
-  const realSession = allSessions.find((s) => !s.is_rehearsal);
+  // Robust session resolution ensuring both mock and real sessions always appear
+  const mockSession =
+    allSessions.find((s) => s.is_rehearsal) ||
+    allSessions.find((s) => s.name?.toLowerCase().includes('mock')) ||
+    null;
 
-  const isMockActive = currentSession?.is_rehearsal === true;
+  const realSession =
+    allSessions.find((s) => !s.is_rehearsal && s.id !== mockSession?.id) ||
+    allSessions.find((s) => s.id !== mockSession?.id) ||
+    null;
+
+  const isMockActive = currentSession?.is_rehearsal === true || currentSession?.id === mockSession?.id;
 
   const handleSwitch = async (targetId: string) => {
     setOpen(false);
@@ -52,7 +60,7 @@ export function SessionSwitcher({
         disabled={isProcessing}
         className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-semibold border transition active:scale-[0.98] ${
           isMockActive
-            ? 'bg-amber-50 text-amber-900 border-amber-300 shadow-sm'
+            ? 'bg-[#e8f1eb] text-[#1a5c3e] border-[#cad7cc] shadow-sm'
             : 'bg-[#1a5c3e]/10 text-[#1a5c3e] border-[#1a5c3e]/30 shadow-sm'
         }`}
         title="Switch between Mock Round and Real Auction session"
@@ -60,7 +68,7 @@ export function SessionSwitcher({
         {isProcessing ? (
           <Loader2 className="w-3.5 h-3.5 animate-spin" />
         ) : isMockActive ? (
-          <FlaskConical className="w-3.5 h-3.5 text-amber-700" strokeWidth={2} />
+          <FlaskConical className="w-3.5 h-3.5 text-[#1a5c3e]" strokeWidth={2} />
         ) : (
           <Trophy className="w-3.5 h-3.5 text-[#1a5c3e]" strokeWidth={1.75} />
         )}
@@ -86,24 +94,24 @@ export function SessionSwitcher({
             {/* Mock Session Option */}
             {mockSession && (
               <div
-                className={`p-3.5 border-b border-[#f0f4f0] hover:bg-amber-50/60 transition cursor-pointer ${
-                  isMockActive ? 'bg-amber-50' : ''
+                className={`p-3.5 border-b border-[#f0f4f0] hover:bg-[#eef5f0] transition cursor-pointer ${
+                  isMockActive ? 'bg-[#f0f7f2]' : ''
                 }`}
                 onClick={() => handleSwitch(mockSession.id)}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-start gap-2.5">
-                    <FlaskConical className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" strokeWidth={2} />
+                    <FlaskConical className="w-4 h-4 text-[#1a5c3e] mt-0.5 shrink-0" strokeWidth={2} />
                     <div>
                       <p className="text-xs font-semibold text-[#203126]">
                         {mockSession.name}
                         {isMockActive && (
-                          <span className="ml-1.5 text-[10px] font-bold text-amber-700 bg-amber-100 border border-amber-200 px-1.5 py-0.5 rounded-md">
+                          <span className="ml-1.5 text-[10px] font-bold text-[#1a5c3e] bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md">
                             ACTIVE
                           </span>
                         )}
                       </p>
-                      <p className="text-[11px] text-amber-700 mt-0.5">
+                      <p className="text-[11px] text-[#56695e] mt-0.5">
                         Demo purse: ₹{Number(mockSession.initial_purse_amount).toLocaleString('en-IN')} · Practice only
                       </p>
                     </div>
@@ -111,7 +119,7 @@ export function SessionSwitcher({
                   {isMockActive && (
                     <button
                       onClick={handleResetMock}
-                      className="shrink-0 flex items-center gap-1 px-2 py-1 rounded-md bg-amber-100 hover:bg-amber-200 text-amber-900 text-[10px] font-semibold border border-amber-300 transition"
+                      className="shrink-0 flex items-center gap-1 px-2 py-1 rounded-md bg-[#dfe7e0] hover:bg-[#cad7cc] text-[#203126] text-[10px] font-semibold border border-[#b8c7bb] transition"
                       title="Wipe all demo bids and restore demo purses"
                     >
                       <RotateCcw className="w-3 h-3" />

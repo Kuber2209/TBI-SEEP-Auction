@@ -1,20 +1,48 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { loginWithUserId } from '@/lib/auth/actions';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
-import { Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
+import { Lock, User, ArrowRight, AlertCircle, Smartphone } from 'lucide-react';
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [userIdVal, setUserIdVal] = useState('');
   const [passwordVal, setPasswordVal] = useState('');
+  const [sessionNotice, setSessionNotice] = useState<{
+    title: string;
+    description: string;
+    type: 'kicked' | 'revoked';
+  } | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const reason = params.get('reason');
+      if (reason === 'session_kicked') {
+        setSessionNotice({
+          type: 'kicked',
+          title: 'Duplicate Login Detected',
+          description:
+            'Another person logged in using this account on another device. You have been logged out on this device to protect your bidding purse.',
+        });
+      } else if (reason === 'session_revoked') {
+        setSessionNotice({
+          type: 'revoked',
+          title: 'Session Expired',
+          description:
+            'Your active session has expired or was reset by the event administrator. Please sign in again to continue.',
+        });
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSessionNotice(null);
 
     const formData = new FormData(e.currentTarget);
     const result = await loginWithUserId(null, formData);
@@ -62,6 +90,30 @@ export default function LoginPage() {
                 Enter your institutional credentials to authenticate your console.
               </p>
             </div>
+
+            {sessionNotice && (
+              <div
+                className={`mb-5 p-3.5 rounded-lg border text-xs flex items-start gap-3 shadow-sm ${
+                  sessionNotice.type === 'kicked'
+                    ? 'bg-amber-50/90 border-amber-300 text-amber-950'
+                    : 'bg-blue-50/90 border-blue-200 text-blue-950'
+                }`}
+              >
+                {sessionNotice.type === 'kicked' ? (
+                  <Smartphone className="w-4 h-4 shrink-0 text-amber-700 mt-0.5" strokeWidth={2} />
+                ) : (
+                  <AlertCircle className="w-4 h-4 shrink-0 text-blue-700 mt-0.5" strokeWidth={2} />
+                )}
+                <div className="space-y-0.5">
+                  <p className="font-semibold text-xs text-[#203126]">
+                    {sessionNotice.title}
+                  </p>
+                  <p className="text-[11px] text-[#56695e] leading-relaxed">
+                    {sessionNotice.description}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {error && (
               <div className="mb-5 p-3 rounded-md bg-red-50 border border-red-200 text-red-800 text-xs font-medium flex items-center gap-2.5">

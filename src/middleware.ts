@@ -83,6 +83,11 @@ export async function middleware(request: NextRequest) {
   if (user) {
     // If on /login or root /, redirect to appropriate panel
     if (pathname === '/login' || pathname === '/') {
+      // If visiting /login with an explicit logout/kicked reason, allow viewing the login screen and notice
+      if (pathname === '/login' && request.nextUrl.searchParams.get('reason')) {
+        return response;
+      }
+
       const { data: profile } = await supabase
         .from('profiles')
         .select('role, is_active')

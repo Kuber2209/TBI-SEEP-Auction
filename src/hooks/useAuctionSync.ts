@@ -53,6 +53,9 @@ export function useAuctionSync() {
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
           sessionStorage.removeItem('seep_session_version');
+          try {
+            await createClient().auth.signOut();
+          } catch (e) {}
           window.location.href = '/login?reason=session_revoked';
           return;
         }
@@ -70,6 +73,9 @@ export function useAuctionSync() {
           sessionStorage.setItem('seep_session_version', currentVersion);
         } else if (storedVersion !== currentVersion) {
           sessionStorage.removeItem('seep_session_version');
+          try {
+            await createClient().auth.signOut();
+          } catch (e) {}
           window.location.href = '/login?reason=session_kicked';
           return;
         }
